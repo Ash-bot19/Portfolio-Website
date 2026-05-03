@@ -1,1 +1,202 @@
-/* Plan 02 fills this */
+/* =============================================================================
+   nav.css — Fixed navigation: layout, scroll-state frosted blur, dual-copy
+   hover, mobile hamburger menu, and prefers-reduced-motion variants.
+   Authored in Plan 02. All values from 01-UI-SPEC.md.
+   ============================================================================= */
+
+/* === Nav: fixed layout (NAV-01) === */
+nav {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--nav-height); /* 72px */
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 var(--space-xl); /* 32px horizontal */
+  background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  transition: background 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
+}
+
+/* === Nav scrolled state (NAV-02) ===
+   Default rule = browsers WITH backdrop-filter support: semi-transparent + blur.
+   The @supports-not block below catches browsers that lack backdrop-filter
+   and gives them an OPAQUE background so the nav stays readable. */
+nav.nav-scrolled {
+  background: rgba(10, 10, 10, 0.85);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  nav.nav-scrolled {
+    /* Fallback: solid opaque dark — readable without blur */
+    background: rgba(10, 10, 10, 0.96);
+  }
+}
+
+/* === Logo === */
+.nav-logo {
+  display: flex;
+  align-items: center;
+}
+
+/* === Nav links container (desktop) === */
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-xl); /* 32px */
+}
+
+/* === Individual nav link (NAV-03 dual-copy hover) === */
+.nav-link {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  color: var(--color-muted);
+  display: flex;
+  flex-direction: column;
+  height: 1em;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.nav-link .link-default,
+.nav-link .link-hover {
+  display: block;
+  transition: transform 0.35s cubic-bezier(0.76, 0, 0.24, 1);
+  will-change: transform;
+}
+
+.nav-link .link-hover {
+  color: var(--color-accent);
+  transform: translateY(100%); /* sits below, off-screen until hover */
+}
+
+.nav-link:hover .link-default,
+.nav-link:focus-visible .link-default {
+  transform: translateY(-100%);
+}
+
+.nav-link:hover .link-hover,
+.nav-link:focus-visible .link-hover {
+  transform: translateY(0);
+}
+
+/* === Hamburger button (NAV-05) === */
+.hamburger {
+  display: none; /* hidden on desktop */
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  width: 44px;  /* accessibility floor per UI-SPEC */
+  height: 44px;
+  align-items: center;
+  padding: 0;
+}
+
+.hamburger-line {
+  display: block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-text);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* === Mobile breakpoint (<=768px) === */
+@media (max-width: 768px) {
+  .nav-links {
+    /* Closed state: hidden but rendered for measurement (display:none collapses pointer-events).
+       Note: we use display:none for closed state so the menu doesn't trap clicks; the open state
+       sets display:flex. visibility/pointer-events are belt-and-braces. */
+    display: none;
+    visibility: hidden;
+    pointer-events: none;
+    position: fixed;
+    top: var(--nav-height);
+    left: 0;
+    right: 0;
+    z-index: 99; /* below nav (100) so the X icon stays above the menu surface */
+    background: rgba(10, 10, 10, 0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    flex-direction: column;
+    align-items: flex-start;
+    padding: var(--space-xl);
+    gap: var(--space-lg);
+  }
+
+  /* Fallback when backdrop-filter unsupported — opaque dark */
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .nav-links {
+      background: rgba(10, 10, 10, 0.98);
+    }
+  }
+
+  .nav-links.nav-open {
+    display: flex;
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .hamburger {
+    display: flex;
+  }
+
+  /* Bigger tap target for mobile nav links */
+  .nav-link {
+    font-size: 18px;
+    height: 1.4em; /* allow descenders + breathing room */
+  }
+}
+
+/* === Body scroll lock helper (toggled by JS when mobile menu opens) === */
+body.menu-open {
+  overflow: hidden;
+}
+
+/* === Hamburger active state (open) — animate to X === */
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* === Reduced-motion variants (REVIEWS priority 4) ===
+   Users who prefer reduced motion get instant state changes —
+   no slide on hover, no background transition on scroll-state,
+   no transform on the hamburger lines. */
+@media (prefers-reduced-motion: reduce) {
+  nav,
+  .nav-link .link-default,
+  .nav-link .link-hover,
+  .hamburger-line {
+    transition: none !important;
+  }
+
+  /* Eliminate the slide entirely — instant color swap on hover/focus.
+     The accent-colored .link-hover is moved into view and the default is moved out
+     with no transition; we keep the dual-copy structure for consistency, but it changes instantly. */
+  .nav-link .link-hover {
+    transform: translateY(100%);
+  }
+  .nav-link:hover .link-default,
+  .nav-link:focus-visible .link-default {
+    transform: translateY(-100%);
+  }
+  .nav-link:hover .link-hover,
+  .nav-link:focus-visible .link-hover {
+    transform: translateY(0);
+  }
+}
