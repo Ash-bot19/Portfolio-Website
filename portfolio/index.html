@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ayush Samantaray</title>
+
+  <!-- Font preloads — preload before stylesheet to reduce FOUT -->
+  <link rel="preload" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap" as="style">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" as="style">
+
+  <!-- Fonts -->
+  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
+
+  <!-- CSS — all four files must exist; nav.css and hero.css are empty placeholders -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/preloader.css">
+  <link rel="stylesheet" href="css/nav.css">
+  <link rel="stylesheet" href="css/hero.css">
+
+  <!-- GSAP CDN — deferred; SRI hash verified 2026-05-03 against gsap@3.15.0/dist/gsap.min.js -->
+  <!-- Note: SRI + crossorigin satisfies T-01-01 (tampering mitigation) -->
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"
+          integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly"
+          crossorigin="anonymous"></script>
+
+  <!-- Main JS — deferred; browser preserves order of deferred scripts so GSAP loads first -->
+  <script defer src="js/main.js"></script>
+</head>
+<body>
+
+  <!-- Preloader overlay — aria-hidden so screen readers skip the decorative counter stream -->
+  <div class="preloader" aria-hidden="true" role="presentation">
+    <div class="preloader-logo">
+      <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+        <text x="50%" y="68%" text-anchor="middle" fill="#c9f31d" font-family="JetBrains Mono, monospace" font-size="24" font-weight="600">AS</text>
+      </svg>
+    </div>
+    <div class="preloader-counter" aria-hidden="true">0%</div>
+    <div class="preloader-bar"><div class="preloader-bar-fill"></div></div>
+  </div>
+
+  <!-- Main page content — inert during preloader so keyboard/AT users cannot reach it -->
+  <!-- The inert attribute is removed by main.js after the overlay slide-up completes -->
+  <main id="page-main" inert>
+
+    <!-- Nav stub — Plan 02 fills behavior and styles -->
+    <nav aria-label="Main navigation">
+      <a href="#" class="nav-logo" aria-label="Home">
+        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+          <text x="50%" y="68%" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600">AS</text>
+        </svg>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#about" class="nav-link">
+          <span class="link-default" aria-hidden="true">About</span>
+          <span class="link-hover">About</span>
+        </a></li>
+        <li><a href="#work" class="nav-link">
+          <span class="link-default" aria-hidden="true">Work</span>
+          <span class="link-hover">Work</span>
+        </a></li>
+        <li><a href="#contact" class="nav-link">
+          <span class="link-default" aria-hidden="true">Contact</span>
+          <span class="link-hover">Contact</span>
+        </a></li>
+      </ul>
+      <button class="hamburger" aria-label="Open navigation menu" aria-expanded="false"></button>
+    </nav>
+
+    <!-- Hero stub — Plan 03 fills layout, typography, and dual-mode content -->
+    <section class="hero" id="hero">
+      <span class="hero-name-label">AYUSH SAMANTARAY</span>
+
+      <h1>
+        <!-- Professional mode headline (default) -->
+        <span class="hero-headline" data-professional>
+          <span class="word">Building</span>
+          <span class="word"><span class="accent">smart</span></span>
+          <span class="word"><span class="accent">systems</span></span>
+          <span class="word">that</span>
+          <span class="word">move</span>
+          <span class="word">money.</span>
+        </span>
+        <!-- Honest mode headline — visible when body.mode-honest is active -->
+        <span class="hero-headline" data-honest>
+          <span class="word">Trying</span>
+          <span class="word">to</span>
+          <span class="word">build</span>
+          <span class="word">things</span>
+          <span class="word">people</span>
+          <span class="word"><span class="accent">actually</span></span>
+          <span class="word"><span class="accent">use.</span></span>
+        </span>
+      </h1>
+
+      <p class="hero-subtitle" data-professional>
+        Final-year B.Tech &mdash; Cyber-Physical Systems. Data engineering, fintech infrastructure.
+      </p>
+      <p class="hero-subtitle" data-honest>
+        Still figuring it out. Making Kafka pipelines in the meantime.
+      </p>
+    </section>
+
+    <!-- Anchor sections — Plan 02 smooth-scrolls into these; min-height ensures tab targets exist -->
+    <section id="about" style="min-height:100vh"></section>
+    <section id="work" style="min-height:100vh"></section>
+    <section id="contact" style="min-height:100vh"></section>
+
+  </main>
+
+</body>
+</html>
