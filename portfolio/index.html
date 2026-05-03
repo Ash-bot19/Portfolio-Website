@@ -55,7 +55,7 @@
           <text x="50%" y="68%" text-anchor="middle" fill="#ffffff" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600">AS</text>
         </svg>
       </a>
-      <ul class="nav-links">
+      <ul class="nav-links" id="nav-links-list">
         <li><a href="#about" class="nav-link">
           <span class="link-default" aria-hidden="true">About</span>
           <span class="link-hover">About</span>
@@ -69,7 +69,11 @@
           <span class="link-hover">Contact</span>
         </a></li>
       </ul>
-      <button class="hamburger" aria-label="Open navigation menu" aria-expanded="false"></button>
+      <button class="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links-list">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+      </button>
     </nav>
 
     <!-- Hero stub — Plan 03 fills layout, typography, and dual-mode content -->
