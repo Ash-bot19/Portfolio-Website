@@ -152,11 +152,106 @@ function startPreloader() {
 // =============================================================================
 
 function initNavScrollBehavior() {
-  // Filled by Plan 02 (NAV-02) — scroll listener toggling nav-scrolled class
+  var nav = document.querySelector('nav');
+  if (!nav) return;
+
+  // Toggle .nav-scrolled at 100px scroll threshold (NAV-02).
+  // Plain scroll listener with passive:true is preferred over ScrollTrigger
+  // for a single class toggle — see RESEARCH.md Pattern 3 recommendation.
+  var onScroll = function () {
+    nav.classList.toggle('nav-scrolled', window.scrollY >= 100);
+  };
+  // Fire once on init in case page loads already scrolled (e.g. anchor navigation, bfcache restore)
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
 }
 
 function initNavLinks() {
-  // Filled by Plan 02 (NAV-04, NAV-05) — smooth scroll + hamburger behavior
+  var navLinks  = document.querySelector('.nav-links');
+  var hamburger = document.querySelector('.hamburger');
+  var linkEls   = document.querySelectorAll('.nav-link');
+
+  if (!navLinks || !hamburger || linkEls.length === 0) return;
+
+  // matchMedia for both the breakpoint AND the reduced-motion preference.
+  var reducedMotionMq = window.matchMedia('(prefers-reduced-motion: reduce)');
+  var mobileMq        = window.matchMedia('(max-width: 768px)');
+
+  // === Helper: close the mobile menu and restore body state ===
+  // Used by: link click, hamburger click (when open), Escape key, breakpoint change.
+  function closeMenu(opts) {
+    var returnFocus = opts && opts.returnFocus;
+    navLinks.classList.remove('nav-open');
+    document.body.classList.remove('menu-open');
+    hamburger.setAttribute('aria-expanded', 'false');
+    hamburger.setAttribute('aria-label', 'Open navigation menu');
+    if (returnFocus) hamburger.focus();
+  }
+
+  // === Helper: open the mobile menu and move focus into it ===
+  function openMenu() {
+    navLinks.classList.add('nav-open');
+    document.body.classList.add('menu-open');
+    hamburger.setAttribute('aria-expanded', 'true');
+    hamburger.setAttribute('aria-label', 'Close navigation menu');
+    // Move focus to the first nav link inside the open menu (REVIEWS keyboard rule)
+    var firstLink = linkEls[0];
+    if (firstLink) firstLink.focus();
+  }
+
+  // === Smooth-scroll on link click (NAV-04) + close mobile menu (NAV-05) ===
+  linkEls.forEach(function (link) {
+    link.addEventListener('click', function (e) {
+      var href = link.getAttribute('href');
+      if (!href || !href.startsWith('#')) return;
+      // T-02-01: guard ensures only fragment selectors reach querySelector
+      var target = document.querySelector(href);
+      if (target) {
+        e.preventDefault();
+        // REVIEWS priority 4: respect reduced-motion preference for the scroll behavior
+        var scrollBehavior = reducedMotionMq.matches ? 'auto' : 'smooth';
+        target.scrollIntoView({ behavior: scrollBehavior, block: 'start' });
+      }
+      // Always collapse mobile menu on link click. Don't return focus to hamburger
+      // (we just navigated, focus management would be jarring).
+      if (navLinks.classList.contains('nav-open')) {
+        closeMenu({ returnFocus: false });
+      }
+    });
+  });
+
+  // === Hamburger toggle (NAV-05) ===
+  hamburger.addEventListener('click', function () {
+    var isOpen = navLinks.classList.contains('nav-open');
+    if (isOpen) {
+      closeMenu({ returnFocus: false });
+    } else {
+      openMenu();
+    }
+  });
+
+  // === Escape-to-close (REVIEWS keyboard rule) ===
+  // Listens at the document level so Escape works regardless of where focus currently is.
+  document.addEventListener('keydown', function (e) {
+    if (e.key !== 'Escape') return;
+    if (!navLinks.classList.contains('nav-open')) return;
+    closeMenu({ returnFocus: true });
+  });
+
+  // === Breakpoint reset using matchMedia change listener (REVIEWS LOW + RESEARCH Pitfall 6) ===
+  // Fires only when crossing the 768px boundary, not on every resize pixel.
+  var onBreakpointChange = function (e) {
+    // If we just left mobile and the menu is open, reset state cleanly.
+    if (!e.matches && navLinks.classList.contains('nav-open')) {
+      closeMenu({ returnFocus: false });
+    }
+  };
+  // Modern browsers: addEventListener('change', ...). Older Safari: addListener.
+  if (mobileMq.addEventListener) {
+    mobileMq.addEventListener('change', onBreakpointChange);
+  } else if (mobileMq.addListener) {
+    mobileMq.addListener(onBreakpointChange);
+  }
 }
 
 function initHeroAnimation() {
