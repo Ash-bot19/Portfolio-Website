@@ -255,5 +255,79 @@ function initNavLinks() {
 }
 
 function initHeroAnimation() {
-  // Filled by Plan 03 (HERO-03) — hero word stagger entry animation
+  var heroInner = document.querySelector('.hero-inner');
+  var nameLabel = document.querySelector('.hero-name-label');
+  if (!heroInner || !nameLabel) {
+    console.error('[hero] required DOM elements missing');
+    return;
+  }
+
+  // === REVIEWS priority 3: resolve the active mode AT RUN TIME ===
+  // Whichever variant is currently visible (display:block) is the one we animate.
+  // Default body has no class → Professional. body.mode-honest → Honest.
+  var isHonestMode = document.body.classList.contains('mode-honest');
+  var variantAttr = isHonestMode ? 'data-honest' : 'data-professional';
+
+  var words = document.querySelectorAll('[' + variantAttr + '] .word');
+  var subtitle = document.querySelector('.hero-subtitle[' + variantAttr + ']');
+
+  if (words.length === 0 || !subtitle) {
+    console.error('[hero] no word spans or subtitle for variant: ' + variantAttr);
+    return;
+  }
+
+  // === REVIEWS priority 4 + GSAP-fallback short-circuit ===
+  // If user prefers reduced motion, OR GSAP is unavailable (runFallbackBoot path),
+  // skip the timeline entirely. Content is already visible because we haven't applied
+  // any from-state yet. CSS @media (prefers-reduced-motion: reduce) is belt-and-braces.
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reducedMotion || !window.gsap) {
+    return;
+  }
+
+  // === REVIEWS priority 7: apply will-change ONLY during the animation ===
+  // CSS gates will-change on .hero-inner.is-animating descendants. We add it now,
+  // remove it in onComplete so GPU layers are released after the ~1.5s entry.
+  heroInner.classList.add('is-animating');
+
+  // Build a timeline so subsequent steps reference relative positions
+  // and the whole sequence can be paused/seeked as a unit.
+  var tl = gsap.timeline({
+    onComplete: function () {
+      // REVIEWS priority 7: cleanup — release GPU layers
+      heroInner.classList.remove('is-animating');
+    }
+  });
+
+  // 1. Name label fade-up (UI-SPEC: y 20px → 0, opacity 0 → 1, 0.6s, power2.out)
+  tl.from(nameLabel, {
+    y: 20,
+    opacity: 0,
+    duration: 0.6,
+    ease: 'power2.out'
+  });
+
+  // 2. Headline word stagger (UI-SPEC: y 40px → 0, opacity 0 → 1, 0.7s per word,
+  //    0.06s stagger, power2.out). Selector is scoped to the ACTIVE variant
+  //    (REVIEWS priority 3 — animating the hidden display:none variant would either
+  //    no-op or leave it stuck if the user later toggles mode).
+  //    Position '-=0.3' overlaps with the tail of the name label fade for a tighter feel,
+  //    matching UI-SPEC's "0.06s between words, starting near name label end".
+  tl.from(words, {
+    y: 40,
+    opacity: 0,
+    duration: 0.7,
+    ease: 'power2.out',
+    stagger: 0.06
+  }, '-=0.3');
+
+  // 3. Subtitle fade-up (UI-SPEC: y 20px → 0, opacity 0 → 1, 0.6s, power2.out,
+  //    starts ~0.1s after last word). Position '-=0.2' lands the subtitle entrance
+  //    approximately 0.1s after the last word begins its tween.
+  tl.from(subtitle, {
+    y: 20,
+    opacity: 0,
+    duration: 0.6,
+    ease: 'power2.out'
+  }, '-=0.2');
 }
