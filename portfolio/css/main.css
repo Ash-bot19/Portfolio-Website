@@ -1,0 +1,106 @@
+/* ==========================================================================
+   main.css — Design tokens + CSS reset
+   All custom properties here are consumed by Plans 02 (nav) and 03 (hero).
+   Do NOT add component-specific styles here.
+   ========================================================================== */
+
+:root {
+  /* Colors */
+  --color-bg: #0a0a0a;
+  --color-surface: #111111;
+  --color-text: #ffffff;
+  --color-muted: #999999;
+  --color-accent: #c9f31d;
+
+  /* Spacing scale (multiples of 4px) */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* Layout */
+  --nav-height: 72px;
+
+  /* Fonts */
+  --font-display: 'Clash Display', sans-serif;
+  --font-body: 'DM Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+/* ==========================================================================
+   Reset
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* Smooth scroll only when user has not requested reduced motion.
+   Default is auto (instant) — gated as a baseline for REVIEWS.md priority 4. */
+html {
+  scroll-behavior: auto;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
+
+body {
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+ul {
+  list-style: none;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+  font: inherit;
+}
+
+/* Ensure section headings land below the fixed nav on anchor scroll */
+section {
+  scroll-margin-top: var(--nav-height);
+}
+
+/* Accessible focus ring — accent color on all interactive elements */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+
+/* ==========================================================================
+   Dual-mode wiring — Phase 5 ships the toggle button (MODE-01).
+   Wire CSS now so toggling body.mode-honest works immediately.
+   ========================================================================== */
+
+[data-professional] { display: block; }
+[data-honest]       { display: none; }
+
+body.mode-honest [data-professional] { display: none; }
+body.mode-honest [data-honest]       { display: block; }

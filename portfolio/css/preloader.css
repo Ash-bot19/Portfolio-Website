@@ -1,0 +1,52 @@
+/* ==========================================================================
+   preloader.css — Preloader overlay component styles
+   Do NOT add nav or hero styles here — those belong in nav.css and hero.css.
+   ========================================================================== */
+
+.preloader {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  background: var(--color-bg);
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xl); /* 32px between logo and counter */
+  will-change: transform; /* GPU composite layer for the slide-up tween */
+}
+
+.preloader-logo {
+  width: 48px;
+  height: 48px;
+}
+
+.preloader-counter {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 72px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+  font-variant-numeric: tabular-nums; /* prevents counter width jitter as digits change */
+}
+
+.preloader-bar {
+  position: absolute;
+  bottom: var(--space-lg); /* 24px from bottom viewport edge */
+  left: var(--space-2xl);  /* 48px inset from each edge → spans calc(100% - 96px) */
+  right: var(--space-2xl);
+  height: 2px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.preloader-bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--color-accent);
+  transform-origin: left center;
+  will-change: width; /* animates in lockstep with the counter onUpdate */
+}
