@@ -1,1 +1,130 @@
-/* Plan 03 fills this */
+/* === Hero section: full viewport (HERO-01) ===
+   REVIEWS MEDIUM: 100vh first, 100dvh second so old browsers use the vh fallback. */
+.hero {
+  min-height: 100vh;
+  min-height: 100dvh; /* dvh accounts for mobile browser chrome; modern browsers use this */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: var(--space-4xl) var(--space-xl) var(--space-3xl); /* 96px top, 32px sides, 64px bottom */
+  position: relative;
+}
+
+.hero-inner {
+  width: 100%;
+  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl); /* 48px between name label, headline, subtitle */
+  text-align: left;
+}
+
+/* === Name label === */
+.hero-name-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* === Headline (h1 wrapper + variant spans) === */
+.hero-h1 {
+  margin: 0; /* reset h1 default */
+  font-weight: 600; /* fallback weight; .hero-headline overrides */
+}
+
+.hero-headline {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 72px;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--color-text);
+}
+
+/* Per-word span: needed for the GSAP stagger; inline-block so y-transforms work without breaking text flow */
+.hero-headline .word {
+  display: inline-block;
+  margin-right: 0.25em; /* preserves visual word spacing since spans collapse whitespace */
+}
+
+.hero-headline .word:last-child {
+  margin-right: 0;
+}
+
+/* Accent keywords (HERO-02) — render in lime green */
+.hero-headline .accent {
+  color: var(--color-accent);
+}
+
+/* === Subtitle === */
+.hero-subtitle {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.5;
+  color: var(--color-muted);
+  max-width: 600px;
+}
+
+/* === Dual-Mode Wiring (HERO-04) — scoped through .hero (REVIEWS LOW concern) ===
+   These rules apply ONLY to data-professional / data-honest descendants of .hero.
+   Other phases (about, projects, timeline) will declare their own scoped rules. */
+.hero [data-professional] { display: block; }
+.hero [data-honest]       { display: none; }
+
+body.mode-honest .hero [data-professional] { display: none; }
+body.mode-honest .hero [data-honest]       { display: block; }
+
+/* === will-change applied ONLY during animation (REVIEWS priority 7) ===
+   JS adds .is-animating to .hero-inner before the timeline runs and
+   removes it in onComplete. This avoids permanent GPU layers on every word. */
+.hero-inner.is-animating .hero-name-label,
+.hero-inner.is-animating .hero-headline .word,
+.hero-inner.is-animating .hero-subtitle {
+  will-change: transform, opacity;
+}
+
+/* === Responsive scale (UI-SPEC Typography) === */
+@media (max-width: 1024px) {
+  .hero-headline { font-size: 52px; }
+}
+
+@media (max-width: 768px) {
+  .hero {
+    padding: var(--space-3xl) var(--space-lg) var(--space-2xl); /* tighter on mobile */
+  }
+  .hero-inner {
+    gap: var(--space-xl); /* 32px on mobile */
+  }
+  .hero-headline {
+    font-size: 36px;
+    line-height: 1.15;
+    letter-spacing: -0.01em;
+  }
+  .hero-subtitle {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero-headline {
+    font-size: 32px;
+  }
+}
+
+/* === Reduced-motion variant (REVIEWS priority 4) ===
+   Belt-and-braces: ensures content is fully visible even if JS runs late
+   or the reduced-motion JS branch is somehow skipped. JS still short-circuits
+   the GSAP timeline; this CSS only takes effect if a tween is applied anyway. */
+@media (prefers-reduced-motion: reduce) {
+  .hero-inner .hero-name-label,
+  .hero-inner .hero-headline .word,
+  .hero-inner .hero-subtitle {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
