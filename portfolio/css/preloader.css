@@ -37,12 +37,17 @@
   transform: translateY(-8px);
 }
 
-/* ── Ring + avatar stacked container ── */
-.logo-ring-wrap {
-  --loader-ring-size: clamp(290px, 32vw, 340px);
+/* ── stage-wrap: disc + ring share the same center point ── */
+.stage-wrap {
   position: relative;
   width: min(26vw, 144px);
   aspect-ratio: 1;
+}
+
+.logo-ring-wrap {
+  width: 100%;
+  height: 100%;
+  position: relative;
   isolation: isolate;
 }
 
@@ -74,23 +79,22 @@
   z-index: 0;
 }
 
-/* Progress ring — hidden until START clicked */
+/* Progress ring — absolute, centered on stage-wrap, GSAP drives opacity */
 .ring-svg {
   position: absolute;
   top: 50%;
   left: 50%;
-  width: var(--loader-ring-size);
-  height: var(--loader-ring-size);
+  width: clamp(280px, 30vw, 320px);
+  height: clamp(280px, 30vw, 320px);
+  max-width: none;
   transform: translate(-50%, -50%);
   opacity: 0;
-  transition: opacity 0.35s ease;
   z-index: 1;
   pointer-events: none;
 }
 
 .ring-arc {
   stroke: var(--color-loader-accent);
-  stroke-width: 2.1px;
 }
 
 .ring-pct {
@@ -202,26 +206,19 @@
   white-space: nowrap;
 }
 
-/* ── Loading state: JS adds .is-loading to .preloader-center on START click ── */
-.preloader-center.is-loading .ring-svg {
-  opacity: 1;
-}
-
-.preloader-center.is-loading .start-btn {
-  opacity: 0;
-  pointer-events: none;
-  transform: translateY(8px);
-}
-
 @media (max-width: 640px) {
   .preloader-center {
     gap: 22px;
     transform: translateY(-2px);
   }
 
-  .logo-ring-wrap {
-    --loader-ring-size: clamp(240px, 50vw, 300px);
+  .stage-wrap {
     width: min(35vw, 144px);
+  }
+
+  .ring-svg {
+    width: clamp(240px, 50vw, 280px);
+    height: clamp(240px, 50vw, 280px);
   }
 
   .start-btn {
@@ -233,7 +230,6 @@
 
 /* Reduced-motion: skip fade transitions */
 @media (prefers-reduced-motion: reduce) {
-  .ring-svg,
   .start-btn {
     transition: none;
   }

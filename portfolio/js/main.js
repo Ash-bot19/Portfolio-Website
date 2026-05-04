@@ -67,13 +67,15 @@ function runFallbackBoot() {
 // Main preloader path — only reached when window.gsap is available
 //
 // Two-phase entrance:
-//   Phase 1 — Avatar + START button. Eye pupils track the mouse cursor.
-//   Phase 2 — START clicked: ring head completes the loop, tail catches up, then slide-up.
+//   Phase 1 — Avatar + START visible. Eye pupils track the mouse cursor.
+//   Phase 2 — START clicked: button fades out, disc stays, ring fades in centered
+//              on disc, head sweeps 0→100%, tail chases, preloader slides up → handoff.
 // =============================================================================
 function startPreloader() {
   var preloaderEl = document.querySelector('.preloader');
   var centerEl    = document.querySelector('.preloader-center');
-  var ringArcEl     = document.querySelector('.ring-arc');
+  var ringSvgEl   = document.querySelector('.ring-svg');
+  var ringArcEl   = document.querySelector('.ring-arc');
   var ringPctEl     = document.querySelector('.ring-pct');
   var avatarEyesSvg = document.querySelector('.avatar-eyes-svg');
   var eyeL          = document.querySelector('.eye-l');
@@ -164,18 +166,26 @@ function startPreloader() {
 
   // ── START click ──
   startBtn.addEventListener('click', function () {
-    centerEl.classList.add('is-loading');
     updateRing(0, 0);
 
-    // Reduced-motion: skip ring animation, handoff after CSS transition settles.
     if (reducedMotion) {
       updateRing(100, 0);
       setTimeout(handoff, 200);
       return;
     }
 
+    // Button fades out; disc stays put; ring fades in centered on the same disc.
+    gsap.to(startBtn, {
+      opacity: 0,
+      y: 8,
+      duration: 0.25,
+      ease: 'power2.in',
+      onComplete: function () { startBtn.style.pointerEvents = 'none'; }
+    });
+    gsap.to(ringSvgEl, { opacity: 1, duration: 0.35, delay: 0.15, ease: 'power1.out' });
+
     var ringState = { head: 0, tail: 0 };
-    gsap.timeline({ onComplete: handoff })
+    gsap.timeline({ delay: 0.3, onComplete: handoff })
       .to(ringState, {
         head: 100,
         duration: 1.85,
