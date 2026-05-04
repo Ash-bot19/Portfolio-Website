@@ -11,6 +11,8 @@
   --color-text: #ffffff;
   --color-muted: #999999;
   --color-accent: #c9f31d;
+  --color-loader-accent: #d2c1a8;
+  --color-loader-accent-rgb: 210, 193, 168;
 
   /* Spacing scale (multiples of 4px) */
   --space-xs: 4px;

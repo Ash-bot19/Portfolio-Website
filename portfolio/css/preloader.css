@@ -1,52 +1,240 @@
 /* ==========================================================================
-   preloader.css — Preloader overlay component styles
+   preloader.css — Entrance screen: intro (avatar + START) → loading ring
    Do NOT add nav or hero styles here — those belong in nav.css and hero.css.
    ========================================================================== */
 
 .preloader {
   position: fixed;
   inset: 0;
-  width: 100vw;
-  height: 100vh;
-  background: var(--color-bg);
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 255, 255, 0.02), transparent 22%),
+    radial-gradient(circle at 50% 50%, rgba(0, 0, 0, 0.08), transparent 58%),
+    linear-gradient(180deg, #121212 0%, #0b0b0b 100%);
   z-index: 9999;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: var(--space-xl); /* 32px between logo and counter */
-  will-change: transform; /* GPU composite layer for the slide-up tween */
-}
-
-.preloader-logo {
-  width: 48px;
-  height: 48px;
-}
-
-.preloader-counter {
-  font-family: var(--font-display);
-  font-weight: 600;
-  font-size: 72px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  color: var(--color-text);
-  font-variant-numeric: tabular-nums; /* prevents counter width jitter as digits change */
-}
-
-.preloader-bar {
-  position: absolute;
-  bottom: var(--space-lg); /* 24px from bottom viewport edge */
-  left: var(--space-2xl);  /* 48px inset from each edge → spans calc(100% - 96px) */
-  right: var(--space-2xl);
-  height: 2px;
-  background: rgba(255, 255, 255, 0.08);
+  will-change: transform;
   overflow: hidden;
 }
 
-.preloader-bar-fill {
+.preloader::before {
+  content: '';
+  position: absolute;
+  inset: -20%;
+  background:
+    radial-gradient(circle at center, transparent 0 34%, rgba(0, 0, 0, 0.2) 64%, rgba(0, 0, 0, 0.5) 100%);
+  pointer-events: none;
+}
+
+.preloader-center {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 28px;
+  transform: translateY(-8px);
+}
+
+/* ── Ring + avatar stacked container ── */
+.logo-ring-wrap {
+  --loader-ring-size: clamp(290px, 32vw, 340px);
+  position: relative;
+  width: min(26vw, 144px);
+  aspect-ratio: 1;
+  isolation: isolate;
+}
+
+.logo-ring-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 22px -12px -28px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0, 0, 0, 0.28) 0%, rgba(0, 0, 0, 0) 72%);
+  filter: blur(10px);
+  z-index: -1;
+}
+
+.logo-disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 56%;
+  aspect-ratio: 1;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 34%,
+    #dfd2bf 0%,
+    var(--color-loader-accent) 58%,
+    #c8b59a 100%);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.28),
+    0 26px 54px rgba(0, 0, 0, 0.34);
+  z-index: 0;
+}
+
+/* Progress ring — hidden until START clicked */
+.ring-svg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--loader-ring-size);
+  height: var(--loader-ring-size);
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  transition: opacity 0.35s ease;
+  z-index: 1;
+  pointer-events: none;
+}
+
+.ring-arc {
+  stroke: var(--color-loader-accent);
+  stroke-width: 2.1px;
+}
+
+.ring-pct {
+  fill: var(--color-loader-accent);
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* Avatar wrap — sized to the SVG's 736:920 aspect ratio, fits inside 200px ring */
+.avatar-wrap {
+  position: absolute;
+  width: 74%;
+  height: auto;
+  aspect-ratio: 736 / 920;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+/* Face SVG sits on the warm disc without inversion to preserve the inked look */
+.avatar-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
   height: 100%;
-  width: 0%;
-  background: var(--color-accent);
-  transform-origin: left center;
-  will-change: width; /* animates in lockstep with the counter onUpdate */
+  filter: none;
+  pointer-events: none;
+  user-select: none;
+  display: block;
+  z-index: 1;
+}
+
+/* Eye-tracking overlay — same viewBox as face SVG, sits directly on top */
+.avatar-eyes-svg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.avatar-eyes-svg .eye-mask {
+  fill: #fbfbf8;
+}
+
+.avatar-eyes-svg .eye-l,
+.avatar-eyes-svg .eye-r {
+  fill: #121212;
+}
+
+/* ── START button ── */
+.start-btn {
+  position: relative;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.44em;
+  text-transform: uppercase;
+  color: var(--color-loader-accent);
+  font-weight: 700;
+  background: rgba(10, 10, 10, 0.96);
+  border: 2px solid rgba(var(--color-loader-accent-rgb), 0.42);
+  padding: 14px 40px 13px 44px;
+  border-radius: 999px;
+  cursor: pointer;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.22);
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.55s ease,
+    border-color 0.55s ease,
+    background-color 0.55s ease,
+    opacity 0.2s ease,
+    color 0.55s ease,
+    filter 0.55s ease;
+  transition-delay: 0s, 0s, 0s, 0s, 0s, 0s, 0s;
+}
+
+.start-btn-label {
+  font-weight: 700;
+}
+
+.start-btn:hover {
+  color: #141414;
+  border-color: var(--color-loader-accent);
+  background: var(--color-loader-accent);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 26px rgba(0, 0, 0, 0.28);
+  filter: brightness(1.03);
+  transition-delay: 0.05s, 0.05s, 0.05s, 0.05s, 0s, 0.05s, 0.05s;
+  outline: none;
+}
+
+.start-btn:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(var(--color-loader-accent-rgb), 0.16),
+    0 10px 20px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  outline: none;
+}
+
+/* Screen reader live region — visually hidden */
+.sr-loading {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ── Loading state: JS adds .is-loading to .preloader-center on START click ── */
+.preloader-center.is-loading .ring-svg {
+  opacity: 1;
+}
+
+.preloader-center.is-loading .start-btn {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+}
+
+@media (max-width: 640px) {
+  .preloader-center {
+    gap: 22px;
+    transform: translateY(-2px);
+  }
+
+  .logo-ring-wrap {
+    --loader-ring-size: clamp(240px, 50vw, 300px);
+    width: min(35vw, 144px);
+  }
+
+  .start-btn {
+    font-size: 10px;
+    letter-spacing: 0.36em;
+    padding: 12px 30px 11px 34px;
+  }
+}
+
+/* Reduced-motion: skip fade transitions */
+@media (prefers-reduced-motion: reduce) {
+  .ring-svg,
+  .start-btn {
+    transition: none;
+  }
 }

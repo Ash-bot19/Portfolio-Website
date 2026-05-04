@@ -7,7 +7,7 @@
 //   1. Wait for DOM ready (safe for deferred scripts)
 //   2. If GSAP unavailable (CDN failure / bad SRI): runFallbackBoot()
 //   3. Wait for fonts (or 800ms), then startPreloader()
-//   4. GSAP master timeline: counter (2.2s) → pause (0.2s) → slide-up (0.9s)
+//   4. GSAP preloader timeline: ring head sweep → tail chase → slide-up
 //   5. Master timeline onComplete → handoff() → init* functions (Plans 02 + 03)
 //
 // Init stubs: initNavScrollBehavior, initNavLinks, initHeroAnimation
@@ -65,83 +65,140 @@ function runFallbackBoot() {
 
 // =============================================================================
 // Main preloader path — only reached when window.gsap is available
+//
+// Two-phase entrance:
+//   Phase 1 — Avatar + START button. Eye pupils track the mouse cursor.
+//   Phase 2 — START clicked: ring head completes the loop, tail catches up, then slide-up.
 // =============================================================================
 function startPreloader() {
-  var counter    = { value: 0 };
-  var counterEl  = document.querySelector('.preloader-counter');
   var preloaderEl = document.querySelector('.preloader');
-  var barFillEl  = document.querySelector('.preloader-bar-fill');
-  var mainEl     = document.getElementById('page-main');
+  var centerEl    = document.querySelector('.preloader-center');
+  var ringArcEl     = document.querySelector('.ring-arc');
+  var ringPctEl     = document.querySelector('.ring-pct');
+  var avatarEyesSvg = document.querySelector('.avatar-eyes-svg');
+  var eyeL          = document.querySelector('.eye-l');
+  var eyeR          = document.querySelector('.eye-r');
+  var startBtn      = document.querySelector('.start-btn');
+  var srLoadingEl = document.querySelector('.sr-loading');
+  var mainEl      = document.getElementById('page-main');
 
-  // Guard: if any required element is missing (e.g. markup error), fall back.
-  if (!counterEl || !preloaderEl || !barFillEl) {
+  if (!preloaderEl || !centerEl || !ringArcEl || !startBtn) {
     console.error('[preloader] required DOM elements missing — running fallback');
     runFallbackBoot();
     return;
   }
 
-  // Lock scroll while preloader is visible (LOAD-03).
-  // overflow:hidden only — RESEARCH confirms position:fixed causes iOS scroll jump.
   document.body.style.overflow = 'hidden';
 
-  // ============================================================================
-  // MASTER TIMELINE (REVIEWS priority 1)
-  //
-  // onComplete is attached to the TIMELINE OBJECT, not to the counter tween.
-  // GSAP fires a timeline's onComplete after ALL tweens in the timeline finish,
-  // meaning it fires after the slide-up (the last tween), NOT after the counter.
-  //
-  // Timeline structure:
-  //   t=0.0  counter 0→100 over 2.2s (power2.inOut) — onUpdate drives counter + bar
-  //   t=2.4  preloaderEl slides y: 0 → -100% over 0.9s (power4.inOut) ["+=0.2" gap]
-  //   t=3.3  timeline onComplete → handoff() runs
-  // ============================================================================
-  var tl = gsap.timeline({
-    onComplete: handoff
-  });
+  var SVG_CENTER    = 100;
+  var CIRCUMFERENCE = 515.2;
+  var LABEL_R       = 94;   // SVG units — places pct label just outside the moving arc
+  var MAX_PUPIL     = 6;    // subtle pupil drift so the eye reads as a single tracked dot
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  // Step 1: counter 0 → 100, eased, 2.2s (LOAD-02, UI-SPEC animation contract)
-  // Only onUpdate here — the counter tween has NO onComplete (that's on the timeline).
-  tl.to(counter, {
-    value: 100,
-    duration: 2.2,
-    ease: 'power2.inOut',
-    onUpdate: function () {
-      var v = Math.floor(counter.value);
-      counterEl.textContent = v + '%';
-      barFillEl.style.width = v + '%'; // progress bar fills in lockstep with counter
+  // ── Pupil tracking ──
+  // Maps mouse screen position into the overlay SVG's 736×920 viewBox,
+  // then nudges each pupil up to MAX_PUPIL units toward the cursor.
+  function movePupil(el, baseCx, baseCy, svgX, svgY) {
+    var dx   = svgX - baseCx;
+    var dy   = svgY - baseCy;
+    var dist = Math.sqrt(dx * dx + dy * dy);
+    if (dist === 0) return;
+    var t = Math.min(dist, MAX_PUPIL) / dist;
+    el.setAttribute('cx', (baseCx + dx * t).toFixed(1));
+    el.setAttribute('cy', (baseCy + dy * t).toFixed(1));
+  }
+
+  function onMouseMove(e) {
+    if (!avatarEyesSvg) return;
+    var rect = avatarEyesSvg.getBoundingClientRect();
+    if (!rect.width) return;
+    var svgX = (e.clientX - rect.left) / rect.width  * 736;
+    var svgY = (e.clientY - rect.top)  / rect.height * 920;
+    if (eyeL) movePupil(eyeL, 360, 340, svgX, svgY);
+    if (eyeR) movePupil(eyeR, 472, 342, svgX, svgY);
+  }
+
+  if (!reducedMotion) {
+    document.addEventListener('mousemove', onMouseMove, { passive: true });
+  }
+
+  // ── Ring arc + floating percentage label ──
+  // Arc starts from top (SVG rotate -90°) and sweeps clockwise.
+  // Label orbits the arc tip at radius LABEL_R.
+  function updateRing(headPct, tailPct) {
+    var head = Math.max(0, Math.min(100, headPct));
+    var tail = Math.max(0, Math.min(head, typeof tailPct === 'number' ? tailPct : 0));
+    var v = Math.round(head);
+    var visibleLen = CIRCUMFERENCE * ((head - tail) / 100);
+
+    ringArcEl.setAttribute(
+      'stroke-dasharray',
+      (visibleLen > 0.01 ? visibleLen.toFixed(2) : '0') + ' ' + CIRCUMFERENCE.toFixed(2)
+    );
+    ringArcEl.setAttribute('stroke-dashoffset', '0');
+    ringArcEl.setAttribute(
+      'transform',
+      'rotate(' + (-90 + tail * 3.6).toFixed(2) + ' ' + SVG_CENTER + ' ' + SVG_CENTER + ')'
+    );
+
+    if (ringPctEl) {
+      var rad = (-90 + head * 3.6) * Math.PI / 180;
+      ringPctEl.setAttribute('x', (SVG_CENTER + LABEL_R * Math.cos(rad)).toFixed(1));
+      ringPctEl.setAttribute('y', (SVG_CENTER + LABEL_R * Math.sin(rad)).toFixed(1));
+      ringPctEl.textContent = v + '%';
     }
-  })
-  // Step 2: overlay slides up off-screen (LOAD-04 — total feel ≥ 2.4s before reveal)
-  // "+=0.2" position parameter = 0.2s gap AFTER counter finishes (counter ends at 2.2s,
-  // slide starts at 2.4s, slide ends at 3.3s — total > 2.4s requirement satisfied).
-  .to(preloaderEl, {
-    y: '-100%',
-    duration: 0.9,
-    ease: 'power4.inOut'
-  }, '+=0.2')
-  // Step 3: belt-and-braces .call() marker at the very end of the timeline.
-  // The real handoff is via the timeline's onComplete above.
-  // This no-op ensures future edits cannot accidentally insert tweens after slide-up
-  // without noticing that the timeline end has moved.
-  .call(function () { /* timeline end marker — onComplete above does the real work */ });
+    if (srLoadingEl) srLoadingEl.textContent = 'Loading ' + v + '%';
+  }
 
-  // ==========================================================================
-  // handoff — runs ONLY after the master timeline (slide-up tween) completes.
-  // This is the single handoff point for Plans 02 (nav) and 03 (hero).
-  // ==========================================================================
+  // ── Handoff — single exit point shared by normal and reduced-motion paths ──
   function handoff() {
-    // Restore scroll
+    document.removeEventListener('mousemove', onMouseMove);
     document.body.style.overflow = '';
-    // Release inert so keyboard and screen-reader users can interact (REVIEWS priority 6)
     if (mainEl) mainEl.removeAttribute('inert');
-    // Remove preloader from paint tree to free GPU compositor layer
     preloaderEl.style.display = 'none';
-    // Hand off to nav + hero — filled by Plans 02 and 03.
     try { initNavScrollBehavior(); } catch (e) { console.error('[handoff] initNavScrollBehavior failed:', e); }
     try { initNavLinks();          } catch (e) { console.error('[handoff] initNavLinks failed:', e); }
     try { initHeroAnimation();     } catch (e) { console.error('[handoff] initHeroAnimation failed:', e); }
   }
+
+  // ── START click ──
+  startBtn.addEventListener('click', function () {
+    centerEl.classList.add('is-loading');
+    updateRing(0, 0);
+
+    // Reduced-motion: skip ring animation, handoff after CSS transition settles.
+    if (reducedMotion) {
+      updateRing(100, 0);
+      setTimeout(handoff, 200);
+      return;
+    }
+
+    var ringState = { head: 0, tail: 0 };
+    gsap.timeline({ onComplete: handoff })
+      .to(ringState, {
+        head: 100,
+        duration: 1.85,
+        ease: 'power2.inOut',
+        onUpdate: function () { updateRing(ringState.head, ringState.tail); }
+      })
+      .to(ringState, {
+        tail: 100,
+        duration: 0.55,
+        ease: 'power2.in',
+        onUpdate: function () { updateRing(ringState.head, ringState.tail); }
+      })
+      .to(preloaderEl, {
+        y: '-100%',
+        duration: 0.9,
+        ease: 'power4.inOut'
+      }, '+=0.12')
+      .call(function () { /* timeline end marker */ });
+
+  }, { once: true });
+
+  // Keep START unfocused on load so the hover fill appears only on real interaction.
+  updateRing(0, 0);
 }
 
 // =============================================================================

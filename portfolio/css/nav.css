@@ -43,6 +43,20 @@ nav.nav-scrolled {
 .nav-logo {
   display: flex;
   align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--color-loader-accent);
+  color: var(--color-bg);
+  box-shadow: 0 12px 28px rgba(var(--color-loader-accent-rgb), 0.16);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.nav-logo:hover,
+.nav-logo:focus-visible {
+  transform: translateY(-1px);
+  box-shadow: 0 16px 34px rgba(var(--color-loader-accent-rgb), 0.22);
 }
 
 /* === Nav links container (desktop) === */
@@ -179,6 +193,7 @@ body.menu-open {
    no transform on the hamburger lines. */
 @media (prefers-reduced-motion: reduce) {
   nav,
+  .nav-logo,
   .nav-link .link-default,
   .nav-link .link-hover,
   .hamburger-line {
