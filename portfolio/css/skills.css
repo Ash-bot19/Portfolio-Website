@@ -1,1 +1,117 @@
-/* skills.css — Plan 02 fills this */
+/* ==========================================================================
+   skills.css — Horizontal card strip layout, hover lift, mobile stacking,
+   dual-mode wiring for card descriptions
+   ========================================================================== */
+
+/* === Section container === */
+.skills {
+  position: relative;
+  overflow: hidden; /* clips horizontal overflow from the card track at section boundary */
+}
+
+/* === Card track — horizontal flex row ===
+   width: max-content makes the track as wide as all cards side-by-side.
+   This is what GSAP translates on the X axis in Plan 03.
+   will-change: transform is PERMANENT here because this element is continuously
+   scrubbed by GSAP ScrollTrigger — unlike text elements that animate once. */
+.skills-track {
+  display: flex;
+  flex-direction: row;
+  gap: var(--space-lg);   /* 24px between cards */
+  padding: var(--space-2xl) var(--space-xl); /* 48px vertical, 32px horizontal */
+  width: max-content;     /* track is as wide as all cards combined — do not set 100% */
+  will-change: transform; /* permanent: scrubbed element stays GPU-promoted for duration of scroll zone */
+}
+
+/* === Individual skill card === */
+.skill-card {
+  flex: 0 0 320px;        /* fixed width — do not shrink or grow */
+  background: var(--color-surface); /* #111111 */
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  border-radius: 12px;
+  padding: var(--space-xl); /* 32px internal padding */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);   /* 16px between icon, title, desc */
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+
+/* === Hover lift (SKILL-04) — pure CSS, no GSAP ===
+   Performance note: translateY does not trigger layout (only compositing).
+   box-shadow triggers paint but not layout — acceptable for a CSS :hover effect.
+   Do NOT animate box-shadow with GSAP on scroll (repaint on every RAF tick). */
+.skill-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* === Card icon container === */
+.skill-card-icon {
+  width: 32px;
+  height: 32px;
+  flex-shrink: 0;
+}
+
+/* === Card title === */
+.skill-card-title {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.3;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* === Card description body text === */
+.skill-card-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* === Dual-mode wiring — scoped to .skills (NEVER bare [data-professional]) ===
+   .skill-card-desc elements carry data-professional / data-honest boolean attributes.
+   Default mode: Professional visible. Honest variant hidden until body.mode-honest added. */
+.skills [data-professional] { display: block; }
+.skills [data-honest]       { display: none; }
+
+body.mode-honest .skills [data-professional] { display: none; }
+body.mode-honest .skills [data-honest]       { display: block; }
+
+/* === Mobile stacking (SKILL-05) — CSS only, no JS ===
+   At 768px and below, GSAP's matchMedia will NOT set up the pin (Plan 03).
+   The layout must independently stack correctly at this breakpoint.
+
+   Pitfall 3 note: .skills { overflow: hidden } above clips the track at the
+   section boundary, preventing visible horizontal overflow on any viewport.
+   The explicit width: 100% + flex-direction: column here is belt-and-braces. */
+@media (max-width: 768px) {
+  .skills-track {
+    flex-direction: column;
+    width: 100%;            /* override max-content — required to prevent horizontal overflow */
+    padding: var(--space-xl) var(--space-md); /* tighter padding on mobile */
+    gap: var(--space-md);   /* 16px between stacked cards */
+  }
+
+  .skill-card {
+    flex: 0 0 auto;  /* let height be intrinsic — do not force fixed height */
+    width: 100%;     /* full width within the column track */
+  }
+}
+
+/* === Reduced-motion: disable hover lift transition ===
+   Users who prefer reduced motion get no movement on hover — just the box-shadow.
+   The box-shadow still provides a visual affordance without motion. */
+@media (prefers-reduced-motion: reduce) {
+  .skill-card {
+    transition: box-shadow 0.25s ease; /* shadow only — no transform transition */
+  }
+
+  .skill-card:hover {
+    transform: none; /* no lift — stays in place */
+  }
+}
