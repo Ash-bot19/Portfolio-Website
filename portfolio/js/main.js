@@ -592,3 +592,76 @@ function initWorkImageParallax() {
     }
   );
 }
+
+// ── Phase 3: Timeline rows — stagger slide-up on scroll (TIME-03, D-15) ──
+// Each .timeline-row enters with y: 40 → 0 and opacity: 0 → 1, staggered 0.1s
+// per row. ScrollTrigger fires once at top 85% (matches initAboutAnimation
+// timing). .is-animating class is added per-row in onStart and removed in
+// onComplete, satisfying the will-change gate authored in timeline.css.
+function initTimelineAnimation() {
+  var rows = document.querySelectorAll('.timeline-rows .timeline-row');
+  if (rows.length === 0) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // gsap.from() with an iterable target staggers automatically. The onStart /
+  // onComplete callbacks fire ONCE for the whole tween, so we walk the rows
+  // there to add/remove the will-change gate on every row at once. This is
+  // simpler than per-row tweens and the will-change cost across 4 rows for
+  // ~0.7s + (3 × 0.1s stagger) = ~1s is negligible.
+  gsap.from(rows, {
+    y: 40,
+    opacity: 0,
+    duration: 0.7,
+    ease: 'power2.out',
+    stagger: 0.1,
+    scrollTrigger: {
+      trigger: '.timeline-rows',
+      start: 'top 85%',
+      once: true
+    },
+    onStart: function () {
+      rows.forEach(function (row) { row.classList.add('is-animating'); });
+    },
+    onComplete: function () {
+      rows.forEach(function (row) { row.classList.remove('is-animating'); });
+    }
+  });
+}
+
+// ── Phase 3: Project cards — stagger scale+fade on scroll (PROJ-02, D-21) ──
+// Each .project-card enters with scale: 0.92 → 1 and opacity: 0 → 1, staggered
+// 0.1s per card. ScrollTrigger fires once at top 85%. Same .is-animating gate
+// pattern as initTimelineAnimation, paired with .project-card.is-animating
+// will-change rule in projects.css.
+function initProjectsAnimation() {
+  var cards = document.querySelectorAll('.projects-grid .project-card');
+  if (cards.length === 0) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  gsap.from(cards, {
+    scale: 0.92,
+    opacity: 0,
+    duration: 0.6,
+    ease: 'power2.out',
+    stagger: 0.1,
+    scrollTrigger: {
+      trigger: '.projects-grid',
+      start: 'top 85%',
+      once: true
+    },
+    onStart: function () {
+      cards.forEach(function (card) { card.classList.add('is-animating'); });
+    },
+    onComplete: function () {
+      cards.forEach(function (card) { card.classList.remove('is-animating'); });
+    }
+  });
+}
