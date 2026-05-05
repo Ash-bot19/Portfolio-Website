@@ -1,1 +1,79 @@
-/* about.css — Plan 02 fills this */
+/* ==========================================================================
+   about.css — About section layout, typography, dual-mode, animation states
+   ========================================================================== */
+
+/* === Section container === */
+.about {
+  padding: var(--space-4xl) var(--space-xl); /* 96px vertical, 32px horizontal */
+  position: relative;
+}
+
+/* === Inner wrapper — constrain width, establish flex column === */
+.about-inner {
+  max-width: 720px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl); /* 32px between label and paragraph */
+}
+
+/* === Section label — matches hero name-label pattern === */
+.about-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* === About paragraph body text === */
+.about-text {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--color-text);
+  max-width: 640px;
+}
+
+/* === Accent keyword highlights inside .about-text === */
+.about-text .about-accent {
+  color: var(--color-accent);
+}
+
+/* === Dual-mode wiring — scoped to .about (NEVER bare [data-professional]) ===
+   Mirrors the .hero [data-professional] pattern from hero.css.
+   The global rules in main.css do not cover this component — these are explicit. */
+.about [data-professional] { display: block; }
+.about [data-honest]       { display: none; }
+
+body.mode-honest .about [data-professional] { display: none; }
+body.mode-honest .about [data-honest]       { display: block; }
+
+/* === will-change — applied only during animation via JS .is-animating class ===
+   JS (Plan 03) adds .is-animating to .about-inner before the ScrollTrigger tween fires
+   and removes it in onComplete. This avoids a permanent GPU layer on a text block. */
+.about-inner.is-animating {
+  will-change: transform, opacity;
+}
+
+/* === Reduced-motion belt-and-braces ===
+   JS (Plan 03) short-circuits the GSAP animation when prefers-reduced-motion: reduce.
+   This CSS is a fallback in case JS fires the tween before the check runs. */
+@media (prefers-reduced-motion: reduce) {
+  .about-inner {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* === Responsive adjustments === */
+@media (max-width: 768px) {
+  .about {
+    padding: var(--space-3xl) var(--space-lg); /* 64px vertical, 24px horizontal */
+  }
+  .about-text {
+    font-size: 16px;
+  }
+}
