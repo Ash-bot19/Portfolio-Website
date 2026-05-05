@@ -349,6 +349,122 @@
       </picture>
     </section>
 
+    <!-- Phase 3 / Plan 01 — Experience timeline: 4 rows, stagger animation in Plan 04.
+         Three columns per row: .timeline-year | .timeline-role (dual-mode) | .timeline-company.
+         Mobile (<=768px) collapses to single column via timeline.css media query (TIME-05). -->
+    <section class="timeline" id="experience">
+      <div class="timeline-inner">
+        <span class="timeline-label">EXPERIENCE</span>
+        <p class="timeline-intro">
+          A short list of where I&rsquo;ve been &mdash; building <span class="timeline-accent">data systems</span>,
+          shipping <span class="timeline-accent">backend infra</span>, and learning what production actually demands.
+        </p>
+
+        <div class="timeline-rows">
+
+          <div class="timeline-row">
+            <span class="timeline-year">[Year]</span>
+            <span class="timeline-role" data-professional>[Role Title]</span>
+            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-company">[Company]</span>
+          </div>
+
+          <div class="timeline-row">
+            <span class="timeline-year">[Year]</span>
+            <span class="timeline-role" data-professional>[Role Title]</span>
+            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-company">[Company]</span>
+          </div>
+
+          <div class="timeline-row">
+            <span class="timeline-year">[Year]</span>
+            <span class="timeline-role" data-professional>[Role Title]</span>
+            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-company">[Company]</span>
+          </div>
+
+          <div class="timeline-row">
+            <span class="timeline-year">[Year]</span>
+            <span class="timeline-role" data-professional>[Role Title]</span>
+            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-company">[Company]</span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Phase 3 / Plan 01 — Projects grid: 5 cards. Each card carries name, dual-mode one-liner,
+         2-3 tech tag pills, and a GitHub link (placeholder #). Hover effect + scale+fade entrance
+         animations land in Plans 03 (CSS) and 04 (JS). -->
+    <section class="projects" id="projects">
+      <div class="projects-inner">
+        <span class="projects-label">SELECTED WORK</span>
+
+        <div class="projects-grid">
+
+          <article class="project-card">
+            <h3 class="project-card-name">[Project One]</h3>
+            <p class="project-card-desc" data-professional>[One-line professional description]</p>
+            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <ul class="project-card-tags">
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+            </ul>
+            <a class="project-card-link" href="#" aria-label="View [Project One] on GitHub">GitHub &rarr;</a>
+          </article>
+
+          <article class="project-card">
+            <h3 class="project-card-name">[Project Two]</h3>
+            <p class="project-card-desc" data-professional>[One-line professional description]</p>
+            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <ul class="project-card-tags">
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+            </ul>
+            <a class="project-card-link" href="#" aria-label="View [Project Two] on GitHub">GitHub &rarr;</a>
+          </article>
+
+          <article class="project-card">
+            <h3 class="project-card-name">[Project Three]</h3>
+            <p class="project-card-desc" data-professional>[One-line professional description]</p>
+            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <ul class="project-card-tags">
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+            </ul>
+            <a class="project-card-link" href="#" aria-label="View [Project Three] on GitHub">GitHub &rarr;</a>
+          </article>
+
+          <article class="project-card">
+            <h3 class="project-card-name">[Project Four]</h3>
+            <p class="project-card-desc" data-professional>[One-line professional description]</p>
+            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <ul class="project-card-tags">
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+            </ul>
+            <a class="project-card-link" href="#" aria-label="View [Project Four] on GitHub">GitHub &rarr;</a>
+          </article>
+
+          <article class="project-card">
+            <h3 class="project-card-name">[Project Five]</h3>
+            <p class="project-card-desc" data-professional>[One-line professional description]</p>
+            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <ul class="project-card-tags">
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+              <li class="project-tag">[tech]</li>
+            </ul>
+            <a class="project-card-link" href="#" aria-label="View [Project Five] on GitHub">GitHub &rarr;</a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
     <section id="contact" style="min-height:100vh"></section>
 
   </main>
