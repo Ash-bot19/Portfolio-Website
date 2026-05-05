@@ -285,8 +285,70 @@
       </div>
     </section>
 
-    <!-- Work anchor — nav Work link target; Plan 04 fills content -->
-    <section id="work" style="min-height:100vh"></section>
+    <!-- Phase 3 / Plan 01 — "What I Build": stacked scroll-reveal type with horizontal clip mask.
+         Two layers per line: .wib-line-dark (always visible, dim) + .wib-line-light (revealed by
+         scroll-driven clip-path animation in Plan 04). Both layers carry the same text content
+         so a11y reads each line once (the .wib-line-dark layer carries the visible text for AT;
+         .wib-line-light is aria-hidden). -->
+    <section class="what-i-build" id="what-i-build">
+      <span class="wib-label">WHAT I BUILD</span>
+
+      <div class="wib-prop wib-prop-left" aria-hidden="true"></div>
+      <div class="wib-prop wib-prop-right" aria-hidden="true"></div>
+
+      <div class="wib-stack">
+
+        <div class="wib-line">
+          <span class="wib-line-dark" data-professional>DATA ENGINEERING</span>
+          <span class="wib-line-dark" data-honest>DATA ENGINEERING (mostly fixing pipelines)</span>
+          <span class="wib-line-light" data-professional aria-hidden="true">DATA ENGINEERING</span>
+          <span class="wib-line-light" data-honest aria-hidden="true">DATA ENGINEERING (mostly fixing pipelines)</span>
+        </div>
+
+        <div class="wib-line">
+          <span class="wib-line-dark" data-professional>FINTECH</span>
+          <span class="wib-line-dark" data-honest>FINTECH (idempotency keys, mostly)</span>
+          <span class="wib-line-light" data-professional aria-hidden="true">FINTECH</span>
+          <span class="wib-line-light" data-honest aria-hidden="true">FINTECH (idempotency keys, mostly)</span>
+        </div>
+
+        <div class="wib-line">
+          <span class="wib-line-dark" data-professional>BACKEND</span>
+          <span class="wib-line-dark" data-honest>BACKEND (FastAPI + Docker, mostly)</span>
+          <span class="wib-line-light" data-professional aria-hidden="true">BACKEND</span>
+          <span class="wib-line-light" data-honest aria-hidden="true">BACKEND (FastAPI + Docker, mostly)</span>
+        </div>
+
+        <div class="wib-line">
+          <span class="wib-line-dark" data-professional>AI / ML</span>
+          <span class="wib-line-dark" data-honest>AI / ML (RAG and prompt tweaking)</span>
+          <span class="wib-line-light" data-professional aria-hidden="true">AI / ML</span>
+          <span class="wib-line-light" data-honest aria-hidden="true">AI / ML (RAG and prompt tweaking)</span>
+        </div>
+
+        <div class="wib-line">
+          <span class="wib-line-dark" data-professional>PRODUCT</span>
+          <span class="wib-line-dark" data-honest>PRODUCT (writing docs before code)</span>
+          <span class="wib-line-light" data-professional aria-hidden="true">PRODUCT</span>
+          <span class="wib-line-light" data-honest aria-hidden="true">PRODUCT (writing docs before code)</span>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Phase 3 / Plan 01 — "Work Image": full-bleed aesthetic separator, parallax in Plan 04.
+         id="work" preserved here so the existing nav Work link still resolves (NAV-04 contract).
+         <img> uses loading="lazy" + decoding="async" (PERF-01 carry-forward); placeholder src
+         is a placehold.co dark image. Real asset is user-supplied later (deferred in CONTEXT).
+         The two <source> elements inside <picture> satisfy WORK-03 desktop/mobile variant. -->
+    <section class="work-image" id="work" aria-hidden="true">
+      <picture class="work-image-picture">
+        <source media="(max-width: 768px)" srcset="https://placehold.co/800x900/0d0d0d/161614/png?text=+">
+        <source media="(min-width: 769px)" srcset="https://placehold.co/2400x1200/0d0d0d/161614/png?text=+">
+        <img class="work-image-img" src="https://placehold.co/2400x1200/0d0d0d/161614/png?text=+" alt="" loading="lazy" decoding="async">
+      </picture>
+    </section>
+
     <section id="contact" style="min-height:100vh"></section>
 
   </main>
