@@ -162,6 +162,9 @@ function startPreloader() {
     try { initNavScrollBehavior(); } catch (e) { console.error('[handoff] initNavScrollBehavior failed:', e); }
     try { initNavLinks();          } catch (e) { console.error('[handoff] initNavLinks failed:', e); }
     try { initHeroAnimation();     } catch (e) { console.error('[handoff] initHeroAnimation failed:', e); }
+    try { duplicateSkillCards();   } catch (e) { console.error('[handoff] duplicateSkillCards failed:', e); }
+    try { initAboutAnimation();    } catch (e) { console.error('[handoff] initAboutAnimation failed:', e); }
+    try { initSkillsAnimation();   } catch (e) { console.error('[handoff] initSkillsAnimation failed:', e); }
   }
 
   // ── START click ──
@@ -397,4 +400,48 @@ function initHeroAnimation() {
     duration: 0.6,
     ease: 'power2.out'
   }, '-=0.2');
+}
+
+// ── Phase 2: duplicate skill cards for infinite-feel strip ──
+// Must be called BEFORE initSkillsAnimation() so scrollWidth includes cloned cards.
+// Clones get aria-hidden="true" so screen readers see only the 5 original cards.
+function duplicateSkillCards() {
+  var track = document.querySelector('.skills-track');
+  if (!track) return;
+  var origCards = Array.from(track.querySelectorAll('.skill-card'));
+  origCards.forEach(function (card) {
+    var clone = card.cloneNode(true);
+    clone.setAttribute('aria-hidden', 'true');
+    track.appendChild(clone);
+  });
+}
+
+// ── Phase 2: about section fade-up on scroll ──
+function initAboutAnimation() {
+  var aboutInner = document.querySelector('.about-inner');
+  if (!aboutInner) return;
+
+  // Short-circuit: no animation for reduced-motion or missing GSAP / ScrollTrigger
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Apply will-change only during animation — CSS gates it on .is-animating
+  aboutInner.classList.add('is-animating');
+
+  gsap.from(aboutInner, {
+    y: 40,
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out',
+    scrollTrigger: {
+      trigger: aboutInner,
+      start: 'top 80%',
+      once: true   // fire once; kills the ScrollTrigger after firing to free memory
+    },
+    onComplete: function () {
+      aboutInner.classList.remove('is-animating');
+    }
+  });
 }

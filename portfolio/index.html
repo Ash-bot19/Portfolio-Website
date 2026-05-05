@@ -30,6 +30,13 @@
           integrity="sha384-XmJ9SoHtVOHoQUcKvFAzVXwdkKo1Ie3bhmSoIAkcdsHGaIrVJIkmozyq0FJeb/Ly"
           crossorigin="anonymous"></script>
 
+  <!-- ScrollTrigger — added Phase 2 (02-03) -->
+  <!-- Note: No SRI hash — not pre-computed (RESEARCH assumption A7 / T-02-03-01 accept).
+       Compute before deploy: curl -sL https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js | openssl dgst -sha384 -binary | openssl base64 -A -->
+  <script defer
+          src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"
+          crossorigin="anonymous"></script>
+
   <!-- Main JS — deferred; browser preserves order of deferred scripts so GSAP loads first -->
   <script defer src="js/main.js"></script>
 </head>
