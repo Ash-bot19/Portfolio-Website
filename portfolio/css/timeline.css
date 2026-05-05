@@ -1,0 +1,163 @@
+/* ==========================================================================
+   timeline.css — Experience timeline: 4 rows, 3-column grid on desktop,
+   single-column collapse on mobile (TIME-05), dual-mode role text (TIME-04)
+   Pairs with: JS stagger entrance in Plan 04 (TIME-03)
+   ========================================================================== */
+
+/* === Section container === */
+.timeline {
+  padding: var(--space-4xl) var(--space-xl); /* 96px vertical, 32px horizontal */
+  position: relative;
+}
+
+/* === Inner wrapper — constrains width like .about-inner === */
+.timeline-inner {
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);                  /* 48px between label, intro, rows block */
+}
+
+/* === Section label — mirrors .about-label === */
+.timeline-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* === Intro paragraph — mirrors .about-text === */
+.timeline-intro {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--color-text);
+  max-width: 640px;
+}
+
+.timeline-intro .timeline-accent {
+  color: var(--color-accent);
+}
+
+/* === Rows container — vertical stack, divider lines between rows === */
+.timeline-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+/* === Single row — 3 columns: year (narrow) | role (flex 1) | company (medium) ===
+   grid-template-columns: 100px takes year, 1fr fills role, 200px takes company.
+   align-items: baseline aligns the three text columns at their text baseline.
+   border-top creates a divider above each row except the first. */
+.timeline-row {
+  display: grid;
+  grid-template-columns: 100px 1fr 200px;
+  column-gap: var(--space-xl);            /* 32px between columns */
+  align-items: baseline;
+  padding: var(--space-lg) 0;             /* 24px vertical breathing per row */
+  border-top: 1px solid rgba(208, 200, 181, 0.08); /* subtle divider — color from --color-text at 8% */
+}
+
+.timeline-row:first-child {
+  border-top: none;                       /* no divider above the first row */
+}
+
+/* === Year column — monospace, muted, smaller === */
+.timeline-year {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--color-muted);
+  letter-spacing: 0.04em;
+}
+
+/* === Role column — primary text, dual-mode swappable === */
+.timeline-role {
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 500;
+  color: var(--color-text);
+  line-height: 1.4;
+}
+
+/* === Company column — body but muted === */
+.timeline-company {
+  font-family: var(--font-body);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--color-muted);
+  text-align: right;                      /* right-align the company column for editorial feel */
+}
+
+/* === Dual-mode wiring — scoped to .timeline (TIME-04) === */
+.timeline [data-professional] { display: block; }
+.timeline [data-honest]       { display: none; }
+
+body.mode-honest .timeline [data-professional] { display: none; }
+body.mode-honest .timeline [data-honest]       { display: block; }
+
+/* === will-change gated via .is-animating ===
+   Plan-04 JS adds .is-animating to each .timeline-row before its stagger tween,
+   removes it in onComplete to release the GPU layer. */
+.timeline-row.is-animating {
+  will-change: transform, opacity;
+}
+
+/* === Reduced-motion belt-and-braces ===
+   If JS reaches the rows before the prefers-reduced-motion check fires (race
+   case), this CSS forces them visible at rest. */
+@media (prefers-reduced-motion: reduce) {
+  .timeline-row {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* === Mobile single-column collapse (TIME-05) === */
+@media (max-width: 768px) {
+  .timeline {
+    padding: var(--space-3xl) var(--space-md); /* 64px vertical, 16px horizontal */
+  }
+
+  .timeline-row {
+    grid-template-columns: 1fr;            /* collapse to single column */
+    row-gap: var(--space-xs);              /* 4px between stacked items */
+    padding: var(--space-md) 0;            /* 16px vertical */
+  }
+
+  .timeline-company {
+    text-align: left;                      /* no longer right-aligned in single column */
+  }
+
+  .timeline-intro {
+    font-size: 16px;
+  }
+}
+
+/* === Small handset (<=480px) — CLAUDE.md responsiveness contract ===
+   At this size 16px body text is the readable floor; intro drops to 14px
+   only because it is a deliberately secondary element above the row list.
+   Section padding tightens further to give content the maximum horizontal
+   width on a portrait phone. */
+@media (max-width: 480px) {
+  .timeline {
+    padding: var(--space-2xl) var(--space-sm); /* 48px vertical, 8px horizontal */
+  }
+
+  .timeline-intro {
+    font-size: 14px;                       /* secondary copy at floor — body still 16px elsewhere */
+  }
+
+  .timeline-row {
+    padding: var(--space-sm) 0;            /* 8px vertical — tight stack on small handsets */
+  }
+
+  .timeline-inner {
+    gap: var(--space-xl);                  /* tighter section spacing — 32px between label/intro/rows */
+  }
+}
