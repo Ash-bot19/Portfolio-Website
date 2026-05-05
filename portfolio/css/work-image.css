@@ -1,0 +1,76 @@
+/* ==========================================================================
+   work-image.css — Full-bleed aesthetic separator with parallax headroom
+   Pairs with: JS parallax y-tween in Plan 04 (0.3x scroll speed per D-11)
+   ========================================================================== */
+
+/* === Section container ===
+   Full viewport width, fixed aspect via height. overflow: hidden clips the
+   over-tall image during parallax movement. background acts as a fallback if
+   the placehold.co image fails to load. */
+.work-image {
+  position: relative;
+  width: 100vw;
+  height: 80vh;                            /* desktop: ~80% viewport height — generous but not full-screen */
+  margin: 0;
+  overflow: hidden;
+  background: var(--color-surface);        /* fallback color while/if image fails */
+}
+
+/* === Picture container — fills the section === */
+.work-image-picture {
+  display: block;
+  position: absolute;
+  inset: 0;                                /* top:0 right:0 bottom:0 left:0 */
+  width: 100%;
+  height: 100%;
+}
+
+/* === Image — over-tall to give parallax y-tween headroom ===
+   height: 130% + top: -15% means the image extends 15% above and 15% below
+   the section boundary. Plan-04 tweens y from +15% (rest at start of section
+   in viewport) to -15% (rest at end). At 0.3x scroll speed, this gives a
+   subtle drift without ever revealing the section background. */
+.work-image-img {
+  position: absolute;
+  top: -15%;
+  left: 0;
+  width: 100%;
+  height: 130%;
+  object-fit: cover;
+  object-position: center;
+  will-change: transform;                  /* permanent: continuously scrubbed by Plan-04 parallax */
+}
+
+/* === Reduced-motion belt-and-braces ===
+   Plan-04 JS short-circuits parallax for reduced-motion users. Reset image
+   to its natural rest position so it sits centered without any transform. */
+@media (prefers-reduced-motion: reduce) {
+  .work-image-img {
+    top: 0;
+    height: 100%;                          /* no headroom needed when there's no parallax */
+    transform: none !important;
+    will-change: auto;
+  }
+}
+
+/* === Mobile (≤768px) ===
+   Shorter section, mobile image variant chosen by <source media> in markup.
+   Plan-04 still runs parallax on mobile (no matchMedia guard for this section
+   per CONTEXT D-12 — parallax is single-axis y-tween, cheap on mobile too).
+   If perf shows issues we can guard later. */
+@media (max-width: 768px) {
+  .work-image {
+    height: 60vh;                          /* shorter on mobile — less vertical eat-up */
+  }
+}
+
+/* === Small handset (≤480px) — CLAUDE.md responsiveness contract ===
+   On a portrait phone viewport, 60vh of solid placeholder image is too much
+   real estate between Timeline and the Projects section above. Drop further
+   to 50vh so the visitor sees enough to register the visual pause without
+   being forced to scroll past three+ thumb-flicks of dark image. */
+@media (max-width: 480px) {
+  .work-image {
+    height: 50vh;
+  }
+}
