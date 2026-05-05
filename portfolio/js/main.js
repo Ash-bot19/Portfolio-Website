@@ -496,3 +496,99 @@ function initSkillsAnimation() {
     }
   });
 }
+
+// ── Phase 3: "What I Build" — pin + clip-path scrub reveal + parallax props ──
+// Pairs with what-i-build.css. Mirrors initSkillsAnimation() matchMedia pattern:
+//   - Desktop (≥769px): pin the section, scrub clip-path on each .wib-line-light
+//     from inset(0 0 100% 0) → inset(0 0 0% 0), and parallax both .wib-prop elements.
+//   - Mobile (≤768px): no pin, no scrub. CSS already shows .wib-line-light fully
+//     and hides .wib-prop. gsap.matchMedia auto-reverts when crossing the breakpoint.
+function initWhatIBuildAnimation() {
+  var section    = document.querySelector('.what-i-build');
+  var lightLines = document.querySelectorAll('.what-i-build .wib-line-light');
+  var propLeft   = document.querySelector('.what-i-build .wib-prop-left');
+  var propRight  = document.querySelector('.what-i-build .wib-prop-right');
+  if (!section || lightLines.length === 0) return;
+
+  // Short-circuit: reduced-motion users + GSAP/ScrollTrigger missing
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var mm = gsap.matchMedia();
+  mm.add('(min-width: 769px)', function () {
+    // One ScrollTrigger pins the section; multiple tweens scrub against that pin.
+    // We build a master timeline so the per-line clip animations stagger naturally
+    // along the pin duration. end: '+=100%' = pin for one full viewport of scroll.
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: section,
+        start: 'top top',
+        end: '+=100%',
+        pin: true,
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    });
+
+    // Stagger the clip reveal across the 5 lines. Each line tweens its bottom
+    // inset value from 100% → 0% (fully revealed). stagger: 0.15 inside the
+    // timeline maps to 0.15 of progress per line — across 5 lines that's 0.75
+    // of the pin duration, leaving the last 0.25 for the final line to settle.
+    tl.to(lightLines, {
+      clipPath: 'inset(0 0 0% 0)',
+      ease: 'none',
+      stagger: 0.15
+    }, 0);
+
+    // Parallax props: drift downward at ~0.3x–0.5x scroll speed during the pin.
+    // Negative y on the left prop, positive y on the right prop creates a slight
+    // counter-drift effect (cheap visual interest). Values are vh-scaled so they
+    // stay subtle on tall and short viewports.
+    if (propLeft) {
+      tl.to(propLeft, { y: '-15vh', ease: 'none' }, 0);
+    }
+    if (propRight) {
+      tl.to(propRight, { y: '10vh', ease: 'none' }, 0);
+    }
+  });
+}
+
+// ── Phase 3: Work image — single-axis y parallax (WORK-02, D-11 0.3x speed) ──
+// .work-image-img is positioned at top: -15% with height: 130% (Plan 02 CSS),
+// giving 15% headroom above and below the section boundary. We tween yPercent
+// from +15 → -15 over the section's travel through the viewport — the image
+// drifts upward as you scroll past, at roughly 0.3x scroll speed.
+//
+// No matchMedia guard: parallax is a single y tween, cheap on mobile, and the
+// CSS authored in Plan 02 (work-image.css) shortens the section to 60vh on
+// mobile so the effect remains tasteful.
+function initWorkImageParallax() {
+  var img = document.querySelector('.work-image .work-image-img');
+  if (!img) return;
+
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // fromTo locks the start state explicitly so the image rests at +15% when the
+  // section first enters the viewport (matches the CSS top: -15% offset visually).
+  // start/end span the full section travel: 'top bottom' = section top hits
+  // viewport bottom; 'bottom top' = section bottom leaves viewport top.
+  gsap.fromTo(img,
+    { yPercent: 15 },
+    {
+      yPercent: -15,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: '.work-image',
+        start: 'top bottom',
+        end: 'bottom top',
+        scrub: 1,
+        invalidateOnRefresh: true
+      }
+    }
+  );
+}
