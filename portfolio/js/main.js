@@ -445,3 +445,54 @@ function initAboutAnimation() {
     }
   });
 }
+
+// ── Phase 2: horizontal scroll pin for skills strip ──
+// MUST be called AFTER duplicateSkillCards() so scrollWidth includes all 10 cards.
+// gsap.matchMedia() auto-reverts the pin when viewport drops below 769px (SKILL-05).
+// Do NOT use the deprecated ScrollTrigger.matchMedia() — that API was removed in GSAP 3.11.
+function initSkillsAnimation() {
+  var skillsSection = document.querySelector('.skills');
+  var skillsTrack   = document.querySelector('.skills-track');
+  if (!skillsSection || !skillsTrack) return;
+
+  // Short-circuit: no pin animation for reduced-motion or missing GSAP / ScrollTrigger
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  // gsap.matchMedia() wraps desktop-only pin logic.
+  // When viewport drops to 768px or below, GSAP auto-reverts all ScrollTriggers
+  // created inside this callback — no manual teardown needed (RESEARCH anti-pattern).
+  var mm = gsap.matchMedia();
+
+  mm.add('(min-width: 769px)', function () {
+    gsap.to(skillsTrack, {
+      // Translate the track leftward by exactly (scrollWidth - viewportWidth) pixels.
+      // Function-based value so invalidateOnRefresh recomputes it on window resize.
+      x: function () {
+        return -(skillsTrack.scrollWidth - window.innerWidth);
+      },
+      ease: 'none', // CRITICAL: any ease other than 'none' fights the scrub timing
+      scrollTrigger: {
+        trigger: skillsSection,
+        start: 'top top',
+        // end distance must equal the x travel so pin-spacer height matches the scroll budget
+        end: function () {
+          return '+=' + (skillsTrack.scrollWidth - window.innerWidth);
+        },
+        pin: true,
+        scrub: 1,             // 1-second smoothing lag (adjust to scrub:true for instant lock)
+        invalidateOnRefresh: true // recomputes x and end values on ScrollTrigger.refresh() (resize)
+      }
+    });
+
+    // Pitfall 1 guard: refresh after fonts are fully loaded so scrollWidth uses real font metrics.
+    // document.fonts.ready fires after all @font-face fonts have loaded.
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(function () {
+        ScrollTrigger.refresh();
+      });
+    }
+  });
+}
