@@ -1,0 +1,193 @@
+/* ==========================================================================
+   projects.css — 5 project cards in a responsive grid
+   Hover: scale + border/color shift (PROJ-03)
+   Pairs with: JS scale+fade stagger entrance in Plan 04 (PROJ-02)
+   ========================================================================== */
+
+/* === Section container === */
+.projects {
+  padding: var(--space-4xl) var(--space-xl); /* 96px vertical, 32px horizontal */
+  position: relative;
+}
+
+/* === Inner wrapper — full-width, max-width cap, centered === */
+.projects-inner {
+  max-width: 1280px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);                  /* 48px between label and grid */
+}
+
+/* === Section label === */
+.projects-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+/* === Card grid — responsive: 3 cols >=1024, 2 cols >=769, 1 col <=768 ===
+   Default desktop is 3 columns; 5 cards means row 1 has 3 cards, row 2 has 2 cards,
+   row 2's third slot stays empty (visually fine — gap absorbs it). */
+.projects-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-lg);                   /* 24px between cards */
+}
+
+/* === Single card ===
+   Background, border, radius mirror .skill-card.
+   transition prepared for hover state below. */
+.project-card {
+  background: var(--color-surface);
+  border: 1px solid rgba(208, 200, 181, 0.06); /* very subtle resting border */
+  border-radius: 12px;
+  padding: var(--space-xl);               /* 32px internal */
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);                   /* 16px between name, desc, tags, link */
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  cursor: default;
+}
+
+/* === Hover state (PROJ-03) — scale up + accent border shift ===
+   Performance: scale + border-color paint only the card; box-shadow paints once
+   per :hover transition. No layout reflow. */
+.project-card:hover {
+  transform: scale(1.02);
+  border-color: var(--color-accent);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+}
+
+/* === Card name — display font, prominent === */
+.project-card-name {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.25;
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* === Card description — body, muted === */
+.project-card-desc {
+  font-family: var(--font-body);
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--color-muted);
+  margin: 0;
+}
+
+/* === Tag pills container — inline list, wrap on overflow === */
+.project-card-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-xs);                   /* 4px between pills */
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* === Single tag pill === */
+.project-tag {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-text);
+  background: rgba(208, 200, 181, 0.06); /* --color-text at 6% — very subtle pill bg */
+  border: 1px solid rgba(208, 200, 181, 0.1);
+  border-radius: 999px;                   /* fully rounded pill */
+  padding: 4px 10px;
+}
+
+/* === GitHub link — inline-flex, accent on hover === */
+.project-card-link {
+  margin-top: auto;                       /* push link to bottom of card if card grows */
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--color-accent);
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.project-card-link:hover {
+  opacity: 0.8;
+}
+
+/* === Dual-mode wiring — scoped to .projects (PROJ-04) === */
+.projects [data-professional] { display: block; }
+.projects [data-honest]       { display: none; }
+
+body.mode-honest .projects [data-professional] { display: none; }
+body.mode-honest .projects [data-honest]       { display: block; }
+
+/* === will-change gated via .is-animating ===
+   Plan-04 JS adds .is-animating to each .project-card before its scale+fade tween,
+   removes it in onComplete. */
+.project-card.is-animating {
+  will-change: transform, opacity;
+}
+
+/* === Reduced-motion belt-and-braces ===
+   Forces cards visible at rest if reduced-motion users hit a JS race.
+   Also disables hover scale (matches reduced-motion behavior of skills.css). */
+@media (prefers-reduced-motion: reduce) {
+  .project-card {
+    opacity: 1 !important;
+    transition: border-color 0.25s ease, box-shadow 0.25s ease; /* keep border + shadow only */
+  }
+
+  .project-card:hover {
+    transform: none;                       /* no scale on hover under reduced-motion */
+  }
+}
+
+/* === Tablet (<=1024px) — 2 columns === */
+@media (max-width: 1024px) {
+  .projects-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* === Mobile (<=768px) — single column, tighter padding === */
+@media (max-width: 768px) {
+  .projects {
+    padding: var(--space-3xl) var(--space-md); /* 64px vertical, 16px horizontal */
+  }
+
+  .projects-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-md);                   /* tighter gap on mobile */
+  }
+
+  .project-card {
+    padding: var(--space-lg);               /* 24px on mobile, was 32px */
+  }
+}
+
+/* === Small handset (<=480px) — CLAUDE.md responsiveness contract ===
+   At this width the section side padding drops further and card internal
+   padding tightens to 16px so tag pills and the GitHub link still fit on
+   a single line within a portrait phone viewport. */
+@media (max-width: 480px) {
+  .projects {
+    padding: var(--space-2xl) var(--space-sm); /* 48px vertical, 8px horizontal */
+  }
+
+  .project-card {
+    padding: var(--space-md);               /* 16px on small handset — tight but readable */
+    gap: var(--space-sm);                   /* 8px between card internals */
+  }
+
+  .project-card-name {
+    font-size: 20px;                        /* slight drop from 22px so long project names don't wrap */
+  }
+}
