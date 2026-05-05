@@ -165,6 +165,10 @@ function startPreloader() {
     try { duplicateSkillCards();   } catch (e) { console.error('[handoff] duplicateSkillCards failed:', e); }
     try { initAboutAnimation();    } catch (e) { console.error('[handoff] initAboutAnimation failed:', e); }
     try { initSkillsAnimation();   } catch (e) { console.error('[handoff] initSkillsAnimation failed:', e); }
+    try { initWhatIBuildAnimation(); } catch (e) { console.error('[handoff] initWhatIBuildAnimation failed:', e); }
+    try { initWorkImageParallax();   } catch (e) { console.error('[handoff] initWorkImageParallax failed:', e); }
+    try { initTimelineAnimation();   } catch (e) { console.error('[handoff] initTimelineAnimation failed:', e); }
+    try { initProjectsAnimation();   } catch (e) { console.error('[handoff] initProjectsAnimation failed:', e); }
   }
 
   // ── START click ──
