@@ -1,0 +1,181 @@
+/* ==========================================================================
+   what-i-build.css — Stacked scroll-reveal type section
+   Reference: minhpham.design "What I Do" — dual-layer clip mask reveal
+   Pairs with: JS scrub clip animation in Plan 04
+   ========================================================================== */
+
+/* === Section container ===
+   Sized to 100vh on desktop because Plan-04 GSAP pins this section for the
+   duration of the clip reveal. overflow: hidden clips the parallax props at
+   the section boundary so they cannot leak into adjacent sections. */
+.what-i-build {
+  position: relative;
+  min-height: 100vh;
+  padding: var(--space-4xl) var(--space-xl); /* 96px vertical, 32px horizontal */
+  overflow: hidden;
+  background: var(--color-bg);
+}
+
+/* === Section label — matches .about-label / .wib-label pattern === */
+.wib-label {
+  position: absolute;
+  top: var(--space-xl);                     /* 32px from top */
+  left: var(--space-xl);                    /* 32px from left */
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.4;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+  z-index: 2;
+}
+
+/* === Stacked-line container ===
+   Vertically centered inside the pinned 100vh section. flex column with no
+   gap so massive type can sit tightly stacked (line-height controls spacing). */
+.wib-stack {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: calc(100vh - 2 * var(--space-4xl));
+  gap: 0;
+  width: 100%;
+}
+
+/* === Single line wrapper — holds dark + light layers stacked at same position === */
+.wib-line {
+  position: relative;
+  display: block;
+  width: 100%;
+  font-family: var(--font-display);
+  font-size: clamp(64px, 12vw, 200px);   /* 10–15vw range per CONTEXT D-05; clamp keeps it sane */
+  font-weight: 600;
+  line-height: 0.95;                      /* tight stacking; massive type reads better with sub-1 leading */
+  letter-spacing: -0.02em;                /* slight negative tracking for display weights */
+  text-transform: uppercase;
+  white-space: nowrap;                    /* lines must not wrap mid-word */
+}
+
+/* === Dark layer — always visible, blends into bg ===
+   Color is intentionally close to --color-bg so the line is barely
+   perceptible at rest. The light layer above does the visual work. */
+.wib-line-dark {
+  display: block;
+  color: #1a1a1a;                         /* INTENTIONAL hardcode: this is a deliberate "barely visible" tone tuned to --color-bg #0d0d0d. Promoting to a token is a future concern. */
+  position: relative;
+  z-index: 1;
+}
+
+/* === Light layer — clip-revealed by Plan-04 ScrollTrigger scrub ===
+   Default state: fully clipped (inset 0 0 100% 0 = invisible).
+   Plan-04 JS animates inset's bottom value from 100% → 0% as you scroll. */
+.wib-line-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: block;
+  color: var(--color-text);
+  z-index: 2;
+  clip-path: inset(0 0 100% 0);           /* fully clipped at rest — Plan-04 animates the bottom value */
+  will-change: clip-path;                 /* permanent: this element is continuously scrubbed during the pin */
+  pointer-events: none;
+}
+
+/* === Parallax props — left + right edge decorations, desktop only ===
+   Empty divs (Plan 01 markup) — placeholder backgrounds until user supplies real assets.
+   Plan-04 JS tweens y-position on these for parallax. */
+.wib-prop {
+  position: absolute;
+  width: 18vw;
+  height: 60vh;
+  z-index: 0;
+  pointer-events: none;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 5%, transparent) 0%, transparent 100%);
+  border: 1px dashed color-mix(in srgb, var(--color-text) 8%, transparent); /* visible-but-subtle placeholder boundary */
+  will-change: transform;                  /* permanent: continuously scrubbed by Plan-04 parallax */
+}
+
+.wib-prop-left  { left: 0;  top: 10vh;  }
+.wib-prop-right { right: 0; top: 25vh;  }
+
+/* === Dual-mode scoping — scoped to .what-i-build (NEVER bare [data-*]) ===
+   Mirrors the .about and .skills patterns from Phase 2. */
+.what-i-build [data-professional] { display: block; }
+.what-i-build [data-honest]       { display: none; }
+
+body.mode-honest .what-i-build [data-professional] { display: none; }
+body.mode-honest .what-i-build [data-honest]       { display: block; }
+
+/* === Reduced-motion belt-and-braces ===
+   When user prefers reduced motion, Plan-04 JS short-circuits and never sets up
+   the pin or scrub. CSS shows the light layer fully (no clip) so content is
+   readable without animation. Props are hidden because they only make sense
+   with parallax. */
+@media (prefers-reduced-motion: reduce) {
+  .wib-line-light {
+    clip-path: none !important;
+    position: relative;                    /* take it out of absolute stacking so layout collapses correctly */
+    color: var(--color-text);
+  }
+  .wib-line-dark {
+    display: none;                          /* with light layer fully revealed, dark layer is redundant */
+  }
+  .wib-prop {
+    display: none;
+  }
+}
+
+/* === Mobile (≤768px) — no pin (Plan-04 matchMedia guards desktop only) ===
+   Light layer fully visible; props hidden; type scaled down. */
+@media (max-width: 768px) {
+  .what-i-build {
+    min-height: auto;                       /* no longer pinned, no need for full viewport */
+    padding: var(--space-3xl) var(--space-md); /* 64px vertical, 16px horizontal */
+  }
+  .wib-stack {
+    min-height: auto;
+    gap: var(--space-sm);                   /* small breathing room between lines on mobile */
+  }
+  .wib-line {
+    font-size: clamp(48px, 14vw, 96px);
+    line-height: 1.0;
+    white-space: normal;                    /* allow wrap on small screens — tight nowrap looks bad here */
+  }
+  .wib-line-light {
+    position: relative;                     /* take out of absolute stacking */
+    clip-path: none;                        /* no scroll-reveal on mobile */
+    color: var(--color-text);
+  }
+  .wib-line-dark {
+    display: none;                          /* light layer carries the visible text on mobile */
+  }
+  .wib-prop {
+    display: none;                          /* desktop only per D-06 */
+  }
+  .wib-label {
+    top: var(--space-md);
+    left: var(--space-md);
+  }
+}
+
+/* === Small handset (≤480px) — CLAUDE.md responsiveness contract ===
+   At 14vw the 768px clamp floor of 48px would still be applied; at 480px-wide
+   that's roughly 67px — still aggressive on a 4.5" handset. Drop the floor and
+   the upper clamp tighter so 5 stacked lines never overflow horizontally and
+   the section fits inside a portrait phone viewport. */
+@media (max-width: 480px) {
+  .what-i-build {
+    padding: var(--space-2xl) var(--space-sm); /* 64px vertical, 8px horizontal — minimal side gutter */
+  }
+  .wib-line {
+    font-size: clamp(36px, 12vw, 64px);     /* tighter floor + lower ceiling for narrow viewports */
+  }
+  .wib-stack {
+    gap: var(--space-xs);                   /* even tighter line spacing at this size */
+  }
+}
