@@ -165,6 +165,7 @@ body.mode-honest .what-i-build [data-honest]       { display: block; }
     font-size: clamp(48px, 14vw, 96px);
     line-height: 1.0;
     white-space: normal;                    /* allow wrap on small screens — tight nowrap looks bad here */
+    padding-left: 0 !important;             /* reset staircase offsets — desktop-only layout feature */
   }
   .wib-line-light {
     position: relative;                     /* take out of absolute stacking */
