@@ -541,7 +541,8 @@ function initWhatIBuildAnimation() {
     // timeline maps to 0.15 of progress per line — across 5 lines that's 0.75
     // of the pin duration, leaving the last 0.25 for the final line to settle.
     tl.to(lightLines, {
-      clipPath: 'inset(0 0 0% 0)',
+      clipPath: 'inset(0 0% 0 0)',        /* right inset 100% → 0% = left-to-right horizontal reveal */
+      duration: 0.4,                      /* explicit duration so stagger(0.15 × 5) + 0.4 ≤ 1.0 pin */
       ease: 'none',
       stagger: 0.15
     }, 0);
@@ -656,6 +657,7 @@ function initProjectsAnimation() {
     duration: 0.6,
     ease: 'power2.out',
     stagger: 0.1,
+    clearProps: 'transform,opacity',      /* remove inline styles after animation so CSS :hover scale works */
     scrollTrigger: {
       trigger: '.projects-grid',
       start: 'top 85%',
