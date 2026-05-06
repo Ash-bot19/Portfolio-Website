@@ -4,16 +4,28 @@
 
 /* === Section container === */
 .about {
-  padding: var(--space-4xl) var(--space-xl); /* 96px vertical, 32px horizontal */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  padding: var(--space-4xl) 17vw;
   position: relative;
+  overflow: visible;
 }
 
 /* === Inner wrapper — constrain width, establish flex column === */
 .about-inner {
-  max-width: 720px;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: var(--space-xl); /* 32px between label and paragraph */
+}
+
+.about-copy {
+  position: relative;
+  max-width: 1160px;
+  /* min-height ensures the absolute light layer doesn't collapse the wrapper */
 }
 
 /* === Section label — matches hero name-label pattern === */
@@ -27,19 +39,52 @@
   color: var(--color-muted);
 }
 
-/* === About paragraph body text === */
+/* === About paragraph body text — base typography === */
 .about-text {
-  font-family: var(--font-body);
-  font-size: 18px;
-  font-weight: 400;
-  line-height: 1.7;
-  color: var(--color-text);
-  max-width: 640px;
+  font-family: var(--font-display);
+  font-size: clamp(36px, 3.4vw, 72px);
+  font-weight: 600;
+  line-height: 0.96;
+  letter-spacing: -0.04em;
+  max-width: 1160px;
 }
 
-/* === Accent keyword highlights inside .about-text === */
+/* Dark base layer — always visible, dim. Gives shape before reveal. */
+.about-text-dark {
+  color: #2e2b28;
+}
+
+/* Bright layer — full color, revealed by JS line wrappers on desktop */
+.about-text-light {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  color: var(--color-text);
+  pointer-events: none;
+}
+
+/* === Accent keyword highlights — orange in both layers === */
 .about-text .about-accent {
   color: var(--color-accent);
+}
+
+.about-text .reveal-line-base,
+.about-text .reveal-line-base .about-accent {
+  color: #2e2b28;
+}
+
+.about-text .reveal-line-inner {
+  color: var(--color-text);
+}
+
+.about-text .reveal-line-base,
+.about-text .reveal-line-inner {
+  font-family: var(--font-display);
+  font-size: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
 }
 
 /* === Dual-mode wiring — scoped to .about (NEVER bare [data-professional]) ===
@@ -58,22 +103,83 @@ body.mode-honest .about [data-honest]       { display: block; }
   will-change: transform, opacity;
 }
 
-/* === Reduced-motion belt-and-braces ===
-   JS (Plan 03) short-circuits the GSAP animation when prefers-reduced-motion: reduce.
-   This CSS is a fallback in case JS fires the tween before the check runs. */
+/* === Reduced-motion belt-and-braces === */
 @media (prefers-reduced-motion: reduce) {
   .about-inner {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .about-text-light {
+    clip-path: none !important;
+    position: relative;
+  }
+  .about-text-dark {
+    display: none;
   }
 }
 
 /* === Responsive adjustments === */
 @media (max-width: 768px) {
   .about {
-    padding: var(--space-3xl) var(--space-lg); /* 64px vertical, 24px horizontal */
+    min-height: auto;
+    padding: var(--space-3xl) var(--space-lg);
   }
   .about-text {
-    font-size: 16px;
+    font-size: clamp(28px, 7vw, 52px);
+  }
+  /* On mobile: disable clip animation, show bright layer directly */
+  .about-text-light {
+    position: relative;
+    clip-path: none;
+    color: var(--color-text);
+  }
+  .about-text-dark {
+    display: none;
   }
 }
+
+/* === Cursor lens overlay — honest text revealed by orange circle === */
+.about-lens {
+  position: absolute;
+  inset: -220px 0;
+  background: var(--color-accent);
+  clip-path: circle(0px at 50% 50%);
+  z-index: 4;
+  pointer-events: none;
+  will-change: clip-path;
+  display: flex;
+  align-items: center;
+  padding: calc(var(--space-4xl) + 220px) 17vw;
+}
+
+.about-lens-inner {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xl);
+}
+
+.about-lens .about-label {
+  color: rgba(13, 13, 13, 0.6);
+}
+
+.about-lens .about-text {
+  color: var(--color-bg);
+}
+
+.about-lens-line {
+  display: block;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+.about-lens .about-accent {
+  color: rgba(13, 13, 13, 0.6);
+}
+
+@media (pointer: coarse)              { .about-lens { display: none; } }
+@media (prefers-reduced-motion: reduce) { .about-lens { display: none; } }
+body.mode-honest .about-lens { display: none; }

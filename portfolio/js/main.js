@@ -57,10 +57,14 @@ function runFallbackBoot() {
   if (preloaderEl) preloaderEl.style.display = 'none';
   if (mainEl) mainEl.removeAttribute('inert');      // REVIEWS priority 6
   document.body.style.overflow = '';
+  document.body.classList.add('site-ready');
   // Call init stubs in try/catch — one failure must not block the others.
   try { initNavScrollBehavior(); } catch (e) { console.error('[boot] initNavScrollBehavior failed:', e); }
   try { initNavLinks();          } catch (e) { console.error('[boot] initNavLinks failed:', e); }
+  try { initGlobalCursor();      } catch (e) { console.error('[boot] initGlobalCursor failed:', e); }
+  try { initMagneticLogo();      } catch (e) { console.error('[boot] initMagneticLogo failed:', e); }
   try { initHeroAnimation();     } catch (e) { console.error('[boot] initHeroAnimation failed:', e); }
+  try { initContactAnimation();  } catch (e) { console.error('[boot] initContactAnimation failed:', e); }
 }
 
 // =============================================================================
@@ -157,10 +161,16 @@ function startPreloader() {
   function handoff() {
     document.removeEventListener('mousemove', onMouseMove);
     document.body.style.overflow = '';
+    document.body.classList.add('site-ready');
     if (mainEl) mainEl.removeAttribute('inert');
     preloaderEl.style.display = 'none';
     try { initNavScrollBehavior(); } catch (e) { console.error('[handoff] initNavScrollBehavior failed:', e); }
     try { initNavLinks();          } catch (e) { console.error('[handoff] initNavLinks failed:', e); }
+    try { initGlobalCursor();      } catch (e) { console.error('[handoff] initGlobalCursor failed:', e); }
+    try { initMagneticLogo();      } catch (e) { console.error('[handoff] initMagneticLogo failed:', e); }
+    try { initHeroLens();          } catch (e) { console.error('[handoff] initHeroLens failed:', e); }
+    try { initAboutLens();         } catch (e) { console.error('[handoff] initAboutLens failed:', e); }
+    try { initTimelineLens();      } catch (e) { console.error('[handoff] initTimelineLens failed:', e); }
     try { initHeroAnimation();     } catch (e) { console.error('[handoff] initHeroAnimation failed:', e); }
     try { duplicateSkillCards();   } catch (e) { console.error('[handoff] duplicateSkillCards failed:', e); }
     try { initAboutAnimation();    } catch (e) { console.error('[handoff] initAboutAnimation failed:', e); }
@@ -169,6 +179,7 @@ function startPreloader() {
     try { initWorkImageParallax();   } catch (e) { console.error('[handoff] initWorkImageParallax failed:', e); }
     try { initTimelineAnimation();   } catch (e) { console.error('[handoff] initTimelineAnimation failed:', e); }
     try { initProjectsAnimation();   } catch (e) { console.error('[handoff] initProjectsAnimation failed:', e); }
+    try { initContactAnimation();    } catch (e) { console.error('[handoff] initContactAnimation failed:', e); }
   }
 
   // ── START click ──
@@ -326,6 +337,275 @@ function initNavLinks() {
   } else if (mobileMq.addListener) {
     mobileMq.addListener(onBreakpointChange);
   }
+
+  // Scrollspy: keep the link for the section in view in the light state.
+  var aboutLink = document.querySelector('.nav-link[href="#about"]');
+  var workLink = document.querySelector('.nav-link[href="#what-i-build"]');
+  var contactLink = document.querySelector('.nav-link[href="#contact"]');
+
+  var sectionToLink = [
+    { section: document.getElementById('about'), link: aboutLink },
+    { section: document.getElementById('what-i-build'), link: workLink },
+    { section: document.getElementById('work'), link: workLink },
+    { section: document.getElementById('experience'), link: workLink },
+    { section: document.getElementById('projects'), link: workLink },
+    { section: document.getElementById('contact'), link: contactLink }
+  ].filter(function (item) { return item.section && item.link; });
+
+  var activeLink = null;
+
+  function setActiveLink(link) {
+    if (activeLink === link) return;
+    if (activeLink) activeLink.classList.remove('is-active');
+    activeLink = link;
+    if (activeLink) activeLink.classList.add('is-active');
+  }
+
+  if (sectionToLink.length > 0) {
+    var scrollspyRaf = 0;
+
+    function updateActiveLinkFromViewport() {
+      scrollspyRaf = 0;
+
+      var viewportHeight = window.innerHeight || document.documentElement.clientHeight;
+      var bandTop = viewportHeight * 0.25;
+      var bandBottom = viewportHeight * 0.55;
+      var bestItem = null;
+      var bestOverlap = 0;
+
+      sectionToLink.forEach(function (item) {
+        var rect = item.section.getBoundingClientRect();
+        var overlap = Math.min(rect.bottom, bandBottom) - Math.max(rect.top, bandTop);
+        if (overlap > bestOverlap) {
+          bestOverlap = overlap;
+          bestItem = item;
+        }
+      });
+
+      setActiveLink(bestItem ? bestItem.link : null);
+    }
+
+    function requestScrollspyUpdate() {
+      if (scrollspyRaf) return;
+      scrollspyRaf = window.requestAnimationFrame(updateActiveLinkFromViewport);
+    }
+
+    window.addEventListener('scroll', requestScrollspyUpdate, { passive: true });
+    window.addEventListener('resize', requestScrollspyUpdate);
+    window.addEventListener('load', requestScrollspyUpdate);
+    requestScrollspyUpdate();
+  }
+}
+
+function initGlobalCursor() {
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (document.querySelector('.site-cursor')) return;
+
+  var cursor = document.createElement('div');
+  cursor.className = 'site-cursor';
+  document.body.appendChild(cursor);
+  if (window.gsap) {
+    gsap.set(cursor, { xPercent: -50, yPercent: -50 });
+  }
+
+  function moveCursor(e) {
+    if (window.gsap) {
+      gsap.to(cursor, {
+        x: e.clientX,
+        y: e.clientY,
+        opacity: 1,
+        duration: 0.18,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    } else {
+      cursor.style.opacity = '1';
+      cursor.style.transform = 'translate3d(' + e.clientX + 'px, ' + e.clientY + 'px, 0) translate(-50%, -50%)';
+    }
+  }
+
+  function scaleCursor(scale) {
+    if (!window.gsap) return;
+    gsap.to(cursor, {
+      scale: scale,
+      duration: 0.25,
+      ease: 'power2.out',
+      overwrite: 'auto'
+    });
+  }
+
+  document.addEventListener('pointermove', moveCursor, { passive: true });
+  document.addEventListener('pointerleave', function () {
+    if (window.gsap) {
+      gsap.to(cursor, { opacity: 0, duration: 0.2, overwrite: 'auto' });
+    } else {
+      cursor.style.opacity = '0';
+    }
+  });
+
+  document.querySelectorAll('a, button, .wib-line, .skill-card, .project-card').forEach(function (el) {
+    el.addEventListener('mouseenter', function () { scaleCursor(1.8); });
+    el.addEventListener('mouseleave', function () { scaleCursor(1); });
+  });
+
+}
+
+function initMagneticLogo() {
+  var logo = document.querySelector('.nav-logo');
+  if (!logo) return;
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap) return;
+
+  createMagneticTarget(logo, {
+    activeClass: 'is-magnetic',
+    zoneRadius: 82,
+    maxPull: 20,
+    pullRatio: 0.62,
+    cursorScale: 1,
+    moveDuration: 0.18,
+    resetDuration: 0.42
+  });
+
+  document.querySelectorAll('.side-social-link--github, .side-social-link--linkedin').forEach(function (el) {
+    createMagneticTarget(el, {
+      activeClass: 'is-magnetic-side',
+      zoneRadius: 86,
+      maxPull: 20,
+      pullRatio: 0.62,
+      cursorScale: 1,
+      moveDuration: 0.18,
+      resetDuration: 0.42
+    });
+  });
+}
+
+var magneticTargets = [];
+var magneticRuntimeReady = false;
+
+function createMagneticTarget(el, opts) {
+  if (!el) return;
+  if (el.dataset.magneticReady === 'true') return;
+  if (!window.gsap) return;
+
+  el.dataset.magneticReady = 'true';
+
+  var activeClass = opts && opts.activeClass ? opts.activeClass : '';
+  var zoneRadius = opts && opts.zoneRadius ? opts.zoneRadius : 56;
+  var maxPull = opts && opts.maxPull ? opts.maxPull : 12;
+  var pullRatio = opts && opts.pullRatio ? opts.pullRatio : 0.6;
+  var cursorScale = opts && opts.cursorScale ? opts.cursorScale : 1.8;
+  var moveDuration = opts && opts.moveDuration ? opts.moveDuration : 0.28;
+  var resetDuration = opts && opts.resetDuration ? opts.resetDuration : 0.55;
+  var latched = false;
+
+  function getCenter() {
+    var rect = el.getBoundingClientRect();
+    var currentX = gsap.getProperty(el, 'x') || 0;
+    var currentY = gsap.getProperty(el, 'y') || 0;
+    return {
+      x: rect.left + rect.width / 2 - currentX,
+      y: rect.top + rect.height / 2 - currentY
+    };
+  }
+
+  function resetTarget() {
+    if (!latched) return;
+    latched = false;
+    if (activeClass) el.classList.remove(activeClass);
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) {
+      cursor.classList.remove('is-logo-invert');
+      gsap.to(cursor, {
+        backgroundColor: '#f05030',
+        opacity: 1,
+        scale: 1.8,
+        duration: 0.2,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
+    gsap.to(el, {
+      x: 0,
+      y: 0,
+      duration: resetDuration,
+      ease: 'elastic.out(1, 0.45)',
+      overwrite: 'auto'
+    });
+  }
+
+  function activateTarget(dx, dy, distance) {
+    latched = true;
+    if (activeClass) el.classList.add(activeClass);
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) {
+      cursor.classList.add('is-logo-invert');
+      gsap.to(cursor, {
+        backgroundColor: '#f05030',
+        opacity: 1,
+        scale: cursorScale,
+        duration: 0.18,
+        ease: 'power2.out',
+        overwrite: 'auto'
+      });
+    }
+
+    var pull = Math.min(distance, maxPull);
+    var ratio = distance === 0 ? 0 : (pull / distance) * pullRatio;
+    gsap.to(el, {
+      x: dx * ratio,
+      y: dy * ratio,
+      duration: moveDuration,
+      ease: 'power3.out',
+      overwrite: 'auto'
+    });
+  }
+
+  magneticTargets.push({
+    el: el,
+    zoneRadius: zoneRadius,
+    getCenter: getCenter,
+    resetTarget: resetTarget,
+    activateTarget: activateTarget
+  });
+
+  if (magneticRuntimeReady) return;
+  magneticRuntimeReady = true;
+
+  document.addEventListener('pointermove', function (e) {
+    var bestTarget = null;
+    var bestDx = 0;
+    var bestDy = 0;
+    var bestDistance = Infinity;
+
+    magneticTargets.forEach(function (target) {
+      var center = target.getCenter();
+      var dx = e.clientX - center.x;
+      var dy = e.clientY - center.y;
+      var distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance <= target.zoneRadius && distance < bestDistance) {
+        bestTarget = target;
+        bestDx = dx;
+        bestDy = dy;
+        bestDistance = distance;
+      }
+    });
+
+    magneticTargets.forEach(function (target) {
+      if (target === bestTarget) {
+        target.activateTarget(bestDx, bestDy, bestDistance);
+      } else {
+        target.resetTarget();
+      }
+    });
+  }, { passive: true });
+
+  window.addEventListener('blur', function () {
+    magneticTargets.forEach(function (target) {
+      target.resetTarget();
+    });
+  });
 }
 
 function initHeroAnimation() {
@@ -420,33 +700,69 @@ function duplicateSkillCards() {
   });
 }
 
-// ── Phase 2: about section fade-up on scroll ──
-function initAboutAnimation() {
-  var aboutInner = document.querySelector('.about-inner');
-  if (!aboutInner) return;
+// ── Shared left-to-right line reveal for large editorial copy ──
+// Each line has a dim base layer and a bright copy masked in place.
+// The bright copy does not move; clip-path reveals it from left to right.
+function initLineMaskReveal(opts) {
+  var section = document.querySelector(opts.sectionSelector);
+  var triggerEl = document.querySelector(opts.triggerSelector || opts.sectionSelector);
+  var lineInners = Array.from(document.querySelectorAll(opts.lineSelector)).filter(function (line) {
+    return line.getClientRects().length > 0;
+  });
+  if (!section || !triggerEl || lineInners.length === 0) return;
 
-  // Short-circuit: no animation for reduced-motion or missing GSAP / ScrollTrigger
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.gsap || !window.ScrollTrigger) return;
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // Apply will-change only during animation — CSS gates it on .is-animating
-  aboutInner.classList.add('is-animating');
+  var mm = gsap.matchMedia();
+  mm.add('(min-width: 769px)', function () {
+    section.classList.add('is-line-reveal-ready');
+    var tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: triggerEl,
+        start: opts.start || 'top bottom',
+        end: opts.end || 'bottom top',
+        scrub: opts.scrub || 0.45,
+        invalidateOnRefresh: true
+      }
+    });
 
-  gsap.from(aboutInner, {
-    y: 40,
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power2.out',
-    scrollTrigger: {
-      trigger: aboutInner,
-      start: 'top 80%',
-      once: true   // fire once; kills the ScrollTrigger after firing to free memory
-    },
-    onComplete: function () {
-      aboutInner.classList.remove('is-animating');
-    }
+    lineInners.forEach(function (line) {
+      tl.fromTo(line,
+        { clipPath: 'inset(0 100% 0 0)' },
+        {
+        clipPath: 'inset(0 0% 0 0)',
+        ease: 'none',
+        duration: 1
+        }
+      );
+    });
+  });
+}
+
+// ── About section: left-to-right line-by-line reveal ──
+function initAboutAnimation() {
+  initLineMaskReveal({
+    sectionSelector: '.about',
+    triggerSelector: '.about .about-text-reveal',
+    lineSelector: '.about .about-text-reveal .reveal-line-inner',
+    start: 'top 90%',
+    end: 'bottom 55%',
+    scrub: 0.45
+  });
+}
+
+// ── Experience intro: left-to-right line-by-line reveal ──
+function initTimelineIntroReveal() {
+  initLineMaskReveal({
+    sectionSelector: '.timeline',
+    triggerSelector: '.timeline .timeline-intro-reveal',
+    lineSelector: '.timeline .timeline-intro-reveal .reveal-line-inner',
+    start: 'top 90%',
+    end: 'bottom 55%',
+    scrub: 0.45
   });
 }
 
@@ -522,44 +838,115 @@ function initWhatIBuildAnimation() {
 
   var mm = gsap.matchMedia();
   mm.add('(min-width: 769px)', function () {
-    // One ScrollTrigger pins the section; multiple tweens scrub against that pin.
-    // We build a master timeline so the per-line clip animations stagger naturally
-    // along the pin duration. end: '+=100%' = pin for one full viewport of scroll.
-    var tl = gsap.timeline({
+    gsap.to(lightLines, {
+      clipPath: 'inset(0 0% 0 0)',
+      duration: 1.2,
+      ease: 'none',
+      stagger: 0.16,
       scrollTrigger: {
         trigger: section,
-        start: 'top top',
-        end: '+=100%',
-        pin: true,
+        start: 'top bottom',
+        end: 'bottom 15%',
         scrub: 1,
         invalidateOnRefresh: true
       }
     });
 
-    // Stagger the clip reveal across the 5 lines. Each line tweens its bottom
-    // inset value from 100% → 0% (fully revealed). stagger: 0.15 inside the
-    // timeline maps to 0.15 of progress per line — across 5 lines that's 0.75
-    // of the pin duration, leaving the last 0.25 for the final line to settle.
-    tl.to(lightLines, {
-      clipPath: 'inset(0 0% 0 0)',        /* right inset 100% → 0% = left-to-right horizontal reveal */
-      duration: 0.4,                      /* explicit duration so stagger(0.15 × 5) + 0.4 ≤ 1.0 pin */
-      ease: 'none',
-      stagger: 0.15
-    }, 0);
-
-    // Parallax props: drift downward at ~0.3x–0.5x scroll speed during the pin.
-    // Negative y on the left prop, positive y on the right prop creates a slight
-    // counter-drift effect (cheap visual interest). Values are vh-scaled so they
-    // stay subtle on tall and short viewports.
+    // Parallax props drift while the section passes the viewport. No pin here:
+    // page scroll should stay synced with user input.
     if (propLeft) {
-      tl.to(propLeft, { y: '-15vh', ease: 'none' }, 0);
+      gsap.to(propLeft, {
+        y: '-15vh',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+          invalidateOnRefresh: true
+        }
+      });
     }
     if (propRight) {
-      tl.to(propRight, { y: '10vh', ease: 'none' }, 0);
+      gsap.to(propRight, {
+        y: '10vh',
+        ease: 'none',
+        scrollTrigger: {
+          trigger: section,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: 1,
+          invalidateOnRefresh: true
+        }
+      });
     }
+
+  });
+
+  // Hover panel split: reveal only the orange/black overlay from the row center.
+  // The scroll-driven .wib-line-light clip remains untouched.
+  var wibLines = document.querySelectorAll('.what-i-build .wib-line');
+  wibLines.forEach(function (line) {
+    var accentEls = line.querySelectorAll('.wib-line-accent');
+    if (accentEls.length === 0) return;
+    var isOpen = false;
+
+    function getTextRect() {
+      var textEls = line.querySelectorAll('.wib-line-dark, .wib-line-light');
+      for (var i = 0; i < textEls.length; i += 1) {
+        if (window.getComputedStyle(textEls[i]).display === 'none') continue;
+        var range = document.createRange();
+        range.selectNodeContents(textEls[i]);
+        var rect = range.getBoundingClientRect();
+        range.detach();
+        if (rect.width > 0 && rect.height > 0) return rect;
+      }
+      return null;
+    }
+
+    function openPanel() {
+      if (isOpen) return;
+      isOpen = true;
+      gsap.fromTo(accentEls,
+        { clipPath: 'inset(50% 0 50% 0)' },
+        {
+          clipPath: 'inset(0% 0 0% 0)',
+          duration: 0.85,
+          ease: 'power3.out',
+          overwrite: true
+        }
+      );
+    }
+
+    function closePanel() {
+      if (!isOpen) return;
+      isOpen = false;
+      gsap.to(accentEls, {
+        clipPath: 'inset(50% 0 50% 0)',
+        immediateRender: false,
+        duration: 0.65,
+        ease: 'power2.inOut',
+        overwrite: true
+      });
+    }
+
+    line.addEventListener('mousemove', function (e) {
+      var rect = getTextRect();
+      if (!rect) {
+        closePanel();
+        return;
+      }
+      var isOverText = e.clientX >= rect.left && e.clientX <= rect.right &&
+        e.clientY >= rect.top && e.clientY <= rect.bottom;
+      if (isOverText) {
+        openPanel();
+      } else {
+        closePanel();
+      }
+    });
+    line.addEventListener('mouseleave', closePanel);
   });
 }
-
 // ── Phase 3: Work image — single-axis y parallax (WORK-02, D-11 0.3x speed) ──
 // .work-image-img is positioned at top: -15% with height: 130% (Plan 02 CSS),
 // giving 15% headroom above and below the section boundary. We tween yPercent
@@ -598,11 +985,7 @@ function initWorkImageParallax() {
   );
 }
 
-// ── Phase 3: Timeline rows — stagger slide-up on scroll (TIME-03, D-15) ──
-// Each .timeline-row enters with y: 40 → 0 and opacity: 0 → 1, staggered 0.1s
-// per row. ScrollTrigger fires once at top 85% (matches initAboutAnimation
-// timing). .is-animating class is added per-row in onStart and removed in
-// onComplete, satisfying the will-change gate authored in timeline.css.
+// ── Phase 3: Timeline — intro clip reveal + rows stagger + role hover splits ──
 function initTimelineAnimation() {
   var rows = document.querySelectorAll('.timeline-rows .timeline-row');
   if (rows.length === 0) return;
@@ -612,11 +995,9 @@ function initTimelineAnimation() {
 
   gsap.registerPlugin(ScrollTrigger);
 
-  // gsap.from() with an iterable target staggers automatically. The onStart /
-  // onComplete callbacks fire ONCE for the whole tween, so we walk the rows
-  // there to add/remove the will-change gate on every row at once. This is
-  // simpler than per-row tweens and the will-change cost across 4 rows for
-  // ~0.7s + (3 × 0.1s stagger) = ~1s is negligible.
+  initTimelineIntroReveal();
+
+  // Rows stagger slide-up
   gsap.from(rows, {
     y: 40,
     opacity: 0,
@@ -634,6 +1015,39 @@ function initTimelineAnimation() {
     onComplete: function () {
       rows.forEach(function (row) { row.classList.remove('is-animating'); });
     }
+  });
+
+  // Role hover splits — skip on touch devices
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
+  document.querySelectorAll('.timeline-role-wrap').forEach(function (wrap) {
+    var accent = wrap.querySelector('.timeline-role-accent');
+    if (!accent) return;
+    var isOpen = false;
+
+    function openPanel() {
+      if (isOpen) return;
+      isOpen = true;
+      gsap.fromTo(accent,
+        { clipPath: 'inset(50% 0 50% 0)' },
+        { clipPath: 'inset(0% 0 0% 0)', duration: 0.85, ease: 'power3.out', overwrite: true }
+      );
+    }
+
+    function closePanel() {
+      if (!isOpen) return;
+      isOpen = false;
+      gsap.to(accent, {
+        clipPath: 'inset(50% 0 50% 0)',
+        immediateRender: false,
+        duration: 0.65,
+        ease: 'power2.inOut',
+        overwrite: true
+      });
+    }
+
+    wrap.addEventListener('mouseenter', openPanel);
+    wrap.addEventListener('mouseleave', closePanel);
   });
 }
 
@@ -669,5 +1083,211 @@ function initProjectsAnimation() {
     onComplete: function () {
       cards.forEach(function (card) { card.classList.remove('is-animating'); });
     }
+  });
+}
+
+// ── Hero lens — cursor expands to orange circle revealing honest text ──
+// The .hero-lens overlay has clip-path: circle(0px at X Y) at rest.
+// On mouseenter the circle radius animates to 160px via GSAP (lensData proxy).
+// On mousemove the circle center updates synchronously so the lens tracks the cursor.
+// The site-cursor dot hides while inside the hero to avoid doubling with the circle.
+function initHeroLens() {
+  var hero = document.querySelector('.hero');
+  var triggerEl = document.querySelector('.hero-inner');
+  var lens = document.querySelector('.hero-lens');
+  if (!hero || !triggerEl || !lens) return;
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap) return;
+
+  var lensData = { r: 0 };
+  var lastX = 0;
+  var lastY = 0;
+
+  function updateLensClip() {
+    lens.style.clipPath = 'circle(' + lensData.r.toFixed(1) + 'px at ' +
+      lastX.toFixed(1) + 'px ' + lastY.toFixed(1) + 'px)';
+  }
+
+  // Position tracks against the lens box so the circle stays whole through
+  // the lens bleed outside the section boundary.
+  hero.addEventListener('mousemove', function (e) {
+    var rect = lens.getBoundingClientRect();
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    updateLensClip();
+  });
+
+  // Lens activates only when over the inner text content — not the section padding
+  triggerEl.addEventListener('mouseenter', function (e) {
+    var rect = lens.getBoundingClientRect();
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2, overwrite: 'auto' });
+    gsap.to(lensData, {
+      r: 160,
+      duration: 0.5,
+      ease: 'power2.out',
+      overwrite: true,
+      onUpdate: updateLensClip
+    });
+  });
+
+  triggerEl.addEventListener('mouseleave', function () {
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.35, overwrite: 'auto' });
+    gsap.to(lensData, {
+      r: 0,
+      duration: 0.4,
+      ease: 'power2.in',
+      overwrite: true,
+      onUpdate: updateLensClip
+    });
+  });
+}
+
+// ── About section: cursor lens — honest text revealed by orange circle ──
+// Same clip-path circle pattern as initHeroLens. Trigger is .about-inner
+// (inner text wrapper) so the lens only activates when over the text, not the 17vw padding.
+function initAboutLens() {
+  var section = document.querySelector('.about');
+  var triggerEl = document.querySelector('.about-inner');
+  var lens = document.querySelector('.about-lens');
+  if (!section || !triggerEl || !lens) return;
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap) return;
+
+  var lensData = { r: 0 };
+  var lastX = 0, lastY = 0;
+
+  function updateLensClip() {
+    lens.style.clipPath = 'circle(' + lensData.r.toFixed(1) + 'px at ' +
+      lastX.toFixed(1) + 'px ' + lastY.toFixed(1) + 'px)';
+  }
+
+  section.addEventListener('mousemove', function (e) {
+    var rect = lens.getBoundingClientRect();
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    updateLensClip();
+  });
+
+  triggerEl.addEventListener('mouseenter', function (e) {
+    var rect = lens.getBoundingClientRect();
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2, overwrite: 'auto' });
+    gsap.to(lensData, { r: 160, duration: 0.5, ease: 'power2.out', overwrite: true, onUpdate: updateLensClip });
+  });
+
+  triggerEl.addEventListener('mouseleave', function () {
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.35, overwrite: 'auto' });
+    gsap.to(lensData, { r: 0, duration: 0.4, ease: 'power2.in', overwrite: true, onUpdate: updateLensClip });
+  });
+}
+
+// ── Timeline section: cursor lens — honest intro revealed by orange circle ──
+function initTimelineLens() {
+  var section = document.querySelector('.timeline');
+  var triggerEl = document.querySelector('.timeline-inner');
+  var lens = document.querySelector('.timeline-lens');
+  if (!section || !triggerEl || !lens) return;
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap) return;
+
+  var lensData = { r: 0 };
+  var lastX = 0, lastY = 0;
+
+  function updateLensClip() {
+    lens.style.clipPath = 'circle(' + lensData.r.toFixed(1) + 'px at ' +
+      lastX.toFixed(1) + 'px ' + lastY.toFixed(1) + 'px)';
+  }
+
+  section.addEventListener('mousemove', function (e) {
+    var rect = lens.getBoundingClientRect();
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    updateLensClip();
+  });
+
+  triggerEl.addEventListener('mouseenter', function (e) {
+    var rect = lens.getBoundingClientRect();
+    lastX = e.clientX - rect.left;
+    lastY = e.clientY - rect.top;
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2, overwrite: 'auto' });
+    gsap.to(lensData, { r: 160, duration: 0.5, ease: 'power2.out', overwrite: true, onUpdate: updateLensClip });
+  });
+
+  triggerEl.addEventListener('mouseleave', function () {
+    var cursor = document.querySelector('.site-cursor');
+    if (cursor) gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.35, overwrite: 'auto' });
+    gsap.to(lensData, { r: 0, duration: 0.4, ease: 'power2.in', overwrite: true, onUpdate: updateLensClip });
+  });
+}
+
+// ── Contact section — scroll entrance + orange hover panel ──
+// Stagger-fades .contact-link items on scroll. On desktop, mouseenter expands
+// .contact-link-accent from the vertical centre (same clip-path pattern as
+// initWhatIBuildAnimation). Touch devices skip the hover wiring entirely.
+function initContactAnimation() {
+  var links = document.querySelectorAll('.contact-link');
+  if (links.length === 0) return;
+  if (!window.gsap) return;
+
+  // Scroll entrance
+  if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches && window.ScrollTrigger) {
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.from(links, {
+      y: 24,
+      opacity: 0,
+      duration: 0.55,
+      ease: 'power2.out',
+      stagger: 0.07,
+      clearProps: 'transform,opacity',
+      scrollTrigger: {
+        trigger: '.contact-grid',
+        start: 'top 85%',
+        once: true
+      }
+    });
+  }
+
+  // Hover panel — skip on touch devices
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
+  links.forEach(function (link) {
+    var accentEl = link.querySelector('.contact-link-accent');
+    if (!accentEl) return;
+    var isOpen = false;
+
+    function openPanel() {
+      if (isOpen) return;
+      isOpen = true;
+      gsap.fromTo(accentEl,
+        { clipPath: 'inset(50% 0 50% 0)' },
+        { clipPath: 'inset(0% 0 0% 0)', duration: 0.85, ease: 'power3.out', overwrite: true }
+      );
+    }
+
+    function closePanel() {
+      if (!isOpen) return;
+      isOpen = false;
+      gsap.to(accentEl, {
+        clipPath: 'inset(50% 0 50% 0)',
+        immediateRender: false,
+        duration: 0.65,
+        ease: 'power2.inOut',
+        overwrite: true
+      });
+    }
+
+    link.addEventListener('mouseenter', openPanel);
+    link.addEventListener('mouseleave', closePanel);
   });
 }

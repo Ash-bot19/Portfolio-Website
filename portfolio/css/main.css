@@ -5,12 +5,12 @@
    ========================================================================== */
 
 :root {
-  /* Colors */
-  --color-bg: #0a0a0a;
-  --color-surface: #111111;
-  --color-text: #ffffff;
-  --color-muted: #999999;
-  --color-accent: #c9f31d;
+  /* Colors — minhpham.design palette */
+  --color-bg: #0d0d0d;
+  --color-surface: #161614;
+  --color-text: #d0c8b5;
+  --color-muted: #7a7464;
+  --color-accent: #f05030;
   --color-loader-accent: #d2c1a8;
   --color-loader-accent-rgb: 210, 193, 168;
 
@@ -63,6 +63,32 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+@media (pointer: fine) {
+  body.site-ready,
+  body.site-ready a,
+  body.site-ready button {
+    cursor: none;
+  }
+}
+
+.site-cursor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-accent);
+  opacity: 0;
+  pointer-events: none;
+  z-index: 9999;
+  will-change: transform, opacity;
+}
+
+.site-cursor.is-logo-invert {
+  mix-blend-mode: difference;
+}
+
 img, svg {
   display: block;
   max-width: 100%;
@@ -106,3 +132,55 @@ section {
 
 body.mode-honest [data-professional] { display: none; }
 body.mode-honest [data-honest]       { display: block; }
+
+.reveal-line {
+  display: grid;
+  position: relative;
+  overflow: hidden;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+}
+
+.reveal-line-base,
+.reveal-line-inner {
+  display: block;
+  grid-area: 1 / 1;
+  font: inherit;
+  line-height: inherit;
+  letter-spacing: inherit;
+  white-space: inherit;
+}
+
+.reveal-line-base {
+  color: #2e2b28;
+}
+
+.reveal-line-base .about-accent,
+.reveal-line-base .timeline-accent {
+  color: #2e2b28;
+}
+
+.reveal-line-inner {
+  position: relative;
+  color: var(--color-text);
+  will-change: clip-path;
+}
+
+@media (max-width: 768px), (prefers-reduced-motion: reduce) {
+  .reveal-line,
+  .reveal-line-base,
+  .reveal-line-inner {
+    display: inline;
+    transform: none !important;
+    will-change: auto;
+  }
+
+  .reveal-line-base {
+    display: none;
+  }
+
+  .reveal-line-inner {
+    position: static;
+  }
+}

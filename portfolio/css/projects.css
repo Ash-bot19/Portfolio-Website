@@ -6,8 +6,10 @@
 
 /* === Section container === */
 .projects {
-  padding: var(--space-4xl) var(--space-xl); /* 96px vertical, 32px horizontal */
+  min-height: 100vh;
+  padding: var(--space-4xl) 17vw;
   position: relative;
+  overflow: hidden;
 }
 
 /* === Inner wrapper — full-width, max-width cap, centered === */
@@ -34,41 +36,45 @@
    Default desktop is 3 columns; 5 cards means row 1 has 3 cards, row 2 has 2 cards,
    row 2's third slot stays empty (visually fine — gap absorbs it). */
 .projects-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: var(--space-lg);                   /* 24px between cards */
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 /* === Single card ===
    Background, border, radius mirror .skill-card.
    transition prepared for hover state below. */
 .project-card {
-  background: var(--color-surface);
-  border: 1px solid rgba(208, 200, 181, 0.06); /* very subtle resting border */
-  border-radius: 12px;
-  padding: var(--space-xl);               /* 32px internal */
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-md);                   /* 16px between name, desc, tags, link */
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+  background: transparent;
+  border-top: 1px solid rgba(208, 200, 181, 0.1);
+  border-radius: 0;
+  padding: var(--space-lg) 0;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr auto;
+  gap: var(--space-xl);
+  align-items: baseline;
+  transition: color 0.25s ease, transform 0.25s ease;
   cursor: default;
+}
+
+.project-card:last-child {
+  border-bottom: 1px solid rgba(208, 200, 181, 0.1);
 }
 
 /* === Hover state (PROJ-03) — scale up + accent border shift ===
    Performance: scale + border-color paint only the card; box-shadow paints once
    per :hover transition. No layout reflow. */
 .project-card:hover {
-  transform: scale(1.02);
-  border-color: var(--color-accent);
-  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.4);
+  transform: translateX(12px);
 }
 
 /* === Card name — display font, prominent === */
 .project-card-name {
   font-family: var(--font-display);
-  font-size: 22px;
+  font-size: clamp(36px, 4vw, 72px);
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 0.95;
+  letter-spacing: -0.04em;
   color: var(--color-text);
   margin: 0;
 }
@@ -153,7 +159,7 @@ body.mode-honest .projects [data-honest]       { display: block; }
 /* === Tablet (<=1024px) — 2 columns === */
 @media (max-width: 1024px) {
   .projects-grid {
-    grid-template-columns: repeat(2, 1fr);
+    display: flex;
   }
 }
 
@@ -164,12 +170,12 @@ body.mode-honest .projects [data-honest]       { display: block; }
   }
 
   .projects-grid {
-    grid-template-columns: 1fr;
     gap: var(--space-md);                   /* tighter gap on mobile */
   }
 
   .project-card {
-    padding: var(--space-lg);               /* 24px on mobile, was 32px */
+    grid-template-columns: 1fr;
+    padding: var(--space-lg) 0;
   }
 }
 

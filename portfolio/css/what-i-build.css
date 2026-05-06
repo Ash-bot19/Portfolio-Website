@@ -11,7 +11,7 @@
 .what-i-build {
   position: relative;
   min-height: 100vh;
-  padding: var(--space-4xl) var(--space-xl); /* 96px vertical, 32px horizontal */
+  padding: var(--space-4xl) 15vw; /* 96px vertical, 15vw horizontal — mirrors reference left margin */
   overflow: hidden;
   background: var(--color-bg);
 }
@@ -20,7 +20,7 @@
 .wib-label {
   position: absolute;
   top: var(--space-xl);                     /* 32px from top */
-  left: var(--space-xl);                    /* 32px from left */
+  left: 15vw;                               /* align with section padding */
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 400;
@@ -43,7 +43,8 @@
   align-items: flex-start;
   min-height: calc(100vh - 2 * var(--space-4xl));
   gap: 0;
-  width: 100%;
+  width: calc(100% + 30vw);
+  margin-left: -15vw;
 }
 
 /* === Single line wrapper — holds dark + light layers stacked at same position === */
@@ -51,13 +52,21 @@
   position: relative;
   display: block;
   width: 100%;
+  padding-left: 15vw;
   font-family: var(--font-display);
-  font-size: clamp(64px, 12vw, 200px);   /* 10–15vw range per CONTEXT D-05; clamp keeps it sane */
+  font-size: clamp(44px, 6.5vw, 110px);  /* reduced: was 12vw causing text to overflow viewport */
   font-weight: 600;
   line-height: 0.95;                      /* tight stacking; massive type reads better with sub-1 leading */
   letter-spacing: -0.02em;                /* slight negative tracking for display weights */
   text-transform: uppercase;
   white-space: nowrap;                    /* lines must not wrap mid-word */
+  border-top: 1px solid rgba(208, 200, 181, 0.1);
+  overflow: hidden;
+  isolation: isolate;
+}
+
+.wib-line:last-child {
+  border-bottom: 1px solid rgba(208, 200, 181, 0.1);
 }
 
 /* === Dark layer — always visible, blends into bg ===
@@ -65,18 +74,28 @@
    perceptible at rest. The light layer above does the visual work. */
 .wib-line-dark {
   display: block;
-  color: #1a1a1a;                         /* INTENTIONAL hardcode: deliberate "barely visible" tone tuned to --color-bg #0d0d0d */
+  color: #2e2b28;                         /* INTENTIONAL hardcode: warm dark, clearly visible against --color-bg #0d0d0d */
   position: relative;
   z-index: 1;
-  transition: transform 0.25s ease;       /* for split-hover */
 }
 
-/* === Split hover — layers diverge when mouse enters a line ===
-   Only visually meaningful after a line has been scroll-revealed (light layer
-   is unclipped). On unrevealed lines only the dark layer moves, which is subtle
-   but not jarring. */
-.wib-line:hover .wib-line-dark  { transform: translateY(5px); }
-.wib-line:hover .wib-line-light { transform: translateY(-5px); }
+/* === Accent layer — orange band that expands from center on hover ===
+   Starts collapsed at vertical midpoint (inset 50% top + 50% bottom = invisible).
+   JS animates both insets to 0% on mouseenter (expand outward from center). */
+.wib-line-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  display: block;
+  color: var(--color-bg);
+  background-color: var(--color-accent);
+  padding-left: inherit;
+  z-index: 3;
+  clip-path: inset(50% 0 50% 0);
+  will-change: clip-path;
+  pointer-events: none;
+}
 
 /* === Light layer — clip-revealed by Plan-04 ScrollTrigger scrub ===
    Default state: fully clipped (inset 0 0 100% 0 = invisible).
@@ -88,11 +107,11 @@
   width: 100%;
   display: block;
   color: var(--color-text);
+  padding-left: inherit;                  /* inherits staircase padding-left from .wib-line so both layers align */
   z-index: 2;
   clip-path: inset(0 100% 0 0);           /* fully clipped at rest — right inset 100% → 0% = left-to-right horizontal reveal */
   will-change: clip-path;                 /* permanent: this element is continuously scrubbed during the pin */
   pointer-events: none;
-  transition: transform 0.25s ease;       /* for split-hover */
 }
 
 /* === Parallax props — left + right edge decorations, desktop only ===
@@ -101,10 +120,10 @@
 /* === Staircase offset per line — each successive line indents further right ===
    Creates the cascading stepped layout from the reference. Lines stay nowrap so
    long text clips at the right edge, which is intentional for display type. */
-.wib-stack .wib-line:nth-child(2) { padding-left: 1.5vw; }
-.wib-stack .wib-line:nth-child(3) { padding-left: 3vw; }
-.wib-stack .wib-line:nth-child(4) { padding-left: 4.5vw; }
-.wib-stack .wib-line:nth-child(5) { padding-left: 6vw; }
+.wib-stack .wib-line:nth-child(2) { padding-left: calc(15vw + 0.35vw); }
+.wib-stack .wib-line:nth-child(3) { padding-left: calc(15vw + 0.7vw); }
+.wib-stack .wib-line:nth-child(4) { padding-left: calc(15vw + 1.05vw); }
+.wib-stack .wib-line:nth-child(5) { padding-left: calc(15vw + 1.4vw); }
 
 .wib-prop {
   position: absolute;
@@ -114,10 +133,8 @@
   pointer-events: none;
   overflow: hidden;
   will-change: transform;                  /* permanent: continuously scrubbed by Plan-04 parallax */
-  /* Work image visible at edges — same source as .work-image section below */
-  background-image: url('https://placehold.co/2400x1200/0d0d0d/161614/png?text=+');
-  background-size: cover;
-  opacity: 0.5;                            /* subtle — not competing with the text */
+  background: var(--color-surface);         /* placeholder — replace with real prop image (object photo) */
+  opacity: 0.6;
 }
 
 .wib-prop-left  { left: 0;  top: 10vh; background-position: left center;  }
@@ -160,6 +177,8 @@ body.mode-honest .what-i-build [data-honest]       { display: block; }
   .wib-stack {
     min-height: auto;
     gap: var(--space-sm);                   /* small breathing room between lines on mobile */
+    width: 100%;
+    margin-left: 0;
   }
   .wib-line {
     font-size: clamp(48px, 14vw, 96px);

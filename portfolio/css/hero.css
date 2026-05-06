@@ -6,17 +6,40 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: var(--space-4xl) var(--space-xl) var(--space-3xl); /* 96px top, 32px sides, 64px bottom */
+  padding: var(--space-4xl) 17vw var(--space-3xl);
   position: relative;
+  overflow: visible;
+}
+
+/* === Background video + dark tint overlay === */
+.hero-bg-video {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+}
+
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg);
+  opacity: 0.72;
+  z-index: 1;
+  pointer-events: none;
 }
 
 .hero-inner {
   width: 100%;
-  max-width: 900px;
+  max-width: 1240px;
+  margin: 0 auto;
   display: flex;
   flex-direction: column;
   gap: var(--space-2xl); /* 48px between name label, headline, subtitle */
   text-align: left;
+  position: relative;
+  z-index: 2;
 }
 
 /* === Name label === */
@@ -39,9 +62,9 @@
 .hero-headline {
   font-family: var(--font-display);
   font-weight: 600;
-  font-size: 72px;
-  line-height: 1.1;
-  letter-spacing: -0.02em;
+  font-size: clamp(72px, 7.2vw, 142px);
+  line-height: 0.95;
+  letter-spacing: -0.045em;
   color: var(--color-text);
 }
 
@@ -55,7 +78,7 @@
   margin-right: 0;
 }
 
-/* Accent keywords (HERO-02) — render in lime green */
+/* Accent keywords (HERO-02) — render in accent orange */
 .hero-headline .accent {
   color: var(--color-accent);
 }
@@ -67,7 +90,61 @@
   font-weight: 400;
   line-height: 1.5;
   color: var(--color-muted);
-  max-width: 600px;
+  max-width: 720px;
+}
+
+/* === Hero lens overlay — orange circle that tracks the cursor, reveals honest text === */
+.hero-lens {
+  position: absolute;
+  inset: -220px 0;
+  background: var(--color-accent);
+  clip-path: circle(0px at 50% 50%);
+  z-index: 3;
+  pointer-events: none;
+  will-change: clip-path;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: calc(var(--space-4xl) + 220px) 17vw calc(var(--space-3xl) + 220px);
+}
+
+.hero-lens-inner {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xl);
+  text-align: left;
+}
+
+.hero-lens .hero-name-label {
+  color: var(--color-bg);
+}
+
+.hero-lens .hero-headline {
+  color: var(--color-bg);
+}
+
+.hero-lens .hero-headline .accent {
+  color: rgba(13, 13, 13, 0.6);
+}
+
+.hero-lens .hero-subtitle {
+  color: rgba(13, 13, 13, 0.8);
+}
+
+/* Lens is pointer-only — hide on touch and when honest mode is already active */
+@media (pointer: coarse) {
+  .hero-lens { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-lens { display: none; }
+}
+
+body.mode-honest .hero-lens {
+  display: none;
 }
 
 /* === Dual-Mode Wiring (HERO-04) — scoped through .hero (REVIEWS LOW concern) ===
@@ -90,7 +167,7 @@ body.mode-honest .hero [data-honest]       { display: block; }
 
 /* === Responsive scale (UI-SPEC Typography) === */
 @media (max-width: 1024px) {
-  .hero-headline { font-size: 52px; }
+  .hero-headline { font-size: clamp(54px, 9vw, 92px); }
 }
 
 @media (max-width: 768px) {
@@ -101,9 +178,9 @@ body.mode-honest .hero [data-honest]       { display: block; }
     gap: var(--space-xl); /* 32px on mobile */
   }
   .hero-headline {
-    font-size: 36px;
-    line-height: 1.15;
-    letter-spacing: -0.01em;
+    font-size: clamp(42px, 12vw, 72px);
+    line-height: 0.98;
+    letter-spacing: -0.035em;
   }
   .hero-subtitle {
     font-size: 16px;

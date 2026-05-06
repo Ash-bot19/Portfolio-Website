@@ -1,85 +1,84 @@
-/* =============================================================================
-   nav.css — Fixed navigation: layout, scroll-state frosted blur, dual-copy
-   hover, mobile hamburger menu, and prefers-reduced-motion variants.
-   Authored in Plan 02. All values from 01-UI-SPEC.md.
-   ============================================================================= */
+/* ==========================================================================
+   nav.css - Fixed edge navigation and social rail
+   ========================================================================== */
 
-/* === Nav: fixed layout (NAV-01) === */
 nav {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: var(--nav-height); /* 72px */
+  inset: 0 0 auto 0;
+  height: 0;
   z-index: 100;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 var(--space-xl); /* 32px horizontal */
+  background: transparent;
+  pointer-events: none;
+}
+
+nav.nav-scrolled {
   background: transparent;
   backdrop-filter: none;
   -webkit-backdrop-filter: none;
-  transition: background 0.3s ease, backdrop-filter 0.3s ease, -webkit-backdrop-filter 0.3s ease;
 }
 
-/* === Nav scrolled state (NAV-02) ===
-   Default rule = browsers WITH backdrop-filter support: semi-transparent + blur.
-   The @supports-not block below catches browsers that lack backdrop-filter
-   and gives them an OPAQUE background so the nav stays readable. */
-nav.nav-scrolled {
-  background: rgba(10, 10, 10, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-}
-
-@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  nav.nav-scrolled {
-    /* Fallback: solid opaque dark — readable without blur */
-    background: rgba(10, 10, 10, 0.96);
-  }
-}
-
-/* === Logo === */
 .nav-logo {
+  position: fixed;
+  top: clamp(28px, 7.5vh, 68px);
+  left: clamp(24px, 3.7vw, 68px);
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 42px;
-  height: 42px;
+  width: 54px;
+  height: 54px;
   border-radius: 50%;
   background: var(--color-loader-accent);
   color: var(--color-bg);
+  pointer-events: auto;
   box-shadow: 0 12px 28px rgba(var(--color-loader-accent-rgb), 0.16);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  overflow: visible;
+  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  will-change: transform;
 }
 
 .nav-logo:hover,
-.nav-logo:focus-visible {
-  transform: translateY(-1px);
+.nav-logo:focus-visible,
+.nav-logo.is-magnetic {
+  background: var(--color-accent);
   box-shadow: 0 16px 34px rgba(var(--color-loader-accent-rgb), 0.22);
 }
 
-/* === Nav links container (desktop) === */
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: var(--space-xl); /* 32px */
+.nav-logo-face {
+  width: 72%;
+  height: 72%;
+  object-fit: contain;
+  filter: brightness(0);
+  transform: translateY(4%);
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  user-select: none;
 }
 
-/* === Individual nav link (NAV-03 dual-copy hover) === */
-.nav-link {
-  font-family: var(--font-body);
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0.04em;
-  line-height: 1;
-  color: var(--color-muted);
+.nav-links {
+  position: fixed;
+  top: clamp(30px, 7.7vh, 70px);
+  right: clamp(28px, 4vw, 74px);
   display: flex;
   flex-direction: column;
-  height: 1em;
-  overflow: hidden;
+  align-items: flex-end;
+  gap: 11px;
+  pointer-events: auto;
+}
+
+.nav-link {
   position: relative;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  height: 1.05em;
+  overflow: hidden;
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--color-muted);
 }
 
 .nav-link .link-default,
@@ -90,8 +89,8 @@ nav.nav-scrolled {
 }
 
 .nav-link .link-hover {
-  color: var(--color-accent);
-  transform: translateY(100%); /* sits below, off-screen until hover */
+  color: var(--color-loader-accent);
+  transform: translateY(0);
 }
 
 .nav-link:hover .link-default,
@@ -100,20 +99,28 @@ nav.nav-scrolled {
 }
 
 .nav-link:hover .link-hover,
-.nav-link:focus-visible .link-hover {
-  transform: translateY(0);
+.nav-link:focus-visible .link-hover,
+.nav-link.is-active .link-hover {
+  transform: translateY(-100%);
 }
 
-/* === Hamburger button (NAV-05) === */
+.nav-link.is-active .link-default {
+  transform: translateY(-100%);
+}
+
 .hamburger {
-  display: none; /* hidden on desktop */
+  position: fixed;
+  top: 28px;
+  right: 24px;
+  display: none;
   flex-direction: column;
   justify-content: center;
   gap: 6px;
-  width: 44px;  /* accessibility floor per UI-SPEC */
+  width: 44px;
   height: 44px;
   align-items: center;
   padding: 0;
+  pointer-events: auto;
 }
 
 .hamburger-line {
@@ -124,12 +131,91 @@ nav.nav-scrolled {
   transition: transform 0.3s ease, opacity 0.3s ease;
 }
 
-/* === Mobile breakpoint (<=768px) === */
+.side-social {
+  position: fixed;
+  left: clamp(28px, 3.8vw, 70px);
+  bottom: clamp(42px, 7.2vh, 72px);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 52px;
+}
+
+.side-social-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--color-loader-accent);
+  opacity: 0.9;
+  transition: opacity 0.22s ease, transform 0.22s ease, background-color 0.22s ease, color 0.22s ease;
+  will-change: transform;
+}
+
+.side-social-link:hover,
+.side-social-link:focus-visible {
+  opacity: 1;
+  transform: translateY(-2px);
+}
+
+.side-social-link.is-magnetic-side {
+  background: var(--color-accent);
+  color: var(--color-bg);
+}
+
+.side-social-link--github {
+  font-size: 0;
+}
+
+.side-social-github-icon {
+  width: 27px;
+  height: 27px;
+}
+
+.side-social-link--linkedin {
+  align-items: baseline;
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08em;
+}
+
+body.menu-open {
+  overflow: hidden;
+}
+
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger[aria-expanded="true"] .hamburger-line:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
 @media (max-width: 768px) {
+  nav {
+    height: var(--nav-height);
+    pointer-events: auto;
+  }
+
+  .nav-logo {
+    top: 16px;
+    left: 16px;
+    width: 42px;
+    height: 42px;
+  }
+
   .nav-links {
-    /* Closed state: hidden but rendered for measurement (display:none collapses pointer-events).
-       Note: we use display:none for closed state so the menu doesn't trap clicks; the open state
-       sets display:flex. visibility/pointer-events are belt-and-braces. */
     display: none;
     visibility: hidden;
     pointer-events: none;
@@ -137,7 +223,7 @@ nav.nav-scrolled {
     top: var(--nav-height);
     left: 0;
     right: 0;
-    z-index: 99; /* below nav (100) so the X icon stays above the menu surface */
+    z-index: 99;
     background: rgba(10, 10, 10, 0.95);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
@@ -147,7 +233,6 @@ nav.nav-scrolled {
     gap: var(--space-lg);
   }
 
-  /* Fallback when backdrop-filter unsupported — opaque dark */
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .nav-links {
       background: rgba(10, 10, 10, 0.98);
@@ -164,54 +249,22 @@ nav.nav-scrolled {
     display: flex;
   }
 
-  /* Bigger tap target for mobile nav links */
   .nav-link {
     font-size: 18px;
-    height: 1.4em; /* allow descenders + breathing room */
+    height: 1.4em;
+  }
+
+  .side-social {
+    display: none;
   }
 }
 
-/* === Body scroll lock helper (toggled by JS when mobile menu opens) === */
-body.menu-open {
-  overflow: hidden;
-}
-
-/* === Hamburger active state (open) — animate to X === */
-.hamburger[aria-expanded="true"] .hamburger-line:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
-.hamburger[aria-expanded="true"] .hamburger-line:nth-child(2) {
-  opacity: 0;
-}
-.hamburger[aria-expanded="true"] .hamburger-line:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
-}
-
-/* === Reduced-motion variants (REVIEWS priority 4) ===
-   Users who prefer reduced motion get instant state changes —
-   no slide on hover, no background transition on scroll-state,
-   no transform on the hamburger lines. */
 @media (prefers-reduced-motion: reduce) {
-  nav,
   .nav-logo,
   .nav-link .link-default,
   .nav-link .link-hover,
-  .hamburger-line {
+  .hamburger-line,
+  .side-social-link {
     transition: none !important;
-  }
-
-  /* Eliminate the slide entirely — instant color swap on hover/focus.
-     The accent-colored .link-hover is moved into view and the default is moved out
-     with no transition; we keep the dual-copy structure for consistency, but it changes instantly. */
-  .nav-link .link-hover {
-    transform: translateY(100%);
-  }
-  .nav-link:hover .link-default,
-  .nav-link:focus-visible .link-default {
-    transform: translateY(-100%);
-  }
-  .nav-link:hover .link-hover,
-  .nav-link:focus-visible .link-hover {
-    transform: translateY(0);
   }
 }

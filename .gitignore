@@ -1,1 +1,4 @@
-.planning/
+*
+!.gitignore
+!portfolio/
+!portfolio/**

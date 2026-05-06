@@ -21,11 +21,12 @@
   <link rel="stylesheet" href="css/nav.css">
   <link rel="stylesheet" href="css/hero.css">
   <link rel="stylesheet" href="css/about.css">
-  <link rel="stylesheet" href="css/skills.css">
+
   <link rel="stylesheet" href="css/what-i-build.css">
   <link rel="stylesheet" href="css/work-image.css">
   <link rel="stylesheet" href="css/timeline.css">
   <link rel="stylesheet" href="css/projects.css">
+  <link rel="stylesheet" href="css/contact.css">
 
   <!-- GSAP CDN — deferred; SRI hash verified 2026-05-03 against gsap@3.15.0/dist/gsap.min.js -->
   <!-- Note: SRI + crossorigin satisfies T-01-01 (tampering mitigation) -->
@@ -96,16 +97,14 @@
     <!-- Nav stub — Plan 02 fills behavior and styles -->
     <nav aria-label="Main navigation">
       <a href="#" class="nav-logo" aria-label="Home">
-        <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
-          <text x="50%" y="68%" text-anchor="middle" fill="currentColor" font-family="JetBrains Mono, monospace" font-size="16" font-weight="600">AS</text>
-        </svg>
+        <img class="nav-logo-face" src="assets/face_logo.svg" alt="" draggable="false">
       </a>
       <ul class="nav-links" id="nav-links-list">
         <li><a href="#about" class="nav-link">
           <span class="link-default" aria-hidden="true">About</span>
           <span class="link-hover">About</span>
         </a></li>
-        <li><a href="#work" class="nav-link">
+        <li><a href="#what-i-build" class="nav-link">
           <span class="link-default" aria-hidden="true">Work</span>
           <span class="link-hover">Work</span>
         </a></li>
@@ -121,8 +120,27 @@
       </button>
     </nav>
 
+    <aside class="side-social" aria-label="Social links">
+      <a class="side-social-link side-social-link--github" href="https://github.com/Ash-bot19" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
+        <svg class="side-social-github-icon" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 4.3 2.8 7.9 6.6 9.2.5.1.7-.2.7-.5v-1.9c-2.7.6-3.3-1.1-3.3-1.1-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.8 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5.1 0c1.9-1.3 2.8-1 2.8-1 .5 1.5.2 2.5.1 2.8.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7 1 .7 2v2.9c0 .3.2.6.7.5 3.8-1.3 6.6-4.9 6.6-9.2 0-5.4-4.4-9.8-9.8-9.8Z" fill="currentColor"/>
+        </svg>
+      </a>
+      <a class="side-social-link side-social-link--linkedin" href="https://linkedin.com/in/ayush-samantaray" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+        <span aria-hidden="true">in</span>
+      </a>
+    </aside>
+
     <!-- Hero section — Plan 03 fills layout, typography, and dual-mode content -->
     <section class="hero" id="hero">
+
+      <!-- Background video — replace src with your actual video file -->
+      <video class="hero-bg-video" autoplay muted loop playsinline preload="none" aria-hidden="true">
+        <source src="assets/hero-bg.mp4" type="video/mp4">
+      </video>
+      <div class="hero-bg-overlay" aria-hidden="true"></div>
+
+      <!-- Professional text layer (default visible) -->
       <div class="hero-inner">
         <span class="hero-name-label">AYUSH SAMANTARAY</span>
 
@@ -156,134 +174,69 @@
           Still figuring it out. Making Kafka pipelines in the meantime.
         </p>
       </div>
+
+      <!-- Honest lens overlay — circle-clipped, tracks cursor. Mirrors hero-inner layout.
+           aria-hidden: AT reads the real hero-inner, not this decorative duplicate. -->
+      <div class="hero-lens" aria-hidden="true">
+        <div class="hero-lens-inner">
+          <span class="hero-name-label">AYUSH SAMANTARAY</span>
+          <div class="hero-h1">
+            <span class="hero-headline">
+              <span class="word">Trying</span>
+              <span class="word">to</span>
+              <span class="word">build</span>
+              <span class="word">things</span>
+              <span class="word">people</span>
+              <span class="word"><span class="accent">actually</span></span>
+              <span class="word"><span class="accent">use.</span></span>
+            </span>
+          </div>
+          <p class="hero-subtitle">Still figuring it out. Making Kafka pipelines in the meantime.</p>
+        </div>
+      </div>
+
     </section>
 
-    <!-- About section — Plan 02 fills styles, Plan 03 fills animations -->
+    <!-- About section — dual-layer clip-path reveal (same pattern as wib) -->
     <section class="about" id="about">
       <div class="about-inner">
         <span class="about-label">ABOUT ME</span>
 
-        <p class="about-text" data-professional>
-          I build <span class="about-accent">data pipelines</span> and
-          <span class="about-accent">real-time streaming systems</span> for fintech infrastructure.
-          Final-year B.Tech in Cyber-Physical Systems — picking up production-grade
-          <span class="about-accent">Kafka</span>, <span class="about-accent">Spark</span>,
-          and <span class="about-accent">dbt</span> as I go.
-        </p>
+        <!-- Professional layer: each line owns its dim base and bright reveal copy -->
+        <div class="about-copy" data-professional>
+          <p class="about-text about-text-reveal">
+            <span class="reveal-line"><span class="reveal-line-base">Engineering student building </span><span class="reveal-line-inner" aria-hidden="true">Engineering student building </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">scalable fintech and </span><span class="reveal-line-inner" aria-hidden="true">scalable fintech and </span></span>
+            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">AI-driven data systems</span> </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">AI-driven data systems</span> </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">for production environments.</span><span class="reveal-line-inner" aria-hidden="true">for production environments.</span></span>
+          </p>
+        </div>
 
-        <p class="about-text" data-honest>
-          I've spent the last year reading architecture diagrams and building
-          <span class="about-accent">just enough</span> to break things in interesting ways.
-          Kafka is surprisingly enjoyable. GCP is expensive if you're not careful.
-          I'm figuring it out.
-        </p>
+        <!-- Honest layer: same per-line reveal structure -->
+        <div class="about-copy" data-honest>
+          <p class="about-text about-text-reveal">
+            <span class="reveal-line"><span class="reveal-line-base">Final-year engineering student </span><span class="reveal-line-inner" aria-hidden="true">Final-year engineering student </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">converting <span class="about-accent">caffeine</span> and </span><span class="reveal-line-inner" aria-hidden="true">converting <span class="about-accent">caffeine</span> and </span></span>
+            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">overthinking</span> into </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">overthinking</span> into </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">functional data systems.</span><span class="reveal-line-inner" aria-hidden="true">functional data systems.</span></span>
+          </p>
+        </div>
+      </div>
+
+      <!-- Honest lens overlay — cursor circle reveals honest text on orange bg -->
+      <div class="about-lens" aria-hidden="true">
+        <div class="about-lens-inner">
+          <span class="about-label">ABOUT ME</span>
+          <p class="about-text about-lens-text">
+            <span class="about-lens-line">Final-year engineering student </span>
+            <span class="about-lens-line">converting <span class="about-accent">caffeine</span> and </span>
+            <span class="about-lens-line"><span class="about-accent">overthinking</span> into </span>
+            <span class="about-lens-line">functional data systems.</span>
+          </p>
+        </div>
       </div>
     </section>
 
-    <!-- Skills section — Plan 02 fills styles, Plan 03 fills horizontal-scroll animation -->
-    <section class="skills" id="skills">
-      <div class="skills-track">
-
-        <article class="skill-card">
-          <div class="skill-card-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="16" cy="16" r="6" stroke="#c9f31d" stroke-width="1.5"/>
-              <circle cx="16" cy="6" r="2.5" stroke="#c9f31d" stroke-width="1.5"/>
-              <circle cx="16" cy="26" r="2.5" stroke="#c9f31d" stroke-width="1.5"/>
-              <circle cx="6" cy="16" r="2.5" stroke="#c9f31d" stroke-width="1.5"/>
-              <circle cx="26" cy="16" r="2.5" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="16" y1="10" x2="16" y2="13" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="16" y1="19" x2="16" y2="22" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="10" y1="16" x2="13" y2="16" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="19" y1="16" x2="22" y2="16" stroke="#c9f31d" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h3 class="skill-card-title">AI / ML</h3>
-          <p class="skill-card-desc" data-professional>
-            Agentic pipelines, RAG systems, LLM orchestration with open-source models.
-          </p>
-          <p class="skill-card-desc" data-honest>
-            GPT wrappers, a lot of prompt tweaking, and one working RAG pipeline I'm proud of.
-          </p>
-        </article>
-
-        <article class="skill-card">
-          <div class="skill-card-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="4" y="10" width="24" height="4" rx="1" stroke="#c9f31d" stroke-width="1.5"/>
-              <rect x="4" y="18" width="24" height="4" rx="1" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="9" y1="10" x2="9" y2="6" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="16" y1="10" x2="16" y2="6" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="23" y1="10" x2="23" y2="6" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="9" y1="26" x2="9" y2="22" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="16" y1="26" x2="16" y2="22" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="23" y1="26" x2="23" y2="22" stroke="#c9f31d" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h3 class="skill-card-title">Data Engineering</h3>
-          <p class="skill-card-desc" data-professional>
-            Kafka, Spark Structured Streaming, Airflow, dbt, Postgres, BigQuery.
-          </p>
-          <p class="skill-card-desc" data-honest>
-            Kafka clicks. Airflow is less clicky. dbt I'm still learning. All three are in my portfolio.
-          </p>
-        </article>
-
-        <article class="skill-card">
-          <div class="skill-card-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="6" y="8" width="20" height="16" rx="2" stroke="#c9f31d" stroke-width="1.5"/>
-              <path d="M10 16 L14 12 L18 16 L22 12" stroke="#c9f31d" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-              <line x1="10" y1="20" x2="22" y2="20" stroke="#c9f31d" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <h3 class="skill-card-title">Fintech</h3>
-          <p class="skill-card-desc" data-professional>
-            Payment systems, double-entry accounting, fraud detection, idempotency primitives.
-          </p>
-          <p class="skill-card-desc" data-honest>
-            I read too many Stripe engineering posts and now I think about idempotency keys constantly.
-          </p>
-        </article>
-
-        <article class="skill-card">
-          <div class="skill-card-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="5" y="5" width="22" height="22" rx="3" stroke="#c9f31d" stroke-width="1.5"/>
-              <rect x="9" y="9" width="14" height="3" rx="1" fill="#c9f31d" opacity="0.4"/>
-              <line x1="9" y1="16" x2="23" y2="16" stroke="#c9f31d" stroke-width="1.5" stroke-linecap="round"/>
-              <line x1="9" y1="20" x2="18" y2="20" stroke="#c9f31d" stroke-width="1.5" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <h3 class="skill-card-title">Backend</h3>
-          <p class="skill-card-desc" data-professional>
-            Python, FastAPI, Docker, Redis, REST + async design, microservices.
-          </p>
-          <p class="skill-card-desc" data-honest>
-            FastAPI is great. I containerise everything so I never say "works on my machine."
-          </p>
-        </article>
-
-        <article class="skill-card">
-          <div class="skill-card-icon" aria-hidden="true">
-            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 4 L28 10 L28 22 L16 28 L4 22 L4 10 Z" stroke="#c9f31d" stroke-width="1.5" stroke-linejoin="round"/>
-              <circle cx="16" cy="16" r="4" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="16" y1="4" x2="16" y2="12" stroke="#c9f31d" stroke-width="1.5"/>
-              <line x1="16" y1="20" x2="16" y2="28" stroke="#c9f31d" stroke-width="1.5"/>
-            </svg>
-          </div>
-          <h3 class="skill-card-title">Product</h3>
-          <p class="skill-card-desc" data-professional>
-            User story mapping, PRD authoring, discovery-first development, stakeholder alignment.
-          </p>
-          <p class="skill-card-desc" data-honest>
-            I write docs before I write code. My teammates find this unusual. I think it saves time.
-          </p>
-        </article>
-
-      </div>
-    </section>
 
     <!-- Phase 3 / Plan 01 — "What I Build": stacked scroll-reveal type with horizontal clip mask.
          Two layers per line: .wib-line-dark (always visible, dim) + .wib-line-light (revealed by
@@ -303,6 +256,8 @@
           <span class="wib-line-dark" data-honest>DATA ENGINEERING (mostly fixing pipelines)</span>
           <span class="wib-line-light" data-professional aria-hidden="true">DATA ENGINEERING</span>
           <span class="wib-line-light" data-honest aria-hidden="true">DATA ENGINEERING (mostly fixing pipelines)</span>
+          <span class="wib-line-accent" data-professional aria-hidden="true">DATA ENGINEERING</span>
+          <span class="wib-line-accent" data-honest aria-hidden="true">DATA ENGINEERING (mostly fixing pipelines)</span>
         </div>
 
         <div class="wib-line">
@@ -310,6 +265,8 @@
           <span class="wib-line-dark" data-honest>FINTECH (idempotency keys, mostly)</span>
           <span class="wib-line-light" data-professional aria-hidden="true">FINTECH</span>
           <span class="wib-line-light" data-honest aria-hidden="true">FINTECH (idempotency keys, mostly)</span>
+          <span class="wib-line-accent" data-professional aria-hidden="true">FINTECH</span>
+          <span class="wib-line-accent" data-honest aria-hidden="true">FINTECH (idempotency keys, mostly)</span>
         </div>
 
         <div class="wib-line">
@@ -317,6 +274,8 @@
           <span class="wib-line-dark" data-honest>BACKEND (FastAPI + Docker, mostly)</span>
           <span class="wib-line-light" data-professional aria-hidden="true">BACKEND</span>
           <span class="wib-line-light" data-honest aria-hidden="true">BACKEND (FastAPI + Docker, mostly)</span>
+          <span class="wib-line-accent" data-professional aria-hidden="true">BACKEND</span>
+          <span class="wib-line-accent" data-honest aria-hidden="true">BACKEND (FastAPI + Docker, mostly)</span>
         </div>
 
         <div class="wib-line">
@@ -324,6 +283,8 @@
           <span class="wib-line-dark" data-honest>AI / ML (RAG and prompt tweaking)</span>
           <span class="wib-line-light" data-professional aria-hidden="true">AI / ML</span>
           <span class="wib-line-light" data-honest aria-hidden="true">AI / ML (RAG and prompt tweaking)</span>
+          <span class="wib-line-accent" data-professional aria-hidden="true">AI / ML</span>
+          <span class="wib-line-accent" data-honest aria-hidden="true">AI / ML (RAG and prompt tweaking)</span>
         </div>
 
         <div class="wib-line">
@@ -331,6 +292,8 @@
           <span class="wib-line-dark" data-honest>PRODUCT (writing docs before code)</span>
           <span class="wib-line-light" data-professional aria-hidden="true">PRODUCT</span>
           <span class="wib-line-light" data-honest aria-hidden="true">PRODUCT (writing docs before code)</span>
+          <span class="wib-line-accent" data-professional aria-hidden="true">PRODUCT</span>
+          <span class="wib-line-accent" data-honest aria-hidden="true">PRODUCT (writing docs before code)</span>
         </div>
 
       </div>
@@ -349,47 +312,74 @@
       </picture>
     </section>
 
-    <!-- Phase 3 / Plan 01 — Experience timeline: 4 rows, stagger animation in Plan 04.
-         Three columns per row: .timeline-year | .timeline-role (dual-mode) | .timeline-company.
-         Mobile (<=768px) collapses to single column via timeline.css media query (TIME-05). -->
+    <!-- Experience timeline: 4 rows. Intro has dual-layer clip reveal. Role titles
+         have hover-split accent (same clip-path pattern as contact links). -->
     <section class="timeline" id="experience">
       <div class="timeline-inner">
         <span class="timeline-label">EXPERIENCE</span>
-        <p class="timeline-intro">
-          A short list of where I&rsquo;ve been &mdash; building <span class="timeline-accent">data systems</span>,
-          shipping <span class="timeline-accent">backend infra</span>, and learning what production actually demands.
-        </p>
+
+        <!-- Intro reveal: each line owns its dim base and bright reveal copy -->
+        <div class="timeline-intro-wrap">
+          <p class="timeline-intro timeline-intro-reveal">
+            <span class="reveal-line"><span class="reveal-line-base">Building data systems, </span><span class="reveal-line-inner" aria-hidden="true">Building data systems, </span></span>
+            <span class="reveal-line"><span class="reveal-line-base"><span class="timeline-accent">backend infrastructure</span>, and scalable </span><span class="reveal-line-inner" aria-hidden="true"><span class="timeline-accent">backend infrastructure</span>, and scalable </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">applications for production environments.</span><span class="reveal-line-inner" aria-hidden="true">applications for production environments.</span></span>
+          </p>
+        </div>
 
         <div class="timeline-rows">
 
           <div class="timeline-row">
             <span class="timeline-year">[Year]</span>
-            <span class="timeline-role" data-professional>[Role Title]</span>
-            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-role-wrap">
+              <span class="timeline-role" data-professional>[Role Title]</span>
+              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
+            </span>
             <span class="timeline-company">[Company]</span>
           </div>
 
           <div class="timeline-row">
             <span class="timeline-year">[Year]</span>
-            <span class="timeline-role" data-professional>[Role Title]</span>
-            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-role-wrap">
+              <span class="timeline-role" data-professional>[Role Title]</span>
+              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
+            </span>
             <span class="timeline-company">[Company]</span>
           </div>
 
           <div class="timeline-row">
             <span class="timeline-year">[Year]</span>
-            <span class="timeline-role" data-professional>[Role Title]</span>
-            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-role-wrap">
+              <span class="timeline-role" data-professional>[Role Title]</span>
+              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
+            </span>
             <span class="timeline-company">[Company]</span>
           </div>
 
           <div class="timeline-row">
             <span class="timeline-year">[Year]</span>
-            <span class="timeline-role" data-professional>[Role Title]</span>
-            <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+            <span class="timeline-role-wrap">
+              <span class="timeline-role" data-professional>[Role Title]</span>
+              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
+              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
+            </span>
             <span class="timeline-company">[Company]</span>
           </div>
 
+        </div>
+      </div>
+
+      <!-- Honest lens overlay — cursor circle reveals honest experience intro on orange bg -->
+      <div class="timeline-lens" aria-hidden="true">
+        <div class="timeline-lens-inner">
+          <span class="timeline-label">EXPERIENCE</span>
+          <p class="timeline-intro">
+            Mostly breaking systems, fixing them at 2&nbsp;AM, and occasionally calling it
+            <span class="timeline-accent">production experience</span>.
+          </p>
         </div>
       </div>
     </section>
@@ -465,7 +455,100 @@
       </div>
     </section>
 
-    <section id="contact" style="min-height:100vh"></section>
+    <section class="contact" id="contact">
+      <span class="contact-label">CONNECT</span>
+
+      <div class="contact-grid">
+
+        <!-- Column 1 — primary social -->
+        <div class="contact-col">
+          <a class="contact-link" href="https://github.com/Ash-bot19" target="_blank" rel="noopener noreferrer">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">Github</span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              My Code
+            </span>
+          </a>
+          <a class="contact-link" href="https://linkedin.com/in/ayush-samantaray" target="_blank" rel="noopener noreferrer">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">Linkedin</span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              Connect
+            </span>
+          </a>
+          <a class="contact-link" href="https://twitter.com/" target="_blank" rel="noopener noreferrer">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">Twitter</span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              My Thoughts
+            </span>
+          </a>
+        </div>
+
+        <!-- Column 2 — secondary social -->
+        <div class="contact-col">
+          <a class="contact-link" href="https://instagram.com/" target="_blank" rel="noopener noreferrer">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">Instagram</span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              Life Offline
+            </span>
+          </a>
+          <a class="contact-link" href="https://youtube.com/" target="_blank" rel="noopener noreferrer">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">Youtube</span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              Watch This
+            </span>
+          </a>
+          <a class="contact-link" href="https://github.com/Ash-bot19" target="_blank" rel="noopener noreferrer">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">Resume</span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              Download
+            </span>
+          </a>
+        </div>
+
+        <!-- Column 3 — email + phone as single hoverable components -->
+        <div class="contact-col contact-col--info">
+          <a class="contact-link contact-link--stacked" href="mailto:ayushsam3@gmail.com">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">
+              <span class="stacked-label">Email</span>
+              <span class="stacked-value">ayushsam3@gmail.com</span>
+            </span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              Say Hello
+            </span>
+          </a>
+          <a class="contact-link contact-link--stacked" href="tel:+910000000000">
+            <span class="contact-link-icon" aria-hidden="true"></span>
+            <span class="contact-link-text">
+              <span class="stacked-label">Phone</span>
+              <span class="stacked-value">+91 [your number]</span>
+            </span>
+            <span class="contact-link-accent" aria-hidden="true">
+              <span class="contact-link-icon"></span>
+              Let's Talk
+            </span>
+          </a>
+        </div>
+
+      </div>
+
+      <footer class="site-footer">
+        <span>© 2026 Ayush Samantaray</span>
+        <span>Data Engineer · Fintech Builder</span>
+      </footer>
+    </section>
 
   </main>
 
