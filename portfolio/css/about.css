@@ -125,6 +125,7 @@ body.mode-honest .about [data-honest]       { display: block; }
   .about {
     min-height: auto;
     padding: var(--space-3xl) var(--space-lg);
+    overflow: hidden;
   }
   .about-text {
     font-size: clamp(34px, 8.5vw, 60px);
@@ -183,6 +184,13 @@ body.mode-honest .about [data-honest]       { display: block; }
 }
 
 /* touch: clip-path: circle(0px) hides at rest; JS spreads on hold */
+/* Reset -220px inset on touch so the expanding circle can't bleed into adjacent sections. */
+@media (pointer: coarse) {
+  .about-lens {
+    inset: 0;
+    padding: var(--space-3xl) var(--space-lg);
+  }
+}
 @media (prefers-reduced-motion: reduce) { .about-lens { display: none; } }
 body.mode-honest .about-lens { display: none; }
 :root.theme-light .about-lens { background: var(--color-loader-accent); }

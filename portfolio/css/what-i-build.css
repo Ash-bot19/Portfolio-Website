@@ -207,13 +207,13 @@ body.mode-honest .what-i-build [data-honest]       { display: block; }
     white-space: normal;                    /* allow wrap on small screens — tight nowrap looks bad here */
     padding-left: 0 !important;             /* reset staircase offsets — desktop-only layout feature */
   }
-  .wib-line-light {
+  .what-i-build .wib-line-light {
     position: relative;                     /* take out of absolute stacking */
     clip-path: none;                        /* no scroll-reveal on mobile */
     color: var(--color-text);
   }
-  .wib-line-dark {
-    display: none;                          /* light layer carries the visible text on mobile */
+  .what-i-build .wib-line-dark {
+    display: none;                          /* specificity matches dual-mode rule (0,2,0) so this wins */
   }
   .wib-prop {
     display: none;                          /* desktop only per D-06 */

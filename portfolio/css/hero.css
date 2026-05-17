@@ -137,6 +137,14 @@
 /* On touch, clip-path: circle(0px) keeps the lens invisible at rest.
    JS spreads it on hold. Only suppress on reduced-motion or honest mode. */
 
+/* Reset -220px inset on touch so the expanding circle can't bleed into adjacent sections. */
+@media (pointer: coarse) {
+  .hero-lens {
+    inset: 0;
+    padding: var(--space-3xl) var(--space-lg) var(--space-2xl);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .hero-lens { display: none; }
 }
@@ -175,6 +183,7 @@ body.mode-honest .hero [data-honest]       { display: block; }
 @media (max-width: 768px) {
   .hero {
     padding: var(--space-3xl) var(--space-lg) var(--space-2xl); /* tighter on mobile */
+    overflow: hidden; /* contain video and lens within section bounds */
   }
   .hero-inner {
     gap: var(--space-xl); /* 32px on mobile */
