@@ -79,7 +79,9 @@ body {
      (12 sites across certificates/contact/nav/sections/etc.) so the
      OS cursor never leaks through when the custom cursor is active. */
   body.site-ready,
-  body.site-ready * {
+  body.site-ready *,
+  body.site-ready *::before,
+  body.site-ready *::after {
     cursor: none !important;
   }
 }
@@ -110,6 +112,53 @@ body {
 .site-cursor.is-on-cursor-invert-target {
   opacity: 0 !important;
   transition: opacity 200ms ease;
+}
+
+/* ── Hold-to-reveal button — touch devices only ──────────────────────────── */
+.lens-reveal-btn {
+  display: none; /* hidden on pointer-fine devices */
+}
+
+@media (pointer: coarse) {
+  .lens-reveal-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 100px;
+    padding: 10px 18px 10px 13px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    z-index: 200;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: none;
+    -webkit-tap-highlight-color: transparent;
+    cursor: pointer;
+    white-space: nowrap;
+  }
+
+  :root.theme-light .lens-reveal-btn {
+    background: rgba(0, 0, 0, 0.05);
+    border-color: rgba(0, 0, 0, 0.14);
+    color: rgba(0, 0, 0, 0.4);
+  }
+
+  .lens-reveal-btn-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    flex-shrink: 0;
+  }
 }
 
 img, svg {

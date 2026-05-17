@@ -33,7 +33,7 @@
 .projects-grid {
   display: flex;
   flex-direction: column;
-  gap: 0;
+  gap: 12px;
 }
 
 /* Card — 2-col grid: [content 1fr] [link auto]
@@ -41,24 +41,37 @@
    and the GitHub link sits top-right in col 2. */
 .project-card {
   background: transparent;
-  border-top: 1px solid rgba(var(--color-text-rgb), 0.1);
-  border-radius: 0;
-  padding: var(--space-xl) 0;
+  border: 1px solid rgba(var(--color-text-rgb), 0.1);
+  border-radius: 14px;
+  padding: var(--space-xl) var(--space-xl);
   display: grid;
   grid-template-columns: 1fr auto;
   grid-template-rows: auto auto auto;
   column-gap: var(--space-2xl);
   align-items: start;
-  transition: color 0.25s ease, transform 0.25s ease;
+  position: relative;
+  transition: color 0.25s ease, transform 0.25s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   cursor: default;
-}
-
-.project-card:last-child {
-  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.1);
 }
 
 .project-card:hover {
   transform: translateX(12px);
+  border-color: rgba(74, 158, 255, 0.45);
+  box-shadow: 0 0 24px rgba(74, 158, 255, 0.12), 0 0 48px rgba(74, 158, 255, 0.06);
+}
+
+/* Overlay link — wraps the card title on linked cards.
+   ::after covers the entire card so clicking anywhere navigates to the case study. */
+.project-card-overlay-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.project-card-overlay-link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
 }
 
 /* Name — col 1, row 1 */
@@ -111,7 +124,7 @@
   padding: 4px 10px;
 }
 
-/* GitHub link — col 2, row 1, top-aligned */
+/* Single link (AML card) — col 2, row 1, top-aligned */
 .project-card-link {
   grid-column: 2;
   grid-row: 1;
@@ -132,6 +145,27 @@
   opacity: 1;
 }
 
+/* Multi-link wrapper (non-AML cards) — sits in same grid slot, links flex inside.
+   position: relative + z-index: 1 lifts it above the ::after overlay so links are clickable. */
+.project-card-links {
+  grid-column: 2;
+  grid-row: 1;
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Links inside wrapper lose their grid placement — they are flex children */
+.project-card-links .project-card-link {
+  grid-column: unset;
+  grid-row: unset;
+  align-self: auto;
+}
+
 .project-card.is-animating {
   will-change: transform, opacity;
 }
@@ -143,6 +177,7 @@
   }
   .project-card:hover {
     transform: none;
+    box-shadow: none;
   }
 }
 
@@ -162,7 +197,7 @@
   .project-card {
     grid-template-columns: 1fr;
     grid-template-rows: auto auto auto auto;
-    padding: var(--space-lg) 0;
+    padding: var(--space-lg) var(--space-md);
     column-gap: 0;
   }
 
@@ -176,6 +211,20 @@
     align-self: auto;
     margin-top: var(--space-sm);
   }
+
+  .project-card-links {
+    grid-column: 1;
+    grid-row: 4;
+    align-items: flex-start;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: var(--space-sm);
+  }
+
+  .project-card-links .project-card-link {
+    margin-top: 0;
+  }
 }
 
 @media (max-width: 480px) {
@@ -184,7 +233,7 @@
   }
 
   .project-card {
-    padding: var(--space-md) 0;
+    padding: var(--space-md) var(--space-sm);
   }
 
   .project-card-name {

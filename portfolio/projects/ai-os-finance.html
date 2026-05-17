@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI OS Finance — Ayush Samantaray</title>
+
+  <script>
+    (function () {
+      try { sessionStorage.setItem('site-entered', '1'); } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
+  </noscript>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="../css/sections.css">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+  <nav aria-label="Project navigation">
+    <a href="../index.html" class="nav-logo" aria-label="Back to portfolio">
+      <img class="nav-logo-face" src="../assets/New_face_logo.svg" alt="" draggable="false">
+    </a>
+    <a href="../index.html#projects" class="proj-back-link">
+      <span class="proj-back-arrow">←</span> All work
+    </a>
+  </nav>
+
+  <main class="proj-main">
+
+    <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+    <section class="proj-hero" id="top">
+      <span class="proj-eyebrow">Case Study</span>
+      <h1 class="proj-title">AI OS Finance</h1>
+      <p class="proj-tagline">Deterministic valuation engine with AI-augmented research workflows, scenario modelling, and n8n-orchestrated financial data pipelines — LLMs for narrative, Python for the math.</p>
+      <div class="proj-meta-row">
+        <div class="proj-tags">
+          <span class="proj-tag">FastAPI</span>
+          <span class="proj-tag">LangChain</span>
+          <span class="proj-tag">n8n</span>
+          <span class="proj-tag">Pydantic</span>
+          <span class="proj-tag">Docker</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://github.com/Ash-bot19/AI-OS-finance" target="_blank" rel="noopener" class="proj-link">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Case Study ─────────────────────────────────────────────────────────── -->
+    <section class="case-study-section" id="case-study">
+      <div class="ps-page">
+        <div class="ps-section-label">CASE STUDY</div>
+        <h2 class="ps-section-title">LLMs for narrative.<br><em>Python for the math.</em></h2>
+        <article class="case-study">
+          <div class="case-study-hero">
+            <div>
+              <div class="cs-hero-meta">
+                <span>2025</span>
+                <span>AI ENGINEERING · FINTECH</span>
+                <span>LANGCHAIN · FASTAPI · N8N · PYDANTIC</span>
+              </div>
+              <h3 class="cs-hero-title">Deterministic DCF engine with AI-augmented research — LLM never touches the math, only the narrative</h3>
+              <p class="cs-hero-tagline">A finance-grade system where the separation between AI and computation is an architectural constraint enforced by agent boundaries — not a guardrail bolted on afterwards. The LLM has no access to the computation layer, only to its validated output.</p>
+            </div>
+            <div class="cs-hero-stats">
+              <div><div class="cs-stat-num">4</div><div class="cs-stat-label">specialised agents with typed boundaries</div></div>
+              <div><div class="cs-stat-num">2</div><div class="cs-stat-label">execution modes — MOCK and PROD</div></div>
+              <div><div class="cs-stat-num">0</div><div class="cs-stat-label">LLM calls in the valuation computation path</div></div>
+              <div><div class="cs-stat-num">100%</div><div class="cs-stat-label">inter-agent payloads schema-validated</div></div>
+            </div>
+          </div>
+          <div class="cs-body">
+            <div class="cs-tabs" role="tablist">
+              <button class="cs-tab" role="tab" aria-selected="true"  data-tab="problem">  <span class="cs-tab-num">01</span>Problem</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="approach">  <span class="cs-tab-num">02</span>Approach</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="decisions"> <span class="cs-tab-num">03</span>Decisions</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="results">   <span class="cs-tab-num">04</span>Results</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="lessons">   <span class="cs-tab-num">05</span>Lessons</button>
+            </div>
+            <div class="cs-panel" data-panel="problem" data-active>
+              <h4>Replace the spreadsheet without introducing the opposite failure mode: numbers that look plausible but can't be audited.</h4>
+              <p>Financial analysts run valuation models — DCF, comparables, sensitivity tables — manually in spreadsheets. The workflow is slow to iterate on, impossible to version, and entirely disconnected from the research context that informs the assumptions. Replacing it with an LLM introduces the opposite failure mode: models that produce numbers that look plausible but aren't deterministically reproducible and can't be audited back to their inputs.</p>
+              <p>A finance-grade system needs both: AI-assisted research and interpretation, with deterministic computation underneath it that an analyst can verify line by line. The hard part is enforcing that separation architecturally — not as a comment in the code, but as a boundary the LLM physically cannot cross.</p>
+            </div>
+            <div class="cs-panel" data-panel="approach">
+              <h4>Four specialised agents, strict Pydantic boundaries, zero LLM involvement in the computation path.</h4>
+              <ul>
+                <li>The Research Agent interprets the user's analytical intent and generates structured context for downstream agents. The Data Engineering Agent validates and normalises incoming financial datasets against Pydantic schemas before they reach the computation layer — a malformed payload fails loudly at the boundary, not silently inside the model.</li>
+                <li>The Finance Agent runs deterministic DCF analysis, IRR, and scenario modelling in Python — no LLM involvement at this stage. All inputs are Pydantic-validated before the calculation runs. All outputs are Pydantic-validated before leaving the service. Output artifacts are versioned as CSV for downstream compatibility with Excel and BI tools.</li>
+                <li>The Research Agent then receives the validated numerical output and generates written investment narrative grounded in the model's results — it reasons over the numbers, not around them. Citations in the narrative reference the actual model output fields, not LLM-generated summaries of them.</li>
+                <li>n8n acts as the external control plane, orchestrating the agent sequence, triggering data fetches, handling retry logic and error routing, and assembling the final report. FastAPI exposes the computation layer as a service that n8n calls — orchestration and computation stay decoupled.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="decisions">
+              <h4>Why these choices — each enforces the AI/computation separation as a hard constraint, not a soft guideline.</h4>
+              <ul>
+                <li><strong>LLMs for narrative only — deterministic Python for all math.</strong> Financial calculations (DCF, IRR, sensitivity tables) are deterministic Python with typed Pydantic models. LLMs are invoked only to interpret results and generate written analysis — never to produce numbers. This isn't a guardrail; it's an architectural constraint enforced by agent boundaries. The LLM has no access to the computation layer, only to its validated output.</li>
+                <li><strong>n8n for workflow orchestration over custom DAG code.</strong> The data fetch, model trigger, and report assembly steps change frequently as the analytical workflows evolve. A visual DAG in n8n is faster to iterate on than Python scheduler code, makes the workflow auditable without reading source, and handles retry logic and error routing without custom implementation.</li>
+                <li><strong>Pydantic for strict inter-agent I/O contracts.</strong> Every financial model input and output is a Pydantic schema. This acts as a firewall between agents — if upstream data is malformed, or a data source returns an unexpected structure, the pipeline fails fast at the boundary before bad data contaminates downstream calculations. Schema validation is the enforcement mechanism for the LLM/computation separation: the LLM can only receive what passed validation.</li>
+                <li><strong>MOCK mode as a first-class execution mode.</strong> All LLM calls are substituted with deterministic responses in MOCK mode — making the pipeline fully testable without API keys or spend. The Finance Agent computation path runs identically in both modes; only the Research Agent's LLM calls are swapped. CI tests run against MOCK mode exclusively.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="results">
+              <h4>Full Docker Compose stack · n8n + FastAPI + LangChain · MOCK and PROD modes.</h4>
+              <div class="cs-result-grid">
+                <div class="cs-result-card"><div class="cs-stat-num">4</div><div class="cs-stat-label">specialised agents with typed I/O</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">0</div><div class="cs-stat-label">LLM calls in computation path</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">2</div><div class="cs-stat-label">execution modes (MOCK / PROD)</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">100%</div><div class="cs-stat-label">inter-agent payloads validated</div></div>
+              </div>
+            </div>
+            <div class="cs-panel" data-panel="lessons">
+              <h4>What broke during build — and what I changed to fix it.</h4>
+              <ul>
+                <li><strong>The LLM narrative drifted from the model output when the prompt was too open-ended.</strong> An early prompt asked the Research Agent to "summarise the DCF analysis". It produced confident-sounding narrative that paraphrased — and occasionally contradicted — the actual model numbers. The fix: the prompt explicitly enumerates every field from the validated output and requires the narrative to reference each one by name. The LLM interprets; it cannot invent.</li>
+                <li><strong>n8n retry logic amplified a Pydantic validation error into duplicate model runs.</strong> When the Data Engineering Agent returned a validation error, n8n's default retry policy retried the whole workflow — including the FastAPI computation call that had already completed. The fix: FastAPI computation endpoints are idempotent by request ID; n8n retries the data validation step only, not the full pipeline.</li>
+                <li><strong>Sensitivity table output was too large for the LangChain context window at default chunk size.</strong> A 10×10 sensitivity table serialised to JSON exceeds 2k tokens — the Research Agent's context window was filling with sensitivity data before the DCF summary arrived. The fix: sensitivity tables are serialised as compact CSV (not JSON) and truncated to the 3×3 centre slice for narrative purposes; the full table is always in the versioned CSV artifact.</li>
+                <li><strong>MOCK mode diverged from PROD mode in a non-obvious way.</strong> The MOCK Research Agent returned a fixed string rather than a string that referenced the actual model output fields — so MOCK tests passed even when the prompt was broken. The fix: MOCK responses are generated by a template that interpolates the actual validated output fields, making them functionally equivalent to a real LLM call for testing purposes.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── Architecture ───────────────────────────────────────────────────────── -->
+    <section class="arch-section" id="architecture">
+      <div class="ps-page">
+        <div class="ps-section-label">SYSTEM ARCHITECTURE</div>
+        <h2 class="ps-section-title">How a DCF analysis<br><em>actually runs.</em></h2>
+        <div class="arch-frame">
+          <div class="arch-toolbar">
+            <span class="arch-tag">ai-os-finance · v1.0</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">hover any node →</span>
+          </div>
+          <div class="arch-canvas">
+            <div class="arch-canvas-inner">
+              <svg class="arch-svg" viewBox="0 0 900 480">
+                <defs>
+                  <marker id="arrowDimFin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--s-border-str)"/>
+                  </marker>
+                  <marker id="arrowLiveFin" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+                  </marker>
+                </defs>
+                <!-- Hot path: User Request → Data Eng → Finance Agent → LangChain → CSV Output -->
+                <path class="arch-edge live"   d="M 175 100 H 320" marker-end="url(#arrowLiveFin)"/>
+                <path class="arch-edge live"   d="M 392 132 V 213" marker-end="url(#arrowLiveFin)"/>
+                <path class="arch-edge live"   d="M 465 240 H 553 V 100 H 640" marker-end="url(#arrowLiveFin)"/>
+                <path class="arch-edge live"   d="M 712 132 V 213" marker-end="url(#arrowLiveFin)"/>
+                <!-- Cold path: n8n orchestration, Pydantic validation, MOCK/PROD mode, output → CSV -->
+                <path class="arch-edge dashed" d="M 175 240 H 247 V 100 H 320" marker-end="url(#arrowDimFin)"/>
+                <path class="arch-edge dashed" d="M 392 272 V 353" marker-end="url(#arrowDimFin)"/>
+                <path class="arch-edge dashed" d="M 712 272 V 353" marker-end="url(#arrowDimFin)"/>
+                <path class="arch-edge dashed" d="M 175 380 H 247 V 240 H 320" marker-end="url(#arrowDimFin)"/>
+                <!-- Edge labels -->
+                <g><rect class="arch-edge-label-bg" x="218" y="84"  width="58" height="16" rx="3"/><text class="arch-edge-label" x="247" y="95"  text-anchor="middle">validate</text></g>
+                <g><rect class="arch-edge-label-bg" x="360" y="162" width="64" height="16" rx="3"/><text class="arch-edge-label" x="392" y="173" text-anchor="middle">DCF · IRR</text></g>
+                <g><rect class="arch-edge-label-bg" x="518" y="84"  width="68" height="16" rx="3"/><text class="arch-edge-label" x="552" y="95"  text-anchor="middle">validated out</text></g>
+                <g><rect class="arch-edge-label-bg" x="674" y="162" width="76" height="16" rx="3"/><text class="arch-edge-label" x="712" y="173" text-anchor="middle">narrative</text></g>
+                <g><rect class="arch-edge-label-bg" x="210" y="162" width="64" height="16" rx="3"/><text class="arch-edge-label" x="242" y="173" text-anchor="middle">orchestrate</text></g>
+                <g><rect class="arch-edge-label-bg" x="354" y="302" width="76" height="16" rx="3"/><text class="arch-edge-label" x="392" y="313" text-anchor="middle">schema gate</text></g>
+                <g><rect class="arch-edge-label-bg" x="674" y="302" width="76" height="16" rx="3"/><text class="arch-edge-label" x="712" y="313" text-anchor="middle">CSV artifact</text></g>
+                <g><rect class="arch-edge-label-bg" x="192" y="302" width="52" height="16" rx="3"/><text class="arch-edge-label" x="218" y="313" text-anchor="middle">retry</text></g>
+              </svg>
+              <div class="arch-node" data-kind="ingest" data-tooltip="User submits a valuation request via the n8n UI or API trigger. n8n orchestrates the full workflow: data fetch → Data Engineering Agent validation → Finance Agent computation → Research Agent narrative → report assembly." data-tip-pos="below" style="top:76px;left:30px;"><div class="arch-node-title">User Request</div><div class="arch-node-meta">n8n trigger</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="n8n visual DAG orchestrates the agent sequence. Handles retry logic, error routing, and inter-agent sequencing. FastAPI exposes the computation layer as a service n8n calls — orchestration and computation stay decoupled. Retry logic targets the Data Engineering step only, not the full pipeline." style="top:216px;left:30px;"><div class="arch-node-title">n8n orchestrator</div><div class="arch-node-meta">DAG · retry · error routing</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Output artifacts versioned as CSV for downstream compatibility with Excel and BI tools. Each run produces: DCF summary, IRR table, sensitivity grid (10×10), and full scenario analysis. Filenames include a run ID for auditability." style="top:356px;left:30px;"><div class="arch-node-title">Report Artifacts</div><div class="arch-node-meta">versioned CSV output</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Validates and normalises incoming financial datasets against Pydantic schemas before they reach the computation layer. A malformed payload fails loudly at this boundary — bad data never contaminates the Finance Agent. Schema validation is the enforcement mechanism for the LLM/computation separation." data-tip-pos="below" style="top:76px;left:320px;"><div class="arch-node-title">Data Eng Agent</div><div class="arch-node-meta">Pydantic validation gate</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Runs deterministic DCF analysis, IRR, and scenario modelling in Python. Zero LLM involvement. All inputs validated before computation runs. All outputs validated before leaving the service. MOCK mode substitutes deterministic responses — CI tests run against MOCK exclusively." style="top:216px;left:320px;"><div class="arch-node-title">Finance Agent · DCF</div><div class="arch-node-meta">deterministic Python · 0 LLM calls</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Every inter-agent payload is Pydantic-validated. A malformed output from the Finance Agent fails before reaching LangChain. The schema acts as a firewall — the LLM can only receive payloads that passed the Pydantic gate." style="top:356px;left:320px;"><div class="arch-node-title">Pydantic schemas</div><div class="arch-node-meta">inter-agent I/O contracts</div></div>
+              <div class="arch-node" data-tooltip="LangChain Research Agent receives Pydantic-validated numerical results. Prompt explicitly enumerates every output field and requires the narrative to reference each by name — the LLM interprets, it cannot invent. MOCK mode uses a template that interpolates actual model fields." data-tip-pos="below" style="top:76px;left:640px;"><div class="arch-node-title">LangChain · narrative</div><div class="arch-node-meta">grounded interpretation only</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="FastAPI exposes the Finance Agent as a service. OpenAPI schema auto-generated from Pydantic models — the docs are always in sync with the code. Computation endpoints are idempotent by request ID — n8n retries are safe." style="top:216px;left:640px;"><div class="arch-node-title">FastAPI endpoint</div><div class="arch-node-meta">auto-generated OpenAPI</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="MOCK mode: all LLM calls return deterministic template-interpolated responses. PROD mode: live GPT-4o-mini calls. The Finance Agent computation path runs identically in both modes — only the Research Agent's LLM calls differ. Toggle via EXECUTION_MODE env var." style="top:356px;left:640px;"><div class="arch-node-title">MOCK / PROD mode</div><div class="arch-node-meta">env-var toggle · CI-safe</div></div>
+            </div>
+          </div>
+          <div class="arch-legend">
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:var(--accent);"></span>ingest</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.65 0.14 195);"></span>store</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.62 0.16 145);"></span>serve</div>
+            <div class="arch-legend-item" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-muted);">— hot path animated · cold path dashed</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Live Demo ──────────────────────────────────────────────────────────── -->
+    <section class="pipeline-section" id="demo">
+      <div class="ps-page">
+        <div class="ps-section-label">LIVE DEMO · VALUATION PIPELINE</div>
+        <h2 class="ps-section-title">Run a DCF analysis.<br><em>Watch the agents.</em></h2>
+        <div class="pipe-frame">
+          <div class="pipe-header">
+            <div class="pipe-title-block">
+              <h3>ai-os-finance / data → valuation → narrative</h3>
+              <p>A valuation request flows through Pydantic validation, deterministic DCF computation, and LangChain narrative generation. Invalid data is rejected at the schema gate before the Finance Agent is called.</p>
+            </div>
+            <div class="pipe-actions">
+              <button class="pipe-btn primary" id="finBtnRun">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                Run DCF analysis
+              </button>
+              <button class="pipe-btn danger" id="finBtnInvalid">⚠ Submit invalid data</button>
+              <button class="pipe-btn" id="finBtnReset">Reset</button>
+            </div>
+          </div>
+          <div class="pipe-body">
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">01</span> COMPUTATION · finance agent</div>
+              <div class="pipe-events" id="finPipeline"></div>
+            </div>
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">02</span> NARRATIVE · research agent</div>
+              <div class="pipe-events" id="finOutput"></div>
+            </div>
+            <div class="pipe-side">
+              <div class="pipe-stat"><span class="pipe-stat-label">runs completed</span><span class="pipe-stat-val good" id="finStatRuns">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">validation errors</span><span class="pipe-stat-val bad" id="finStatErrors">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">avg DCF time</span><span class="pipe-stat-val accent" id="finStatTime">—</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">LLM calls in math path</span><span class="pipe-stat-val good" id="finStatLLM">0</span></div>
+              <div class="pipe-explain">
+                <strong>How it works:</strong> n8n triggers workflow → Data Eng Agent validates Pydantic schema → Finance Agent runs deterministic DCF in Python (0 LLM calls) → validated output passed to Research Agent → LangChain generates grounded narrative referencing actual model fields.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer nav ─────────────────────────────────────────────────────────── -->
+    <footer class="proj-footer">
+      <a href="./regulatory-intelligence-agent.html" class="proj-footer-back">← Regulatory Intelligence Agent</a>
+      <a href="../index.html#projects" class="proj-footer-next">All projects →</a>
+    </footer>
+
+  </main>
+
+  <script defer src="../js/sections.js"></script>
+  <script>
+  (function initFinancePipeline() {
+    var pipelineEl  = document.getElementById('finPipeline');
+    var outputEl    = document.getElementById('finOutput');
+    var statRuns    = document.getElementById('finStatRuns');
+    var statErrors  = document.getElementById('finStatErrors');
+    var statTime    = document.getElementById('finStatTime');
+    var statLLM     = document.getElementById('finStatLLM');
+    if (!pipelineEl) return;
+
+    var runs = 0, errors = 0;
+    var totalTime = 0;
+    var MAX_EVENTS = 8;
+
+    var COMPANIES = ['Acme Corp', 'Meridian Industries', 'NovaTech Ltd', 'Helix Capital', 'Solara Group'];
+    var WACC = ['8.2%', '9.1%', '7.8%', '10.3%', '8.7%'];
+    var GROWTH = ['3.5%', '4.2%', '2.8%', '5.1%', '3.9%'];
+    var INVALID_ERRORS = [
+      'missing required field: revenue_forecast',
+      'terminal_growth_rate must be < wacc',
+      'projection_years must be integer in [3, 10]',
+      'discount_rate: value is not a valid float',
+    ];
+
+    function runId() { return 'RUN_' + Math.random().toString(36).slice(2, 6).toUpperCase(); }
+    function dcfValue() { return (Math.random() * 800 + 200).toFixed(1); }
+    function irr() { return (Math.random() * 12 + 8).toFixed(1); }
+
+    function pushEvent(container, html, cls) {
+      var div = document.createElement('div');
+      div.className = 'pipe-event ' + (cls || '');
+      div.innerHTML = html;
+      container.prepend(div);
+      while (container.children.length > MAX_EVENTS) container.lastChild.remove();
+    }
+
+    function updateStats() {
+      statRuns.textContent   = runs;
+      statErrors.textContent = errors;
+      statTime.textContent   = runs > 0 ? Math.round(totalTime / runs) + 'ms' : '—';
+      statLLM.textContent    = '0';
+    }
+
+    function runDCF() {
+      var id = runId();
+      var company = COMPANIES[Math.floor(Math.random() * COMPANIES.length)];
+      var wacc = WACC[Math.floor(Math.random() * WACC.length)];
+      var growth = GROWTH[Math.floor(Math.random() * GROWTH.length)];
+      var computeTime = Math.floor(180 + Math.random() * 120);
+      var intrinsic = dcfValue();
+      var irrVal = irr();
+
+      pushEvent(pipelineEl,
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-id">' + id + ' · ' + company + '</span>' +
+          '<span class="pipe-event-amount">WACC ' + wacc + '</span>' +
+        '</div>' +
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-status ok">VALIDATED · DCF running · 0 LLM calls</span>' +
+          '<span class="pipe-event-id">g=' + growth + '</span>' +
+        '</div>',
+        'committed'
+      );
+
+      setTimeout(function () {
+        runs++;
+        totalTime += computeTime;
+
+        pushEvent(pipelineEl,
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-id">' + id + ' · computed</span>' +
+            '<span class="pipe-event-amount">$' + intrinsic + 'M intrinsic</span>' +
+          '</div>' +
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-status ok">IRR ' + irrVal + '% · ' + computeTime + 'ms · Pydantic validated</span>' +
+            '<span class="pipe-event-id">→ Research Agent</span>' +
+          '</div>',
+          'committed'
+        );
+
+        setTimeout(function () {
+          pushEvent(outputEl,
+            '<div class="pipe-event-row">' +
+              '<span class="pipe-event-id">' + id + ' · LangChain narrative</span>' +
+              '<span class="pipe-event-amount">' + Math.floor(60 + Math.random() * 80) + 'ms</span>' +
+            '</div>' +
+            '<div class="pipe-event-row">' +
+              '<span class="pipe-event-status ok">GROUNDED · intrinsic=$' + intrinsic + 'M · IRR=' + irrVal + '% · CSV saved</span>' +
+              '<span class="pipe-event-id">0 hallucinated fields</span>' +
+            '</div>',
+            'committed'
+          );
+          updateStats();
+        }, 700);
+        updateStats();
+      }, computeTime);
+    }
+
+    function submitInvalid() {
+      var id = runId();
+      var errMsg = INVALID_ERRORS[Math.floor(Math.random() * INVALID_ERRORS.length)];
+
+      errors++;
+      pushEvent(pipelineEl,
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-id">' + id + ' · malformed payload</span>' +
+          '<span class="pipe-event-amount" style="text-decoration:line-through;">DCF</span>' +
+        '</div>' +
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-status dup">PYDANTIC ERROR · ' + errMsg + '</span>' +
+          '<span class="pipe-event-id">0.4ms</span>' +
+        '</div>',
+        'duplicate'
+      );
+
+      pushEvent(outputEl,
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-id">' + id + ' · rejected at schema gate</span>' +
+          '<span class="pipe-event-amount">$0.00</span>' +
+        '</div>' +
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-status dup">Finance Agent never called · 0 LLM tokens used</span>' +
+          '<span class="pipe-event-id">audit logged</span>' +
+        '</div>',
+        'duplicate'
+      );
+      updateStats();
+    }
+
+    document.getElementById('finBtnRun').addEventListener('click', runDCF);
+    document.getElementById('finBtnInvalid').addEventListener('click', submitInvalid);
+    document.getElementById('finBtnReset').addEventListener('click', function () {
+      runs = errors = 0; totalTime = 0;
+      pipelineEl.innerHTML = '';
+      outputEl.innerHTML = '';
+      updateStats();
+    });
+
+    setTimeout(function () { runDCF(); }, 400);
+  })();
+  </script>
+
+</body>
+</html>

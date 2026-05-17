@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment System — Ayush Samantaray</title>
+
+  <script>
+    (function () {
+      try { sessionStorage.setItem('site-entered', '1'); } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
+  </noscript>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="../css/sections.css">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+  <nav aria-label="Project navigation">
+    <a href="../index.html" class="nav-logo" aria-label="Back to portfolio">
+      <img class="nav-logo-face" src="../assets/New_face_logo.svg" alt="" draggable="false">
+    </a>
+    <a href="../index.html#projects" class="proj-back-link">
+      <span class="proj-back-arrow">←</span> All work
+    </a>
+  </nav>
+
+  <main class="proj-main">
+
+    <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+    <section class="proj-hero" id="top">
+      <span class="proj-eyebrow">Case Study</span>
+      <h1 class="proj-title">Payment System</h1>
+      <p class="proj-tagline">Distributed payment backbone with event-driven orchestration, real-time fraud scoring, and multi-layer financial analytics across the full transaction lifecycle.</p>
+      <div class="proj-meta-row">
+        <div class="proj-tags">
+          <span class="proj-tag">Kafka</span>
+          <span class="proj-tag">Spark</span>
+          <span class="proj-tag">Airflow</span>
+          <span class="proj-tag">dbt</span>
+          <span class="proj-tag">BigQuery</span>
+          <span class="proj-tag">PostgreSQL</span>
+          <span class="proj-tag">Redis</span>
+          <span class="proj-tag">GCP</span>
+          <span class="proj-tag">XGBoost</span>
+          <span class="proj-tag">Docker</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://github.com/Ash-bot19/Payment-System" target="_blank" rel="noopener" class="proj-link">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Case Study ─────────────────────────────────────────────────────────── -->
+    <section class="case-study-section" id="case-study">
+      <div class="ps-page">
+        <div class="ps-section-label">CASE STUDY</div>
+        <h2 class="ps-section-title">A payments pipeline,<br><em>built for failure.</em></h2>
+        <article class="case-study">
+          <div class="case-study-hero">
+            <div>
+              <div class="cs-hero-meta">
+                <span>2025</span>
+                <span>FINTECH · DATA ENGINEERING</span>
+                <span>KAFKA · SPARK · XGBOOST · GCP</span>
+              </div>
+              <h3 class="cs-hero-title">Event-driven payment pipeline — idempotent ingestion, real-time fraud scoring, double-entry ledger</h3>
+              <p class="cs-hero-tagline">A production-grade payment backend built on Kafka, Spark Structured Streaming, and XGBoost — designed around Stripe's retry semantics, exactly-once ledger writes, and crash-safe consumer recovery.</p>
+            </div>
+            <div class="cs-hero-stats">
+              <div><div class="cs-stat-num">&lt;100ms</div><div class="cs-stat-label">p99 fraud scoring SLA</div></div>
+              <div><div class="cs-stat-num">7</div><div class="cs-stat-label">Kafka topics across pipeline</div></div>
+              <div><div class="cs-stat-num">10</div><div class="cs-stat-label">dbt models (staging → marts)</div></div>
+              <div><div class="cs-stat-num">3</div><div class="cs-stat-label">Cloud Run services on GCP</div></div>
+            </div>
+          </div>
+          <div class="cs-body">
+            <div class="cs-tabs" role="tablist">
+              <button class="cs-tab" role="tab" aria-selected="true"  data-tab="problem">  <span class="cs-tab-num">01</span>Problem</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="approach">  <span class="cs-tab-num">02</span>Approach</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="decisions"> <span class="cs-tab-num">03</span>Decisions</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="results">   <span class="cs-tab-num">04</span>Results</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="lessons">   <span class="cs-tab-num">05</span>Lessons</button>
+            </div>
+            <div class="cs-panel" data-panel="problem" data-active>
+              <h4>Stripe retries every failed webhook for up to 3 days. Naive handlers double-charge.</h4>
+              <p>Payment backends face three hard constraints simultaneously. First: Stripe's retry semantics mean a webhook can arrive multiple times — a naive handler processes each one, double-charging customers and corrupting the ledger. Second: fraud scoring must happen before settlement, but adding ML inference to the hot path kills Stripe's 30-second webhook timeout. Third: the ledger must be exactly-once even when Kafka consumers crash mid-batch.</p>
+              <p>Building a system that handles Stripe's retry semantics, sub-100ms fraud scoring, and crash-safe double-entry bookkeeping — simultaneously, without any of them compromising the others — is the engineering problem.</p>
+            </div>
+            <div class="cs-panel" data-panel="approach">
+              <h4>Decouple, gate at the edge, score asynchronously, enforce at commit.</h4>
+              <ul>
+                <li>The webhook receiver does three things synchronously: verify the HMAC signature, check Redis for the event ID via atomic <em>SET NX</em> with a 24h TTL matching Stripe's retry window, and publish to Kafka. If the event ID already exists in Redis, return 200 immediately — no reprocessing. Hot path returns before any downstream component sees the event.</li>
+                <li>Spark Structured Streaming computes 8 ML features asynchronously (<em>tx_velocity_1m</em>, <em>amount_zscore</em>, <em>merchant_risk_score</em>, <em>device_switch_flag</em>, etc.) and caches them in Redis. The scoring consumer reads those features and calls the XGBoost model at p99 &lt;100ms — completely off the webhook acknowledgment path.</li>
+                <li>The ledger consumer writes a DEBIT + CREDIT pair to PostgreSQL in one transaction. A <em>DEFERRABLE INITIALLY DEFERRED</em> trigger enforces <em>SUM(amount_cents) = 0</em> per <em>transaction_id</em> at commit time — both rows can land before the balance constraint fires.</li>
+                <li>Airflow reconciles the ledger nightly against the Stripe Settlements API, paginates through all events, and exports discrepancies to BigQuery. dbt builds 10 models on top — staging → dimensions → facts → marts for reconciliation, revenue, and chargeback reporting.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="decisions">
+              <h4>Why these tradeoffs — each came from a concrete failure mode, not preference.</h4>
+              <ul>
+                <li><strong>Manual Kafka offset commit (<em>enable.auto.commit=False</em>).</strong> Auto-commit acknowledges messages before processing completes. A consumer crash after auto-commit but before the ledger write silently drops the event. Manual commit only after successful DB write makes the consumer crash-safe — Kafka replays from the last committed offset on restart.</li>
+                <li><strong>Redis <em>SET NX</em> for idempotency at the edge, not in the DB.</strong> Checking for duplicates at the DB layer requires a round-trip on every request. Redis atomic <em>SET NX</em> is sub-millisecond and happens before Kafka publish — duplicates never enter the pipeline at all.</li>
+                <li><strong><em>DEFERRABLE INITIALLY DEFERRED</em> trigger for ledger balance.</strong> A non-deferred constraint fires after each INSERT — always fails because only one of DEBIT or CREDIT has landed. Deferring to commit time allows both rows in a single transaction before the balance check fires.</li>
+                <li><strong>XGBoost binary (38KB) in version control.</strong> Eliminates runtime training dependencies. The model is regenerable from training scripts if retraining is needed, but serving doesn't require a training environment.</li>
+                <li><strong>ML fallback is <em>manual_review=True</em>, not a default verdict.</strong> When Spark features aren't yet cached — they arrive ~10s post-event — the scoring consumer can't wait. Falling back to manual review is the correct conservative failure, not an error condition.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="results">
+              <h4>GCP deployment · Cloud Run + Cloud SQL + Cloud Memorystore · real Stripe test events.</h4>
+              <div class="cs-result-grid">
+                <div class="cs-result-card"><div class="cs-stat-num">&lt;100ms</div><div class="cs-stat-label">p99 XGBoost scoring SLA</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">7</div><div class="cs-stat-label">Kafka topics with DLQ coverage</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">10</div><div class="cs-stat-label">dbt models across 4 layers</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">3</div><div class="cs-stat-label">Cloud Run services in prod</div></div>
+              </div>
+            </div>
+            <div class="cs-panel" data-panel="lessons">
+              <h4>What actually broke — and what I learned from fixing it.</h4>
+              <ul>
+                <li><strong>Spark features arrive ~10s after the Kafka event.</strong> An early version of the scoring consumer queried Redis immediately and got a cache miss — then fell back to scoring with all-zero features, producing low risk scores for every transaction. The fix: fall back to <em>manual_review=True</em> on cache miss, not a default score. A false-clean verdict in a payments context is categorically worse than a false escalation.</li>
+                <li><strong>The DEFERRABLE trigger only works when both rows are in the same transaction.</strong> Early versions opened one transaction per ledger row. The balance constraint fired after the first INSERT and always failed. The fix required wrapping both INSERTs in an explicit transaction with <em>DEFERRABLE INITIALLY DEFERRED</em> — the constraint evaluates only once, at commit.</li>
+                <li><strong>Airflow's nightly reconciliation DAG must handle Stripe API pagination.</strong> Early versions fetched only the first page of settlements — the discrepancy count looked correct on small datasets but missed ~30% of events at volume. Fixed by paginating through the full <em>starting_after</em> cursor chain and asserting the page count before exporting.</li>
+                <li><strong>The first bottleneck at load isn't Postgres — it's the OpenAI rate limit (in the ML variant).</strong> At 10× load each investigation makes multiple LLM calls; the requests-per-minute cap saturates before Postgres does. Fix: async consumers with a token-bucket rate limiter and Kafka back-pressure rather than queuing in memory.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── Architecture ───────────────────────────────────────────────────────── -->
+    <section class="arch-section" id="architecture">
+      <div class="ps-page">
+        <div class="ps-section-label">SYSTEM ARCHITECTURE</div>
+        <h2 class="ps-section-title">How transactions<br><em>actually flow.</em></h2>
+        <div class="arch-frame">
+          <div class="arch-toolbar">
+            <span class="arch-tag">payment-system · v1.0</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">hover any node →</span>
+          </div>
+          <div class="arch-canvas">
+            <div class="arch-canvas-inner">
+              <svg class="arch-svg" viewBox="0 0 900 480">
+                <defs>
+                  <marker id="arrowDimPy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--s-border-str)"/>
+                  </marker>
+                  <marker id="arrowLivePy" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+                  </marker>
+                </defs>
+                <path class="arch-edge live"   d="M 175 100 H 320" marker-end="url(#arrowLivePy)"/>
+                <path class="arch-edge live"   d="M 392 132 V 213" marker-end="url(#arrowLivePy)"/>
+                <path class="arch-edge live"   d="M 465 240 H 553 V 100 H 640" marker-end="url(#arrowLivePy)"/>
+                <path class="arch-edge live"   d="M 712 132 V 213" marker-end="url(#arrowLivePy)"/>
+                <path class="arch-edge dashed" d="M 175 240 H 247 V 100 H 320" marker-end="url(#arrowDimPy)"/>
+                <path class="arch-edge dashed" d="M 392 272 V 353" marker-end="url(#arrowDimPy)"/>
+                <path class="arch-edge dashed" d="M 712 272 V 353" marker-end="url(#arrowDimPy)"/>
+                <path class="arch-edge dashed" d="M 175 380 H 247 V 240 H 640" marker-end="url(#arrowDimPy)"/>
+                <g><rect class="arch-edge-label-bg" x="222" y="84"  width="56" height="16" rx="3"/><text class="arch-edge-label" x="250" y="95"  text-anchor="middle">webhook</text></g>
+                <g><rect class="arch-edge-label-bg" x="362" y="162" width="60" height="16" rx="3"/><text class="arch-edge-label" x="392" y="173" text-anchor="middle">publish</text></g>
+                <g><rect class="arch-edge-label-bg" x="527" y="84"  width="50" height="16" rx="3"/><text class="arch-edge-label" x="552" y="95"  text-anchor="middle">score</text></g>
+                <g><rect class="arch-edge-label-bg" x="682" y="162" width="60" height="16" rx="3"/><text class="arch-edge-label" x="712" y="173" text-anchor="middle">ledger</text></g>
+                <g><rect class="arch-edge-label-bg" x="216" y="162" width="52" height="16" rx="3"/><text class="arch-edge-label" x="242" y="173" text-anchor="middle">SET NX</text></g>
+                <g><rect class="arch-edge-label-bg" x="354" y="302" width="76" height="16" rx="3"/><text class="arch-edge-label" x="392" y="313" text-anchor="middle">features</text></g>
+                <g><rect class="arch-edge-label-bg" x="676" y="302" width="72" height="16" rx="3"/><text class="arch-edge-label" x="712" y="313" text-anchor="middle">nightly</text></g>
+                <g><rect class="arch-edge-label-bg" x="375" y="232" width="76" height="16" rx="3"/><text class="arch-edge-label" x="413" y="243" text-anchor="middle">reconcile</text></g>
+              </svg>
+              <div class="arch-node" data-kind="ingest" data-tooltip="HMAC-signed webhook events from Stripe. Fires on payment_intent.succeeded, charge.captured, and 12 other event types. Stripe retries for up to 3 days on non-2xx responses." data-tip-pos="below" style="top:76px;left:30px;"><div class="arch-node-title">Stripe Events</div><div class="arch-node-meta">webhook · HMAC signed</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="SET NX with 24h TTL matches Stripe's retry window exactly. Duplicate event_id returns 200 immediately — no Kafka publish, no downstream processing, no double-charge." style="top:216px;left:30px;"><div class="arch-node-title">Redis · idempotency</div><div class="arch-node-meta">SET NX · 24h TTL</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="Nightly reconciliation DAG. Paginates Stripe Settlements API with starting_after cursor, compares against PostgreSQL ledger row by row, exports discrepancies to BigQuery." style="top:356px;left:30px;"><div class="arch-node-title">Airflow DAG</div><div class="arch-node-meta">nightly reconciliation</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="FastAPI on Cloud Run. HMAC verify → Redis idempotency check → Kafka publish. Sub-50ms hot path — returns 200 before any downstream processing begins." data-tip-pos="below" style="top:76px;left:320px;"><div class="arch-node-title">webhook-service</div><div class="arch-node-meta">FastAPI · Cloud Run</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="7 topics: webhook.received, transaction.validated, transaction.scored, ledger.entry, reconciliation.queue, alert.triggered, dlq. Manual offset commit only — no silent message loss." style="top:216px;left:320px;"><div class="arch-node-title">Kafka · 7 topics</div><div class="arch-node-meta">enable.auto.commit=False</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Spark Structured Streaming computes 8 ML features per event: tx_velocity_1m, tx_velocity_5m, amount_zscore, merchant_risk_score, device_switch_flag, hour_of_day, weekend_flag, amount_cents_log. Cached in Redis." style="top:356px;left:320px;"><div class="arch-node-title">Spark Feature Engine</div><div class="arch-node-meta">8 features → Redis</div></div>
+              <div class="arch-node" data-tooltip="38KB binary in version control. Returns risk_score [0,1], is_high_risk (≥0.7), manual_review (≥0.85). p99 <100ms SLA. Redis cache miss → fallback to manual_review=True." data-tip-pos="below" style="top:76px;left:640px;"><div class="arch-node-title">XGBoost Scoring</div><div class="arch-node-meta">p99 &lt;100ms</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Append-only. UPDATE/DELETE blocked by DB trigger. DEBIT + CREDIT pair per transaction. DEFERRABLE INITIALLY DEFERRED balance constraint fires at commit — both rows land before validation." style="top:216px;left:640px;"><div class="arch-node-title">PostgreSQL · ledger</div><div class="arch-node-meta">append-only · DEFERRABLE</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="dbt builds 10 models: staging → dimensions → facts → marts. Reconciliation, revenue, and chargeback reporting layers. Schema auto-generated from Pydantic models." style="top:356px;left:640px;"><div class="arch-node-title">BigQuery + dbt</div><div class="arch-node-meta">10 models · 4 layers</div></div>
+            </div>
+          </div>
+          <div class="arch-legend">
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:var(--accent);"></span>ingest</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.65 0.14 195);"></span>store</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.62 0.16 145);"></span>serve</div>
+            <div class="arch-legend-item" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-muted);">— hot path animated · cold path dashed</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Live Demo ──────────────────────────────────────────────────────────── -->
+    <section class="pipeline-section" id="demo">
+      <div class="ps-page">
+        <div class="ps-section-label">LIVE DEMO · PAYMENT PIPELINE</div>
+        <h2 class="ps-section-title">Send a payment.<br><em>Watch the pipeline.</em></h2>
+        <div class="pipe-frame">
+          <div class="pipe-header">
+            <div class="pipe-title-block">
+              <h3>payment-system / webhook → ledger</h3>
+              <p>Each payment fires a Stripe-style webhook event. The pipeline verifies HMAC, checks Redis for duplicates, scores for fraud, and writes a balanced double-entry ledger row.</p>
+            </div>
+            <div class="pipe-actions">
+              <button class="pipe-btn primary" id="pyBtnPay">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                Send payment
+              </button>
+              <button class="pipe-btn danger" id="pyBtnFraud">⚠ Send fraud attempt</button>
+              <button class="pipe-btn danger" id="pyBtnDup">⟳ Send duplicate</button>
+              <button class="pipe-btn" id="pyBtnReset">Reset</button>
+            </div>
+          </div>
+          <div class="pipe-body">
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">01</span> KAFKA · webhook.received</div>
+              <div class="pipe-events" id="pyKafka"></div>
+            </div>
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">02</span> LEDGER · postgres</div>
+              <div class="pipe-events" id="pyLedger"></div>
+            </div>
+            <div class="pipe-side">
+              <div class="pipe-stat"><span class="pipe-stat-label">transactions processed</span><span class="pipe-stat-val good" id="pyStatTxns">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">fraud flagged</span><span class="pipe-stat-val bad" id="pyStatFlagged">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">duplicates blocked</span><span class="pipe-stat-val bad" id="pyStatBlocked">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">total volume</span><span class="pipe-stat-val accent" id="pyStatVol">$0.00</span></div>
+              <div class="pipe-explain">
+                <strong>How it works:</strong> Stripe webhook → HMAC verify → Redis SET NX (idempotency) → Kafka publish. XGBoost scores the transaction. Ledger consumer writes DEBIT + CREDIT in one transaction. Duplicate event_ids are blocked at the Redis gate before entering Kafka.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer nav ─────────────────────────────────────────────────────────── -->
+    <footer class="proj-footer">
+      <a href="../index.html#projects" class="proj-footer-back">← Back to portfolio</a>
+      <a href="./real-time-data-streaming.html" class="proj-footer-next">Next project →</a>
+    </footer>
+
+  </main>
+
+  <script defer src="../js/sections.js"></script>
+  <script>
+  (function initPaymentPipeline() {
+    var kafkaEl   = document.getElementById('pyKafka');
+    var ledgerEl  = document.getElementById('pyLedger');
+    var statTxns  = document.getElementById('pyStatTxns');
+    var statFlagged = document.getElementById('pyStatFlagged');
+    var statBlocked = document.getElementById('pyStatBlocked');
+    var statVol   = document.getElementById('pyStatVol');
+    if (!kafkaEl) return;
+
+    var seenKeys = new Set();
+    var lastKey = null;
+    var txns = 0, flagged = 0, blocked = 0, totalVol = 0;
+    var MAX_EVENTS = 8;
+    var SCENARIOS = ['payment_intent.succeeded', 'charge.captured', 'payment_intent.created'];
+
+    function txnId() { return 'TXN_' + Math.random().toString(36).slice(2, 8).toUpperCase(); }
+    function amount() { return (Math.random() * 9900 + 100).toFixed(2); }
+
+    function pushEvent(container, html, cls) {
+      var div = document.createElement('div');
+      div.className = 'pipe-event ' + (cls || '');
+      div.innerHTML = html;
+      container.prepend(div);
+      while (container.children.length > MAX_EVENTS) container.lastChild.remove();
+    }
+
+    function updateStats() {
+      statTxns.textContent    = txns;
+      statFlagged.textContent = flagged;
+      statBlocked.textContent = blocked;
+      statVol.textContent     = '$' + totalVol.toFixed(2);
+    }
+
+    function sendPayment(isFraud, isDup) {
+      var key = (isDup && lastKey) ? lastKey : txnId();
+      var amt = amount();
+      var risk = isFraud
+        ? (0.72 + Math.random() * 0.26).toFixed(2)
+        : (0.08 + Math.random() * 0.28).toFixed(2);
+      var scenario = SCENARIOS[Math.floor(Math.random() * SCENARIOS.length)];
+      lastKey = key;
+      txns++;
+      totalVol += parseFloat(amt);
+
+      pushEvent(kafkaEl,
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-id">' + key + '</span>' +
+          '<span class="pipe-event-amount">$' + amt + '</span>' +
+        '</div>' +
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-status">offset ' + (txns * 13 + 200) + ' · risk ' + risk + '</span>' +
+          '<span class="pipe-event-id">' + scenario + '</span>' +
+        '</div>'
+      );
+
+      setTimeout(function () {
+        if (isDup && seenKeys.has(key)) {
+          blocked++;
+          pushEvent(ledgerEl,
+            '<div class="pipe-event-row">' +
+              '<span class="pipe-event-id">' + key + '</span>' +
+              '<span class="pipe-event-amount" style="text-decoration:line-through;">$' + amt + '</span>' +
+            '</div>' +
+            '<div class="pipe-event-row">' +
+              '<span class="pipe-event-status dup">REDIS MUTEX BLOCKED · duplicate event_id</span>' +
+              '<span class="pipe-event-id">0.3ms</span>' +
+            '</div>',
+            'duplicate'
+          );
+        } else {
+          seenKeys.add(key);
+          if (parseFloat(risk) >= 0.70) {
+            flagged++;
+            pushEvent(ledgerEl,
+              '<div class="pipe-event-row">' +
+                '<span class="pipe-event-id">' + key + '</span>' +
+                '<span class="pipe-event-amount">$' + amt + '</span>' +
+              '</div>' +
+              '<div class="pipe-event-row">' +
+                '<span class="pipe-event-status dup">FLAGGED · risk ' + risk + ' · manual_review_queue</span>' +
+                '<span class="pipe-event-id">' + Math.floor(60 + Math.random() * 40) + 'ms</span>' +
+              '</div>',
+              'duplicate'
+            );
+          } else {
+            pushEvent(ledgerEl,
+              '<div class="pipe-event-row">' +
+                '<span class="pipe-event-id">' + key + '</span>' +
+                '<span class="pipe-event-amount">$' + amt + '</span>' +
+              '</div>' +
+              '<div class="pipe-event-row">' +
+                '<span class="pipe-event-status ok">SETTLED · DEBIT + CREDIT · ledger balanced</span>' +
+                '<span class="pipe-event-id">' + Math.floor(40 + Math.random() * 60) + 'ms</span>' +
+              '</div>',
+              'committed'
+            );
+          }
+        }
+        updateStats();
+      }, 800);
+      updateStats();
+    }
+
+    document.getElementById('pyBtnPay').addEventListener('click',   function () { sendPayment(false, false); });
+    document.getElementById('pyBtnFraud').addEventListener('click', function () { sendPayment(true,  false); });
+    document.getElementById('pyBtnDup').addEventListener('click',   function () { sendPayment(false, true);  });
+    document.getElementById('pyBtnReset').addEventListener('click', function () {
+      seenKeys.clear(); lastKey = null;
+      txns = flagged = blocked = 0; totalVol = 0;
+      kafkaEl.innerHTML = ''; ledgerEl.innerHTML = '';
+      updateStats();
+    });
+
+    setTimeout(function () { sendPayment(false, false); }, 400);
+  })();
+  </script>
+
+</body>
+</html>

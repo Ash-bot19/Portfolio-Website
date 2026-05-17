@@ -284,18 +284,20 @@
         <!-- Professional layer: each line owns its dim base and bright reveal copy -->
         <div class="about-copy" data-professional>
           <p class="about-text about-text-reveal">
-            <span class="reveal-line"><span class="reveal-line-base">Engineering student building </span><span class="reveal-line-inner" aria-hidden="true">Engineering student building </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">scalable fintech and </span><span class="reveal-line-inner" aria-hidden="true">scalable fintech and </span></span>
-            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">AI-driven data systems</span> </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">AI-driven data systems</span> </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">for production environments.</span><span class="reveal-line-inner" aria-hidden="true">for production environments.</span></span>
+            <span class="reveal-line"><span class="reveal-line-base">Engineering student </span><span class="reveal-line-inner" aria-hidden="true">Engineering student </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">building scalable </span><span class="reveal-line-inner" aria-hidden="true">building scalable </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">fintech and <span class="about-accent">AI-driven</span> </span><span class="reveal-line-inner" aria-hidden="true">fintech and <span class="about-accent">AI-driven</span> </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">data systems for </span><span class="reveal-line-inner" aria-hidden="true">data systems for </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">production environments.</span><span class="reveal-line-inner" aria-hidden="true">production environments.</span></span>
           </p>
         </div>
 
         <!-- Honest layer: same per-line reveal structure -->
         <div class="about-copy" data-honest>
           <p class="about-text about-text-reveal">
-            <span class="reveal-line"><span class="reveal-line-base">Final-year engineering student </span><span class="reveal-line-inner" aria-hidden="true">Final-year engineering student </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">converting <span class="about-accent">caffeine</span> and </span><span class="reveal-line-inner" aria-hidden="true">converting <span class="about-accent">caffeine</span> and </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">Final-year engineering </span><span class="reveal-line-inner" aria-hidden="true">Final-year engineering </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">student converting </span><span class="reveal-line-inner" aria-hidden="true">student converting </span></span>
+            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">caffeine</span> and </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">caffeine</span> and </span></span>
             <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">overthinking</span> into </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">overthinking</span> into </span></span>
             <span class="reveal-line"><span class="reveal-line-base">functional data systems.</span><span class="reveal-line-inner" aria-hidden="true">functional data systems.</span></span>
           </p>
@@ -307,13 +309,15 @@
         <div class="about-lens-inner">
           <span class="about-label">ABOUT ME</span>
           <p class="about-text about-lens-text">
-            <span class="about-lens-line">Final-year engineering student </span>
-            <span class="about-lens-line">converting <span class="about-accent">caffeine</span> and </span>
+            <span class="about-lens-line">Final-year engineering </span>
+            <span class="about-lens-line">student converting </span>
+            <span class="about-lens-line"><span class="about-accent">caffeine</span> and </span>
             <span class="about-lens-line"><span class="about-accent">overthinking</span> into </span>
             <span class="about-lens-line">functional data systems.</span>
           </p>
         </div>
       </div>
+
     </section>
 
 
@@ -381,51 +385,87 @@
         <div class="stack-grid" id="stackGrid">
           <div class="stack-cell" data-tip="Orchestrating nightly ETL DAGs for ledger reconciliation">
             <span class="stack-name">Airflow</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/apacheairflow" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/airflow.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="12-partition payments topic — 2.4M events/day in production">
             <span class="stack-name">Kafka</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/apachekafka/d0c8b5" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/kafka.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="Batch jobs over 90d ledger snapshots for fraud features">
             <span class="stack-name">Spark</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/apachespark/E25A1C" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/spark.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="Every service shipped as multi-stage images, prod + local">
             <span class="stack-name">Docker</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/docker/2496ED" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/docker.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="Primary language — FastAPI services, Airflow DAGs, scripts">
             <span class="stack-name">Python</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/python" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/python.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="API gateway in front of the payments topic + auth layer">
             <span class="stack-name">FastAPI</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/fastapi/009688" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/fastapi.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="Custom metrics on consumer lag, dedup-hits, p99 enqueue">
             <span class="stack-name">Prometheus</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/prometheus" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/prometheus.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="Dashboards for the on-call rotation — uptime, SLO burn">
             <span class="stack-name">Grafana</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/grafana" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/grafana.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="Redis bloom filter for dedup + rate-limit counters per tenant">
             <span class="stack-name">Redis</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/redis/DC382D" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/redis.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="Ledger, outbox table, migrations — core data store">
             <span class="stack-name">PostgreSQL</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/postgresql.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="PRs, Actions CI/CD, issue templates for the on-call playbook">
             <span class="stack-name">GitHub</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/github/181717" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/github.svg" alt="" loading="lazy"></div>
           </div>
           <div class="stack-cell" data-tip="RFCs, post-mortems, case-study source-of-truth">
             <span class="stack-name">Notion</span>
-            <div class="stack-icon"><img src="https://cdn.simpleicons.org/notion/000000" alt="" loading="lazy"></div>
+            <div class="stack-icon"><img src="assets/stack-icons/notion.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="RAG pipelines, agent tooling, and AML state machine — used across all AI projects">
+            <span class="stack-name">LangChain / LangGraph</span>
+            <div class="stack-icon"><img src="assets/stack-icons/langchain.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Transformation layer for the payment ledger — incremental models over BigQuery">
+            <span class="stack-name">dbt</span>
+            <div class="stack-icon"><img src="assets/stack-icons/dbt.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Warehouse for batch fraud features and payment analytics on the GCP stack">
+            <span class="stack-name">BigQuery</span>
+            <div class="stack-icon"><img src="assets/stack-icons/bigquery.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Cloud runtime for the payment system — Cloud Run, GCS, and BigQuery">
+            <span class="stack-name">GCP</span>
+            <div class="stack-icon"><img src="assets/stack-icons/gcp.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Time-series event store for the real-time data streaming pipeline">
+            <span class="stack-name">Cassandra</span>
+            <div class="stack-icon"><img src="assets/stack-icons/cassandra.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Embeddings for regulatory doc retrieval; gpt-4o-mini for AML investigation reasoning">
+            <span class="stack-name">OpenAI</span>
+            <div class="stack-icon"><img src="assets/stack-icons/openai.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Local vector store for regulatory compliance document retrieval">
+            <span class="stack-name">Chroma</span>
+            <div class="stack-icon"><img src="assets/stack-icons/chroma.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Workflow automation layer in the AI OS Finance platform">
+            <span class="stack-name">n8n</span>
+            <div class="stack-icon"><img src="assets/stack-icons/n8n.svg" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="XGBoost risk scoring and classification — fraud detection and transaction risk in the payment pipeline">
+            <span class="stack-name">Machine Learning</span>
+            <div class="stack-icon"><img src="assets/stack-icons/ML.svg" alt="" loading="lazy"></div>
           </div>
         </div>
       </div>
@@ -454,8 +494,9 @@
         <div class="timeline-intro-wrap">
           <p class="timeline-intro timeline-intro-reveal">
             <span class="reveal-line"><span class="reveal-line-base">Building data systems, </span><span class="reveal-line-inner" aria-hidden="true">Building data systems, </span></span>
-            <span class="reveal-line"><span class="reveal-line-base"><span class="timeline-accent">backend infrastructure</span>, and scalable </span><span class="reveal-line-inner" aria-hidden="true"><span class="timeline-accent">backend infrastructure</span>, and scalable </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">applications for production environments.</span><span class="reveal-line-inner" aria-hidden="true">applications for production environments.</span></span>
+            <span class="reveal-line"><span class="reveal-line-base"><span class="timeline-accent">backend infrastructure</span>, </span><span class="reveal-line-inner" aria-hidden="true"><span class="timeline-accent">backend infrastructure</span>, </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">and scalable applications </span><span class="reveal-line-inner" aria-hidden="true">and scalable applications </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">for production environments.</span><span class="reveal-line-inner" aria-hidden="true">for production environments.</span></span>
           </p>
         </div>
 
@@ -479,11 +520,14 @@
         <div class="timeline-lens-inner">
           <span class="timeline-label">EXPERIENCE</span>
           <p class="timeline-intro">
-            Mostly breaking systems, fixing them at 2&nbsp;AM, and occasionally calling it
-            <span class="timeline-accent">production experience</span>.
+            <span class="timeline-lens-line">Mostly breaking systems, </span>
+            <span class="timeline-lens-line">fixing them at 2&nbsp;AM, and </span>
+            <span class="timeline-lens-line">occasionally calling it </span>
+            <span class="timeline-lens-line"><span class="timeline-accent">production experience</span>.</span>
           </p>
         </div>
       </div>
+
     </section>
 
     <!-- Phase 3 / Plan 01 — Projects grid: 5 cards. Each card carries name, dual-mode one-liner,
@@ -496,7 +540,25 @@
         <div class="projects-grid">
 
           <article class="project-card">
-            <h3 class="project-card-name">Payment System</h3>
+            <h3 class="project-card-name"><a class="project-card-overlay-link" href="#case-study" aria-label="View AML Agent case study">Autonomous AML Investigation Agent</a></h3>
+            <p class="project-card-desc">AI-powered AML compliance system for RBI/SEBI-style regulatory workflows using RAG, clause-aware retrieval, and autonomous reasoning agents.</p>
+            <ul class="project-card-tags">
+              <li class="project-tag">LangGraph</li>
+              <li class="project-tag">LangChain</li>
+              <li class="project-tag">Kafka</li>
+              <li class="project-tag">PostgreSQL</li>
+              <li class="project-tag">Redis</li>
+              <li class="project-tag">FastAPI</li>
+              <li class="project-tag">Prometheus</li>
+            </ul>
+            <div class="project-card-links">
+              <a class="project-card-link" href="#case-study">Case Study &darr;</a>
+              <a class="project-card-link" href="https://github.com/Ash-bot19/Autonomous-AML-Investigation-Agent" target="_blank" rel="noopener noreferrer" aria-label="View Autonomous AML Investigation Agent on GitHub">GitHub &rarr;</a>
+            </div>
+          </article>
+
+          <article class="project-card">
+            <h3 class="project-card-name"><a class="project-card-overlay-link" href="./projects/payment-system.html" aria-label="View Payment System case study">Payment System</a></h3>
             <p class="project-card-desc">Distributed payment processing and transaction management system built for scalable financial operations and secure real-time workflows.</p>
             <ul class="project-card-tags">
               <li class="project-tag">Kafka</li>
@@ -510,26 +572,14 @@
               <li class="project-tag">XGBoost</li>
               <li class="project-tag">Docker</li>
             </ul>
-            <a class="project-card-link" href="https://github.com/Ash-bot19/Payment-System" target="_blank" rel="noopener noreferrer" aria-label="View Payment System on GitHub">GitHub &rarr;</a>
+            <div class="project-card-links">
+              <a class="project-card-link" href="./projects/payment-system.html">Case Study &rarr;</a>
+              <a class="project-card-link" href="https://github.com/Ash-bot19/Payment-System" target="_blank" rel="noopener noreferrer" aria-label="View Payment System on GitHub">GitHub &rarr;</a>
+            </div>
           </article>
 
           <article class="project-card">
-            <h3 class="project-card-name">Autonomous AML Investigation Agent</h3>
-            <p class="project-card-desc">AI-powered AML compliance system for RBI/SEBI-style regulatory workflows using RAG, clause-aware retrieval, and autonomous reasoning agents.</p>
-            <ul class="project-card-tags">
-              <li class="project-tag">LangGraph</li>
-              <li class="project-tag">LangChain</li>
-              <li class="project-tag">Kafka</li>
-              <li class="project-tag">PostgreSQL</li>
-              <li class="project-tag">Redis</li>
-              <li class="project-tag">FastAPI</li>
-              <li class="project-tag">Prometheus</li>
-            </ul>
-            <a class="project-card-link" href="https://github.com/Ash-bot19/Autonomous-AML-Investigation-Agent" target="_blank" rel="noopener noreferrer" aria-label="View Autonomous AML Investigation Agent on GitHub">GitHub &rarr;</a>
-          </article>
-
-          <article class="project-card">
-            <h3 class="project-card-name">Real-Time Data Streaming</h3>
+            <h3 class="project-card-name"><a class="project-card-overlay-link" href="./projects/real-time-data-streaming.html" aria-label="View Real-Time Data Streaming case study">Real-Time Data Streaming</a></h3>
             <p class="project-card-desc">End-to-end streaming data engineering pipeline for ingesting, processing, monitoring, and visualising high-throughput event streams.</p>
             <ul class="project-card-tags">
               <li class="project-tag">Apache Kafka</li>
@@ -539,11 +589,14 @@
               <li class="project-tag">Docker</li>
               <li class="project-tag">Grafana</li>
             </ul>
-            <a class="project-card-link" href="https://github.com/Ash-bot19/Real-Time-Data-Streaming" target="_blank" rel="noopener noreferrer" aria-label="View Real-Time Data Streaming on GitHub">GitHub &rarr;</a>
+            <div class="project-card-links">
+              <a class="project-card-link" href="./projects/real-time-data-streaming.html">Case Study &rarr;</a>
+              <a class="project-card-link" href="https://github.com/Ash-bot19/Real-Time-Data-Streaming" target="_blank" rel="noopener noreferrer" aria-label="View Real-Time Data Streaming on GitHub">GitHub &rarr;</a>
+            </div>
           </article>
 
           <article class="project-card">
-            <h3 class="project-card-name">Regulatory Intelligence Agent</h3>
+            <h3 class="project-card-name"><a class="project-card-overlay-link" href="./projects/regulatory-intelligence-agent.html" aria-label="View Regulatory Intelligence Agent case study">Regulatory Intelligence Agent</a></h3>
             <p class="project-card-desc">Agentic AI system for regulatory query analysis and compliance intelligence across RBI, SEBI, and financial governance documents.</p>
             <ul class="project-card-tags">
               <li class="project-tag">LangChain</li>
@@ -553,11 +606,14 @@
               <li class="project-tag">FastAPI</li>
               <li class="project-tag">PostgreSQL</li>
             </ul>
-            <a class="project-card-link" href="https://github.com/Ash-bot19/Regulatory-Intelligence-Agent" target="_blank" rel="noopener noreferrer" aria-label="View Regulatory Intelligence Agent on GitHub">GitHub &rarr;</a>
+            <div class="project-card-links">
+              <a class="project-card-link" href="./projects/regulatory-intelligence-agent.html">Case Study &rarr;</a>
+              <a class="project-card-link" href="https://github.com/Ash-bot19/Regulatory-Intelligence-Agent" target="_blank" rel="noopener noreferrer" aria-label="View Regulatory Intelligence Agent on GitHub">GitHub &rarr;</a>
+            </div>
           </article>
 
           <article class="project-card">
-            <h3 class="project-card-name">AI OS Finance</h3>
+            <h3 class="project-card-name"><a class="project-card-overlay-link" href="./projects/ai-os-finance.html" aria-label="View AI OS Finance case study">AI OS Finance</a></h3>
             <p class="project-card-desc">Agentic financial analysis platform for deterministic valuation modeling, scenario analysis, and AI-assisted investment research workflows.</p>
             <ul class="project-card-tags">
               <li class="project-tag">FastAPI</li>
@@ -566,7 +622,10 @@
               <li class="project-tag">Pydantic</li>
               <li class="project-tag">Docker</li>
             </ul>
-            <a class="project-card-link" href="https://github.com/Ash-bot19/AI-OS-finance" target="_blank" rel="noopener noreferrer" aria-label="View AI OS Finance on GitHub">GitHub &rarr;</a>
+            <div class="project-card-links">
+              <a class="project-card-link" href="./projects/ai-os-finance.html">Case Study &rarr;</a>
+              <a class="project-card-link" href="https://github.com/Ash-bot19/AI-OS-finance" target="_blank" rel="noopener noreferrer" aria-label="View AI OS Finance on GitHub">GitHub &rarr;</a>
+            </div>
           </article>
 
         </div>
@@ -1013,6 +1072,13 @@
         <span>Data Engineer · Fintech Builder</span>
       </footer>
     </section>
+
+  <!-- Single fixed hold-to-reveal button — touch only, viewport-anchored.
+       JS detects which lens section is in view and spreads that overlay. -->
+  <button class="lens-reveal-btn" aria-label="Hold to reveal honest version" aria-pressed="false">
+    <span class="lens-reveal-btn-dot" aria-hidden="true"></span>
+    hold
+  </button>
 
   </main>
 

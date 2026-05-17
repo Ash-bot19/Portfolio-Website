@@ -112,6 +112,7 @@ function skipToContent(hash) {
     try { initProjectsAnimation();   } catch (e) {}
     try { initContactAnimation();    } catch (e) {}
     try { initNewSectionTitles();    } catch (e) {}
+    try { initInPageAnchors();       } catch (e) {}
     // Delay scroll until ScrollTrigger has set up pin offsets
     setTimeout(function () {
       if (target) target.scrollIntoView({ behavior: 'instant' });
@@ -237,6 +238,7 @@ function startPreloader() {
     try { initHeroLens();          } catch (e) { console.error('[handoff] initHeroLens failed:', e); }
     try { initAboutLens();         } catch (e) { console.error('[handoff] initAboutLens failed:', e); }
     try { initTimelineLens();      } catch (e) { console.error('[handoff] initTimelineLens failed:', e); }
+    try { initMobileLens();        } catch (e) { console.error('[handoff] initMobileLens failed:', e); }
     try { initHeroAnimation();     } catch (e) { console.error('[handoff] initHeroAnimation failed:', e); }
     // Phase B — scroll-based: deferred when skipScrollInits (fired in slide onComplete instead)
     if (!skipScrollInits) {
@@ -249,6 +251,7 @@ function startPreloader() {
       try { initProjectsAnimation();   } catch (e) { console.error('[handoff] initProjectsAnimation failed:', e); }
       try { initContactAnimation();    } catch (e) { console.error('[handoff] initContactAnimation failed:', e); }
       try { initNewSectionTitles();    } catch (e) { console.error('[handoff] initNewSectionTitles failed:', e); }
+      try { initInPageAnchors();       } catch (e) { console.error('[handoff] initInPageAnchors failed:', e); }
     }
   }
 
@@ -305,6 +308,7 @@ function startPreloader() {
           try { initProjectsAnimation();   } catch (e) { console.error('[scroll-init] initProjectsAnimation failed:', e); }
           try { initContactAnimation();    } catch (e) { console.error('[scroll-init] initContactAnimation failed:', e); }
           try { initNewSectionTitles();    } catch (e) { console.error('[scroll-init] initNewSectionTitles failed:', e); }
+          try { initInPageAnchors();       } catch (e) { console.error('[scroll-init] initInPageAnchors failed:', e); }
         }
       }, '+=0.12');
 
@@ -1227,10 +1231,21 @@ function initHeroLens() {
 
   // Position tracks against the lens box so the circle stays whole through
   // the lens bleed outside the section boundary.
+  // Also handles late-entry when preloader covered the hero at init time
+  // (late-entry guard fires before preloader slides, `:hover` is false then).
   hero.addEventListener('mousemove', function (e) {
     var rect = lens.getBoundingClientRect();
     targetX = e.clientX - rect.left;
     targetY = e.clientY - rect.top;
+    if (!active && triggerEl.matches(':hover')) {
+      lensX = targetX;
+      lensY = targetY;
+      active = true;
+      var sc = document.querySelector('.site-cursor');
+      if (sc && sc.__tweenSize) sc.__tweenSize(40, 0);
+      if (sc && sc.__setTarget) sc.__setTarget(1, 0, true);
+      gsap.to(lensData, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
+    }
   });
 
   // Lens activates only when over the inner text content — not the section padding
@@ -1309,6 +1324,15 @@ function initAboutLens() {
     var rect = lens.getBoundingClientRect();
     targetX = e.clientX - rect.left;
     targetY = e.clientY - rect.top;
+    if (!active && triggerEl.matches(':hover')) {
+      lensX = targetX;
+      lensY = targetY;
+      active = true;
+      var sc = document.querySelector('.site-cursor');
+      if (sc && sc.__tweenSize) sc.__tweenSize(40, 0);
+      if (sc && sc.__setTarget) sc.__setTarget(1, 0, true);
+      gsap.to(lensData, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
+    }
   });
 
   triggerEl.addEventListener('mouseenter', function (e) {
@@ -1383,6 +1407,15 @@ function initTimelineLens() {
     var rect = lens.getBoundingClientRect();
     targetX = e.clientX - rect.left;
     targetY = e.clientY - rect.top;
+    if (!active && triggerEl.matches(':hover')) {
+      lensX = targetX;
+      lensY = targetY;
+      active = true;
+      var sc = document.querySelector('.site-cursor');
+      if (sc && sc.__tweenSize) sc.__tweenSize(40, 0);
+      if (sc && sc.__setTarget) sc.__setTarget(1, 0, true);
+      gsap.to(lensData, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
+    }
   });
 
   triggerEl.addEventListener('mouseenter', function (e) {
@@ -1418,6 +1451,97 @@ function initTimelineLens() {
     if (sc && sc.__setTarget) sc.__setTarget(1, 0, true);
     gsap.to(lensData, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
   }
+}
+
+// ── Mobile hold-to-reveal — single fixed button, viewport-anchored ──
+// Detects which lens section is most visible on pointerdown, then spreads
+// that section's overlay from the button's position outward.
+// On sections without a lens nothing happens.
+function initMobileLens() {
+  if (!window.matchMedia('(pointer: coarse)').matches) return;
+  if (!window.gsap) return;
+
+  var btn = document.querySelector('.lens-reveal-btn');
+  if (!btn) return;
+
+  var lenses = [
+    { section: document.querySelector('.hero'),     el: document.querySelector('.hero-lens') },
+    { section: document.querySelector('.about'),    el: document.querySelector('.about-lens') },
+    { section: document.querySelector('.timeline'), el: document.querySelector('.timeline-lens') }
+  ].filter(function(p) { return p.section && p.el; });
+
+  var data       = { r: 0 };
+  var activeLens = null;
+  var ox = 0, oy = 0;
+
+  // Return the lens pair whose section overlaps the viewport the most.
+  function findActivePair() {
+    var vh = window.innerHeight;
+    var best = null, bestPx = 0;
+    lenses.forEach(function(pair) {
+      var r   = pair.section.getBoundingClientRect();
+      var vis = Math.max(0, Math.min(r.bottom, vh) - Math.max(r.top, 0));
+      if (vis > bestPx) { bestPx = vis; best = pair; }
+    });
+    return best;
+  }
+
+  function calcMaxR(lensEl) {
+    var br = btn.getBoundingClientRect();
+    var lr = lensEl.getBoundingClientRect();
+    var x  = br.left + br.width  / 2 - lr.left;
+    var y  = br.top  + br.height / 2 - lr.top;
+    ox = x; oy = y;
+    return Math.ceil(Math.sqrt(
+      Math.pow(Math.max(x, lr.width  - x), 2) +
+      Math.pow(Math.max(y, lr.height - y), 2)
+    ));
+  }
+
+  function setClip(lensEl, r) {
+    lensEl.style.clipPath = 'circle(' + r.toFixed(1) + 'px at ' +
+      ox.toFixed(1) + 'px ' + oy.toFixed(1) + 'px)';
+  }
+
+  btn.addEventListener('pointerdown', function(e) {
+    e.preventDefault();
+    btn.setPointerCapture(e.pointerId);
+
+    var pair = findActivePair();
+    if (!pair) return;
+    activeLens = pair.el;
+
+    var maxR = calcMaxR(activeLens);
+    data.r = 0;
+    gsap.killTweensOf(data);
+    gsap.to(data, {
+      r: maxR,
+      duration: 0.65,
+      ease: 'power2.out',
+      overwrite: true,
+      onUpdate: function() { if (activeLens) setClip(activeLens, data.r); }
+    });
+  });
+
+  function release() {
+    if (!activeLens) return;
+    var lens = activeLens;
+    gsap.killTweensOf(data);
+    gsap.to(data, {
+      r: 0,
+      duration: 0.4,
+      ease: 'power2.in',
+      overwrite: true,
+      onUpdate: function() { setClip(lens, data.r); },
+      onComplete: function() {
+        lens.style.clipPath = 'circle(0px at 50% 50%)';
+        activeLens = null;
+      }
+    });
+  }
+
+  btn.addEventListener('pointerup',     release);
+  btn.addEventListener('pointercancel', release);
 }
 
 // ── New section titles — left-to-right line-by-line reveal, scrubbed, bidirectional ──
@@ -1516,5 +1640,22 @@ function initContactAnimation() {
 
     link.addEventListener('mouseenter', openPanel);
     link.addEventListener('mouseleave', closePanel);
+  });
+}
+
+// ── In-page anchor smooth scroll — covers any a[href^="#"] outside the nav ──
+function initInPageAnchors() {
+  var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('a[href^="#"]').forEach(function (link) {
+    // Skip links already handled by initNav (inside .nav-links)
+    if (link.closest('.nav-links')) return;
+    link.addEventListener('click', function (e) {
+      var href = link.getAttribute('href');
+      if (!href || href === '#') return;
+      var target = document.querySelector(href);
+      if (!target) return;
+      e.preventDefault();
+      target.scrollIntoView({ behavior: reducedMotion ? 'auto' : 'smooth', block: 'start' });
+    });
   });
 }

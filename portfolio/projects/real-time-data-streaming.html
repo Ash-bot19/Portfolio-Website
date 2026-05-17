@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real-Time Data Streaming — Ayush Samantaray</title>
+
+  <script>
+    (function () {
+      try { sessionStorage.setItem('site-entered', '1'); } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
+  </noscript>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="../css/sections.css">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+  <nav aria-label="Project navigation">
+    <a href="../index.html" class="nav-logo" aria-label="Back to portfolio">
+      <img class="nav-logo-face" src="../assets/New_face_logo.svg" alt="" draggable="false">
+    </a>
+    <a href="../index.html#projects" class="proj-back-link">
+      <span class="proj-back-arrow">←</span> All work
+    </a>
+  </nav>
+
+  <main class="proj-main">
+
+    <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+    <section class="proj-hero" id="top">
+      <span class="proj-eyebrow">Case Study</span>
+      <h1 class="proj-title">Real-Time Data Streaming</h1>
+      <p class="proj-tagline">End-to-end Lambda architecture ingesting high-throughput events through Kafka, processing via Spark Structured Streaming, persisting to Cassandra, and surfacing live metrics in Grafana.</p>
+      <div class="proj-meta-row">
+        <div class="proj-tags">
+          <span class="proj-tag">Apache Kafka</span>
+          <span class="proj-tag">Apache Spark</span>
+          <span class="proj-tag">Cassandra</span>
+          <span class="proj-tag">Airflow</span>
+          <span class="proj-tag">PostgreSQL</span>
+          <span class="proj-tag">Grafana</span>
+          <span class="proj-tag">Docker</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://github.com/Ash-bot19/Real-Time-Data-Streaming" target="_blank" rel="noopener" class="proj-link">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Case Study ─────────────────────────────────────────────────────────── -->
+    <section class="case-study-section" id="case-study">
+      <div class="ps-page">
+        <div class="ps-section-label">CASE STUDY</div>
+        <h2 class="ps-section-title">Lambda architecture,<br><em>built for throughput.</em></h2>
+        <article class="case-study">
+          <div class="case-study-hero">
+            <div>
+              <div class="cs-hero-meta">
+                <span>2025</span>
+                <span>DATA ENGINEERING · STREAMING</span>
+                <span>KAFKA · SPARK · CASSANDRA · AIRFLOW</span>
+              </div>
+              <h3 class="cs-hero-title">High-throughput streaming pipeline — Lambda architecture with exactly-once delivery and live Grafana observability</h3>
+              <p class="cs-hero-tagline">A production-grade streaming backend built on Kafka, Spark Structured Streaming, and Cassandra — designed around variable-rate burst ingestion, exactly-once micro-batch recovery, and a clean Lambda separation between the streaming and batch layers.</p>
+            </div>
+            <div class="cs-hero-stats">
+              <div><div class="cs-stat-num">50k+</div><div class="cs-stat-label">Kafka messages/sec peak throughput</div></div>
+              <div><div class="cs-stat-num">2.8k</div><div class="cs-stat-label">Spark messages/sec processed</div></div>
+              <div><div class="cs-stat-num">4</div><div class="cs-stat-label">Airflow DAGs orchestrating the pipeline</div></div>
+              <div><div class="cs-stat-num">0</div><div class="cs-stat-label">data loss on Spark consumer restart</div></div>
+            </div>
+          </div>
+          <div class="cs-body">
+            <div class="cs-tabs" role="tablist">
+              <button class="cs-tab" role="tab" aria-selected="true"  data-tab="problem">  <span class="cs-tab-num">01</span>Problem</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="approach">  <span class="cs-tab-num">02</span>Approach</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="decisions"> <span class="cs-tab-num">03</span>Decisions</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="results">   <span class="cs-tab-num">04</span>Results</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="lessons">   <span class="cs-tab-num">05</span>Lessons</button>
+            </div>
+            <div class="cs-panel" data-panel="problem" data-active>
+              <h4>Batch pipelines are useless when you need to see a spike the moment it happens.</h4>
+              <p>Event-driven systems generate data at rates that outpace what batch pipelines can handle — a Grafana dashboard refreshing every 5 minutes is useless when you need to see a processing spike the moment it happens. The challenge isn't just ingestion speed: it's building a topology that handles variable-rate bursts without backpressure failures, guarantees exactly-once processing across Spark micro-batches on restart, and separates the streaming path from the batch path so neither blocks the other.</p>
+              <p>Orchestrating Kafka, Spark, and Cassandra into a coherent Lambda architecture with minimal operational overhead — with four Airflow DAGs handling cross-system dependencies — is the core engineering problem.</p>
+            </div>
+            <div class="cs-panel" data-panel="approach">
+              <h4>Lambda architecture with clean streaming/batch separation and cross-system DAG orchestration.</h4>
+              <ul>
+                <li>Airflow DAGs ingest events from external APIs into Kafka topics partitioned by event type — isolating consumer lag per stream so a slow consumer on one topic doesn't affect others. Retention is configured to allow full replay on consumer failure.</li>
+                <li>Spark Structured Streaming micro-batches consume from Kafka, apply windowed transformations and aggregations (tumbling and sliding windows), checkpoint state to persistent storage for exactly-once delivery on restart, and write to Cassandra with time-based partition keys tuned for the time-series read pattern.</li>
+                <li>The batch layer mirrors selected events into PostgreSQL for Airflow-scheduled reporting jobs. Grafana reads directly from Cassandra for real-time panels — the streaming and batch paths are completely isolated consumers on the same Kafka topic.</li>
+                <li>Four main DAGs handle the end-to-end flow: API-to-Kafka ingestion, Kafka-to-Cassandra streaming health monitoring, batch-to-Postgres loading, and Cassandra compaction monitoring. Airflow's DAG model handles cross-system dependency management cleanly — Cron can't express these dependencies.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="decisions">
+              <h4>Why these choices — each driven by a concrete failure mode or scale constraint.</h4>
+              <ul>
+                <li><strong>Cassandra over PostgreSQL for event storage.</strong> Write-heavy time-series workload with no complex joins — Cassandra's partition-key model gives linear write scale without the overhead of a relational engine. The compaction strategy is tuned specifically for the time-series read pattern, keeping read latency flat as the dataset grows. PostgreSQL is retained for the batch layer where join semantics matter.</li>
+                <li><strong>Spark Structured Streaming over Kafka Streams.</strong> Kafka Streams is JVM-only and handles stateful aggregations over short windows cleanly, but Spark's Python API unlocks the broader ML and data engineering ecosystem. Spark also handles larger stateful windows more naturally and integrates directly with the existing Airflow orchestration layer for checkpoint management.</li>
+                <li><strong>Airflow for pipeline orchestration over custom cron.</strong> The pipeline has genuine dependencies between stages — the Cassandra compaction task must run after streaming jobs complete, and the Grafana data-source refresh depends on compaction finishing. Cron can't express those dependencies. Airflow's DAG model handles cross-system dependency management cleanly.</li>
+                <li><strong>Time-based Cassandra partition keys.</strong> A naive key design on a write-heavy time-series workload creates hotspots — all writes land on the same partition until the TTL rotates. Time-bucketed partition keys (hourly or daily depending on throughput) distribute writes across the cluster without manual resharding.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="results">
+              <h4>Full Docker Compose stack · real Kafka topics · Grafana panels updating in near real time.</h4>
+              <div class="cs-result-grid">
+                <div class="cs-result-card"><div class="cs-stat-num">50k+</div><div class="cs-stat-label">Kafka messages/sec at peak</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">2.8k</div><div class="cs-stat-label">Spark messages/sec processed</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">4</div><div class="cs-stat-label">Airflow DAGs orchestrating the pipeline</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">0</div><div class="cs-stat-label">messages lost on Spark restart</div></div>
+              </div>
+            </div>
+            <div class="cs-panel" data-panel="lessons">
+              <h4>What broke in production — and what I changed because of it.</h4>
+              <ul>
+                <li><strong>Consumer lag is a lagging indicator — it hides the real problem.</strong> Early versions monitored Kafka consumer lag and triggered alerts when it crossed a threshold. But lag only grows after the problem has persisted for multiple micro-batch intervals. The fix: instrument Spark's processing time per micro-batch and alert on that directly — lag is a consequence, not a cause.</li>
+                <li><strong>Cassandra partition hotspots don't show up until you exceed one partition's write throughput.</strong> On small datasets, the partition key strategy looks fine — all reads and writes complete fast. At scale, a poorly chosen partition key routes all writes to a single node, causing that node's CPU to spike while others sit idle. The fix required profiling the actual write distribution with nodetool and redesigning the partition key to include a bucket suffix.</li>
+                <li><strong>Spark checkpoint state grows unboundedly without an explicit cleanup policy.</strong> An early version didn't configure state TTL for aggregations — after a week of continuous operation, checkpoint state occupied several GB of disk and Spark's recovery time on restart grew proportionally. The fix: explicit watermarks on event-time aggregations so Spark can expire state that's past the watermark.</li>
+                <li><strong>Airflow's Kafka consumer DAG can fall behind during a spike and never recover without manual intervention.</strong> The DAG was polling Kafka at a fixed interval. Under a sustained spike, each DAG run fell further behind the partition head. The fix: expose consumer lag as an Airflow metric and trigger a backfill branch in the DAG when lag exceeds a threshold rather than relying on the fixed-interval schedule.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── Architecture ───────────────────────────────────────────────────────── -->
+    <section class="arch-section" id="architecture">
+      <div class="ps-page">
+        <div class="ps-section-label">SYSTEM ARCHITECTURE</div>
+        <h2 class="ps-section-title">How events<br><em>actually flow.</em></h2>
+        <div class="arch-frame">
+          <div class="arch-toolbar">
+            <span class="arch-tag">real-time-data-streaming · v1.0</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">hover any node →</span>
+          </div>
+          <div class="arch-canvas">
+            <div class="arch-canvas-inner">
+              <svg class="arch-svg" viewBox="0 0 900 480">
+                <defs>
+                  <marker id="arrowDimRT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--s-border-str)"/>
+                  </marker>
+                  <marker id="arrowLiveRT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+                  </marker>
+                </defs>
+                <!-- Hot path: External API → Kafka → Spark → Cassandra → Grafana -->
+                <path class="arch-edge live"   d="M 175 100 H 320" marker-end="url(#arrowLiveRT)"/>
+                <path class="arch-edge live"   d="M 392 132 V 213" marker-end="url(#arrowLiveRT)"/>
+                <path class="arch-edge live"   d="M 465 240 H 553 V 100 H 640" marker-end="url(#arrowLiveRT)"/>
+                <path class="arch-edge live"   d="M 712 132 V 213" marker-end="url(#arrowLiveRT)"/>
+                <!-- Cold path: Airflow → Kafka, Spark → Checkpoint, Spark → PostgreSQL, Cassandra → Compaction -->
+                <path class="arch-edge dashed" d="M 175 240 H 247 V 100 H 320" marker-end="url(#arrowDimRT)"/>
+                <path class="arch-edge dashed" d="M 320 272 H 247 V 353 H 175" marker-end="url(#arrowDimRT)"/>
+                <path class="arch-edge dashed" d="M 392 272 V 353" marker-end="url(#arrowDimRT)"/>
+                <path class="arch-edge dashed" d="M 712 272 V 353" marker-end="url(#arrowDimRT)"/>
+                <!-- Edge labels -->
+                <g><rect class="arch-edge-label-bg" x="222" y="84"  width="50" height="16" rx="3"/><text class="arch-edge-label" x="247" y="95"  text-anchor="middle">events</text></g>
+                <g><rect class="arch-edge-label-bg" x="360" y="162" width="64" height="16" rx="3"/><text class="arch-edge-label" x="392" y="173" text-anchor="middle">consume</text></g>
+                <g><rect class="arch-edge-label-bg" x="520" y="84"  width="54" height="16" rx="3"/><text class="arch-edge-label" x="547" y="95"  text-anchor="middle">stream</text></g>
+                <g><rect class="arch-edge-label-bg" x="678" y="162" width="68" height="16" rx="3"/><text class="arch-edge-label" x="712" y="173" text-anchor="middle">Grafana</text></g>
+                <g><rect class="arch-edge-label-bg" x="210" y="162" width="64" height="16" rx="3"/><text class="arch-edge-label" x="242" y="173" text-anchor="middle">ingest DAG</text></g>
+                <g><rect class="arch-edge-label-bg" x="200" y="302" width="76" height="16" rx="3"/><text class="arch-edge-label" x="238" y="313" text-anchor="middle">checkpoint</text></g>
+                <g><rect class="arch-edge-label-bg" x="348" y="302" width="88" height="16" rx="3"/><text class="arch-edge-label" x="392" y="313" text-anchor="middle">batch writes</text></g>
+                <g><rect class="arch-edge-label-bg" x="670" y="302" width="84" height="16" rx="3"/><text class="arch-edge-label" x="712" y="313" text-anchor="middle">compaction</text></g>
+              </svg>
+              <div class="arch-node" data-kind="ingest" data-tooltip="External event producers — REST API clients, IoT sensors, application telemetry. Events arrive at variable rates with burst spikes up to 50k msg/sec. Airflow DAG fetches and publishes on a configurable schedule." data-tip-pos="below" style="top:76px;left:30px;"><div class="arch-node-title">External API</div><div class="arch-node-meta">event producers</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="Four DAGs: API-to-Kafka ingestion, streaming health monitoring, batch-to-Postgres loading, Cassandra compaction monitoring. Cross-system dependencies — compaction waits for streaming, Grafana refresh waits for compaction." style="top:216px;left:30px;"><div class="arch-node-title">Airflow · 4 DAGs</div><div class="arch-node-meta">pipeline orchestration</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Spark checkpoints state to persistent storage after each micro-batch commit. On restart, Spark reads the checkpoint and replays from the last committed Kafka offset — exactly-once delivery guaranteed. State is TTL-expired at the watermark to prevent unbounded growth." style="top:356px;left:30px;"><div class="arch-node-title">Checkpoint Store</div><div class="arch-node-meta">exactly-once recovery</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Topics partitioned by event type — isolates consumer lag per stream. A slow consumer on one topic doesn't affect others. Retention configured to allow full replay on consumer failure. 50k+ msg/sec peak ingestion." data-tip-pos="below" style="top:76px;left:320px;"><div class="arch-node-title">Kafka Topics</div><div class="arch-node-meta">partitioned by event type</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Micro-batch processing at 2.8k msg/sec. Applies tumbling and sliding window aggregations. Watermarks expire late-arriving events after the window closes. Checkpoints state after each batch — restart resumes from the last committed Kafka offset." style="top:216px;left:320px;"><div class="arch-node-title">Spark Streaming</div><div class="arch-node-meta">2.8k msg/sec · micro-batch</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Batch layer receives copies of selected events via a separate Kafka consumer. PostgreSQL handles the batch reporting queries that need join semantics — Cassandra doesn't support. Airflow's batch-to-Postgres DAG runs nightly." style="top:356px;left:320px;"><div class="arch-node-title">PostgreSQL batch</div><div class="arch-node-meta">batch layer · joins</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Time-based partition keys distribute writes across the cluster without hotspots. Compaction strategy tuned for append-heavy time-series: TWCS (TimeWindowCompactionStrategy) keeps read latency flat as the dataset grows. Grafana reads directly from Cassandra." data-tip-pos="below" style="top:76px;left:640px;"><div class="arch-node-title">Cassandra · time-series</div><div class="arch-node-meta">TWCS compaction · TTL</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="Dashboards query Cassandra directly — consumer lag, throughput, and error-rate panels update in near real-time. Prometheus scrapes Spark metrics and Kafka broker JMX for the infrastructure panels. Grafana alerting fires on lag threshold breaches." style="top:216px;left:640px;"><div class="arch-node-title">Grafana dashboards</div><div class="arch-node-meta">real-time observability</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="Airflow DAG monitors Cassandra write amplification and compaction queue depth. Flags when TWCS compaction is falling behind — a signal that the partition key strategy needs retuning or the cluster needs more nodes." style="top:356px;left:640px;"><div class="arch-node-title">Compaction Monitor</div><div class="arch-node-meta">Airflow · maintenance DAG</div></div>
+            </div>
+          </div>
+          <div class="arch-legend">
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:var(--accent);"></span>ingest</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.65 0.14 195);"></span>store</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.62 0.16 145);"></span>serve</div>
+            <div class="arch-legend-item" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-muted);">— hot path animated · cold path dashed</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Live Demo ──────────────────────────────────────────────────────────── -->
+    <section class="pipeline-section" id="demo">
+      <div class="ps-page">
+        <div class="ps-section-label">LIVE DEMO · STREAMING PIPELINE</div>
+        <h2 class="ps-section-title">Produce events.<br><em>Watch the pipeline.</em></h2>
+        <div class="pipe-frame">
+          <div class="pipe-header">
+            <div class="pipe-title-block">
+              <h3>real-time-data-streaming / kafka → cassandra</h3>
+              <p>Events flow from the producer into Kafka, Spark picks them up in micro-batches, and processed records land in Cassandra. Spike load to see backpressure build and recover.</p>
+            </div>
+            <div class="pipe-actions">
+              <button class="pipe-btn primary" id="rtBtnProduce">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                Produce events
+              </button>
+              <button class="pipe-btn danger" id="rtBtnSpike">⚡ Spike load</button>
+              <button class="pipe-btn" id="rtBtnReset">Reset</button>
+            </div>
+          </div>
+          <div class="pipe-body">
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">01</span> KAFKA · topic partition</div>
+              <div class="pipe-events" id="rtKafka"></div>
+            </div>
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">02</span> CASSANDRA · time-series write</div>
+              <div class="pipe-events" id="rtCass"></div>
+            </div>
+            <div class="pipe-side">
+              <div class="pipe-stat"><span class="pipe-stat-label">events produced</span><span class="pipe-stat-val accent" id="rtStatProduced">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">Spark processed</span><span class="pipe-stat-val good" id="rtStatProcessed">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">consumer lag</span><span class="pipe-stat-val" id="rtStatLag">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">Cassandra writes</span><span class="pipe-stat-val good" id="rtStatWrites">0</span></div>
+              <div class="pipe-explain">
+                <strong>How it works:</strong> Airflow DAG fetches events → Kafka partition. Spark micro-batch consumes, applies window aggregations, checkpoints state, writes to Cassandra with time-based partition key. Grafana reads from Cassandra in near real time.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer nav ─────────────────────────────────────────────────────────── -->
+    <footer class="proj-footer">
+      <a href="./payment-system.html" class="proj-footer-back">← Payment System</a>
+      <a href="./regulatory-intelligence-agent.html" class="proj-footer-next">Next project →</a>
+    </footer>
+
+  </main>
+
+  <script defer src="../js/sections.js"></script>
+  <script>
+  (function initStreamingPipeline() {
+    var kafkaEl   = document.getElementById('rtKafka');
+    var cassEl    = document.getElementById('rtCass');
+    var statProduced  = document.getElementById('rtStatProduced');
+    var statProcessed = document.getElementById('rtStatProcessed');
+    var statLag       = document.getElementById('rtStatLag');
+    var statWrites    = document.getElementById('rtStatWrites');
+    if (!kafkaEl) return;
+
+    var produced = 0, processed = 0, lag = 0, writes = 0;
+    var MAX_EVENTS = 8;
+    var offset = 1000;
+    var spiking = false;
+    var TOPICS = ['events.raw', 'events.enriched', 'events.aggregated'];
+    var WINDOWS = ['tumbling-1m', 'tumbling-5m', 'sliding-30s'];
+
+    function eventId() { return 'EVT_' + Math.random().toString(36).slice(2, 8).toUpperCase(); }
+    function partKey() { return new Date().toISOString().slice(0, 13).replace('T', '-') + 'h'; }
+
+    function pushEvent(container, html, cls) {
+      var div = document.createElement('div');
+      div.className = 'pipe-event ' + (cls || '');
+      div.innerHTML = html;
+      container.prepend(div);
+      while (container.children.length > MAX_EVENTS) container.lastChild.remove();
+    }
+
+    function updateStats() {
+      statProduced.textContent  = produced.toLocaleString();
+      statProcessed.textContent = processed.toLocaleString();
+      statLag.textContent       = lag;
+      statWrites.textContent    = writes.toLocaleString();
+      var lagEl = statLag;
+      lagEl.className = 'pipe-stat-val ' + (lag > 50 ? 'bad' : lag > 10 ? '' : 'good');
+    }
+
+    function produceOne(burst) {
+      var id = eventId();
+      var topic = TOPICS[Math.floor(Math.random() * TOPICS.length)];
+      var batchSize = burst ? Math.floor(80 + Math.random() * 120) : Math.floor(5 + Math.random() * 15);
+      produced += batchSize;
+      lag += batchSize;
+      offset += batchSize;
+
+      pushEvent(kafkaEl,
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-id">' + id + '</span>' +
+          '<span class="pipe-event-amount">' + batchSize + ' events</span>' +
+        '</div>' +
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-status">offset ' + offset + ' · ' + topic + '</span>' +
+          '<span class="pipe-event-id">' + partKey() + '</span>' +
+        '</div>'
+      );
+
+      var processingTime = burst ? Math.floor(800 + Math.random() * 400) : Math.floor(200 + Math.random() * 200);
+      setTimeout(function () {
+        var window = WINDOWS[Math.floor(Math.random() * WINDOWS.length)];
+        var consumed = Math.min(batchSize, lag);
+        processed += consumed;
+        writes += consumed;
+        lag = Math.max(0, lag - consumed);
+
+        pushEvent(cassEl,
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-id">' + id + '</span>' +
+            '<span class="pipe-event-amount">' + consumed + ' rows</span>' +
+          '</div>' +
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-status ok">WRITTEN · ' + window + ' · ' + processingTime + 'ms</span>' +
+            '<span class="pipe-event-id">' + partKey() + '</span>' +
+          '</div>',
+          'committed'
+        );
+        updateStats();
+      }, processingTime);
+      updateStats();
+    }
+
+    var spikeInterval = null;
+    function startSpike() {
+      if (spiking) return;
+      spiking = true;
+      var count = 0;
+      spikeInterval = setInterval(function () {
+        produceOne(true);
+        count++;
+        if (count >= 6) {
+          clearInterval(spikeInterval);
+          spiking = false;
+        }
+      }, 300);
+    }
+
+    document.getElementById('rtBtnProduce').addEventListener('click', function () { produceOne(false); });
+    document.getElementById('rtBtnSpike').addEventListener('click', startSpike);
+    document.getElementById('rtBtnReset').addEventListener('click', function () {
+      produced = processed = lag = writes = 0;
+      offset = 1000;
+      kafkaEl.innerHTML = '';
+      cassEl.innerHTML = '';
+      updateStats();
+    });
+
+    setTimeout(function () { produceOne(false); }, 400);
+  })();
+  </script>
+
+</body>
+</html>

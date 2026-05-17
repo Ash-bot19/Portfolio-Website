@@ -365,6 +365,15 @@
 .proj-footer-back:hover,
 .proj-footer-next:hover { color: var(--color-accent); }
 
+/* ── Break sections.css sections out of proj-main's max-width constraint ─── */
+/* proj-main is max-width:1080px centered — these sections must be full-bleed */
+.case-study-section,
+.arch-section,
+.pipeline-section {
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+}
+
 /* ── Responsive ─────────────────────────────────────────────────────────── */
 @media (max-width: 768px) {
   .proj-two-col { grid-template-columns: 1fr; }

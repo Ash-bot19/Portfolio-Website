@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en" class="theme-light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Regulatory Intelligence Agent — Ayush Samantaray</title>
+
+  <script>
+    (function () {
+      try { sessionStorage.setItem('site-entered', '1'); } catch (e) {}
+    })();
+  </script>
+
+  <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
+  </noscript>
+
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="../css/sections.css">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+  <nav aria-label="Project navigation">
+    <a href="../index.html" class="nav-logo" aria-label="Back to portfolio">
+      <img class="nav-logo-face" src="../assets/New_face_logo.svg" alt="" draggable="false">
+    </a>
+    <a href="../index.html#projects" class="proj-back-link">
+      <span class="proj-back-arrow">←</span> All work
+    </a>
+  </nav>
+
+  <main class="proj-main">
+
+    <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+    <section class="proj-hero" id="top">
+      <span class="proj-eyebrow">Case Study</span>
+      <h1 class="proj-title">Regulatory Intelligence Agent</h1>
+      <p class="proj-tagline">Agentic AI for clause-level retrieval across RBI, SEBI, and financial governance corpora — delivering citation-backed compliance answers from a hybrid vector search layer with a confidence gate before any LLM is invoked.</p>
+      <div class="proj-meta-row">
+        <div class="proj-tags">
+          <span class="proj-tag">LangChain</span>
+          <span class="proj-tag">OpenAI Embeddings</span>
+          <span class="proj-tag">Chroma</span>
+          <span class="proj-tag">Pinecone</span>
+          <span class="proj-tag">FastAPI</span>
+          <span class="proj-tag">PostgreSQL</span>
+          <span class="proj-tag">Docker</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://github.com/Ash-bot19/Regulatory-Intelligence-Agent" target="_blank" rel="noopener" class="proj-link">GitHub ↗</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Case Study ─────────────────────────────────────────────────────────── -->
+    <section class="case-study-section" id="case-study">
+      <div class="ps-page">
+        <div class="ps-section-label">CASE STUDY</div>
+        <h2 class="ps-section-title">RAG with a<br><em>confidence gate.</em></h2>
+        <article class="case-study">
+          <div class="case-study-hero">
+            <div>
+              <div class="cs-hero-meta">
+                <span>2025</span>
+                <span>AI ENGINEERING · COMPLIANCE</span>
+                <span>LANGCHAIN · PINECONE · GPT-4o-mini</span>
+              </div>
+              <h3 class="cs-hero-title">Retrieval-first compliance agent — clause-level RAG, MMR diversity, and a hard confidence gate that declines rather than hallucinates</h3>
+              <p class="cs-hero-tagline">A production-grade RAG system for RBI circular retrieval — built around the insight that in a compliance context, a clean decline is categorically better than a confident hallucination. The system never calls the LLM when retrieval confidence is too low.</p>
+            </div>
+            <div class="cs-hero-stats">
+              <div><div class="cs-stat-num">139</div><div class="cs-stat-label">RBI circulars indexed (2024)</div></div>
+              <div><div class="cs-stat-num">0.65</div><div class="cs-stat-label">confidence gate threshold</div></div>
+              <div><div class="cs-stat-num">$0.00071</div><div class="cs-stat-label">avg cost per query (embed + LLM)</div></div>
+              <div><div class="cs-stat-num">0</div><div class="cs-stat-label">LLM calls below the confidence gate</div></div>
+            </div>
+          </div>
+          <div class="cs-body">
+            <div class="cs-tabs" role="tablist">
+              <button class="cs-tab" role="tab" aria-selected="true"  data-tab="problem">  <span class="cs-tab-num">01</span>Problem</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="approach">  <span class="cs-tab-num">02</span>Approach</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="decisions"> <span class="cs-tab-num">03</span>Decisions</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="results">   <span class="cs-tab-num">04</span>Results</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="lessons">   <span class="cs-tab-num">05</span>Lessons</button>
+            </div>
+            <div class="cs-panel" data-panel="problem" data-active>
+              <h4>The failure mode in a compliance context isn't ambiguity — it's confident incorrectness.</h4>
+              <p>Compliance analysts manually cross-reference dozens of RBI circulars to answer a single query — a process that's slow, expensive, and error-prone. Naively deploying an LLM accelerates the search but introduces a worse risk: the model produces plausible-sounding answers that aren't grounded in actual circular text, making hallucinated compliance guidance indistinguishable from real guidance.</p>
+              <p>The system needs to answer accurately or decline explicitly, with no middle ground where it guesses. A false-confident answer in a compliance setting is a legal liability, not just an inconvenience.</p>
+            </div>
+            <div class="cs-panel" data-panel="approach">
+              <h4>Retrieval-first. Gate before LLM. Citations from metadata, not from the model's output.</h4>
+              <ul>
+                <li>RBI circulars are scraped from rbi.org.in, chunked at clause boundaries (500 tokens, 50-token overlap to preserve cross-clause context), embedded with <em>text-embedding-3-small</em>, and indexed into Chroma for local development or Pinecone for production.</li>
+                <li>On query, MMR retrieval (k=6, λ=0.3) fetches diverse chunks — maximal marginal relevance penalises redundant results, ensuring the retrieved context spans multiple circulars when the answer requires it.</li>
+                <li>A confidence gate at 0.65 cosine similarity evaluates retrieval quality before the LLM is called. Below threshold: the system returns a decline message, logs the gate-fire event to PostgreSQL, and never calls the LLM. Above threshold: GPT-4o-mini synthesises a grounded response with citations derived from chunk metadata — not from the model's own output.</li>
+                <li>APScheduler re-indexes nightly at 02:00 IST, embedding only documents added since the last run to avoid redundant embedding costs. Every request and retrieval is logged to an append-only PostgreSQL audit table with chunk IDs, similarity scores, and final response.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="decisions">
+              <h4>Why these choices — each driven by the compliance failure mode, not engineering preference.</h4>
+              <ul>
+                <li><strong>Gate-before-LLM: confidence threshold fires before model invocation.</strong> Prevents wasted API calls and — more critically — stops low-confidence retrievals from reaching the LLM where they become hallucinations. The 0.65 threshold was empirically calibrated: on-topic RBI queries score 0.65–0.73; out-of-scope queries cluster near 0.45–0.52. The gap is wide enough that a hard threshold works cleanly without a fuzzy band.</li>
+                <li><strong>Clause-level chunking over document-level embedding.</strong> Regulatory documents mix provisions, definitions, and exceptions within a single section. Embedding at the document level loses that granularity — a query about a specific provision retrieves the whole circular, diluting the result with unrelated adjacent text. Clause-level chunks keep semantic coherence tight and retrieval precision high.</li>
+                <li><strong>PostgreSQL for session history and citation audit log.</strong> Compliance teams need a reproducible audit trail of which clauses informed which answer — not just the LLM's output. Every request, including gate-fired declines, is written to an append-only table with retrieved chunk IDs, similarity scores, and final response. The audit log is the ground truth; the LLM output is derived from it.</li>
+                <li><strong>Citations injected from chunk metadata, not generated by the model.</strong> If the LLM generates its own citations it can hallucinate circular numbers that don't exist. All citations (circular ID, title, effective date) are sourced from the metadata tags attached to the retrieved chunks at index time — the model has no ability to invent them.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="results">
+              <h4>139 RBI circulars indexed · Pinecone production · full PostgreSQL audit trail.</h4>
+              <div class="cs-result-grid">
+                <div class="cs-result-card"><div class="cs-stat-num">139</div><div class="cs-stat-label">RBI circulars indexed (2024 corpus)</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">0.65</div><div class="cs-stat-label">empirically calibrated gate threshold</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">$0.00071</div><div class="cs-stat-label">avg cost per query</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">100%</div><div class="cs-stat-label">requests logged to audit trail</div></div>
+              </div>
+            </div>
+            <div class="cs-panel" data-panel="lessons">
+              <h4>What broke during calibration — and what I changed because of it.</h4>
+              <ul>
+                <li><strong>MMR λ=0.3 is not always the right setting.</strong> An early version used the default MMR λ (0.5), which balanced relevance and diversity too aggressively — retrieved chunks were diverse but the highest-relevance chunk was sometimes excluded in favour of diversity, causing the gate to fire on queries that should have passed. Lowering λ to 0.3 biased retrieval back toward relevance, giving the gate a cleaner signal.</li>
+                <li><strong>The 500-token chunk size created invisible splits at mid-clause boundaries.</strong> Some RBI circular clauses span more than 500 tokens — a condition, its exception, and a cross-reference. Splitting at token count cut these mid-clause, leaving each half missing the other's context. The fix: RecursiveCharacterTextSplitter with clause-boundary separators (section headers, numbered lists) before falling back to token-count splitting.</li>
+                <li><strong>Nightly delta re-indexing has a race condition when a circular is updated the same day it's indexed.</strong> Early versions used modification date as the freshness signal. If a circular was indexed during the day and then updated before the nightly run, the stale embedded version persisted. Fix: use a content hash as the freshness signal — the nightly run re-embeds any document whose hash doesn't match the stored embedding's metadata hash.</li>
+                <li><strong>Gate-fired declines need a human-readable explanation, not just a refusal.</strong> Early versions returned a plain "I cannot answer this query" on gate failure. Analysts interpreted this as a system error, not as a confidence gate firing. Fix: the decline message includes the top similarity score and suggests rephrasing — analysts understand the system is deferring on confidence, not broken.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── Architecture ───────────────────────────────────────────────────────── -->
+    <section class="arch-section" id="architecture">
+      <div class="ps-page">
+        <div class="ps-section-label">SYSTEM ARCHITECTURE</div>
+        <h2 class="ps-section-title">How a query<br><em>actually resolves.</em></h2>
+        <div class="arch-frame">
+          <div class="arch-toolbar">
+            <span class="arch-tag">regulatory-intelligence-agent · v1.0</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">hover any node →</span>
+          </div>
+          <div class="arch-canvas">
+            <div class="arch-canvas-inner">
+              <svg class="arch-svg" viewBox="0 0 900 480">
+                <defs>
+                  <marker id="arrowDimRAG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--s-border-str)"/>
+                  </marker>
+                  <marker id="arrowLiveRAG" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+                  </marker>
+                </defs>
+                <!-- Hot path: FastAPI → Pinecone/MMR → Confidence Gate → GPT-4o-mini -->
+                <path class="arch-edge live"   d="M 175 100 H 320" marker-end="url(#arrowLiveRAG)"/>
+                <path class="arch-edge live"   d="M 465 100 H 640" marker-end="url(#arrowLiveRAG)"/>
+                <path class="arch-edge live"   d="M 712 132 V 213" marker-end="url(#arrowLiveRAG)"/>
+                <path class="arch-edge live"   d="M 712 272 V 353" marker-end="url(#arrowLiveRAG)"/>
+                <!-- Cold path: RBI → Scraper, Scraper → Pinecone, APScheduler → Scraper, FastAPI → PostgreSQL -->
+                <path class="arch-edge dashed" d="M 175 240 H 247 V 100 H 320" marker-end="url(#arrowDimRAG)"/>
+                <path class="arch-edge dashed" d="M 392 132 V 213" marker-end="url(#arrowDimRAG)"/>
+                <path class="arch-edge dashed" d="M 392 272 V 353" marker-end="url(#arrowDimRAG)"/>
+                <path class="arch-edge dashed" d="M 175 380 H 247 V 240 H 465" marker-end="url(#arrowDimRAG)"/>
+                <!-- Edge labels -->
+                <g><rect class="arch-edge-label-bg" x="222" y="84"  width="46" height="16" rx="3"/><text class="arch-edge-label" x="245" y="95"  text-anchor="middle">query</text></g>
+                <g><rect class="arch-edge-label-bg" x="527" y="84"  width="54" height="16" rx="3"/><text class="arch-edge-label" x="554" y="95"  text-anchor="middle">MMR k=6</text></g>
+                <g><rect class="arch-edge-label-bg" x="678" y="162" width="68" height="16" rx="3"/><text class="arch-edge-label" x="712" y="173" text-anchor="middle">≥0.65 gate</text></g>
+                <g><rect class="arch-edge-label-bg" x="674" y="302" width="76" height="16" rx="3"/><text class="arch-edge-label" x="712" y="313" text-anchor="middle">grounded ans</text></g>
+                <g><rect class="arch-edge-label-bg" x="210" y="162" width="64" height="16" rx="3"/><text class="arch-edge-label" x="242" y="173" text-anchor="middle">delta index</text></g>
+                <g><rect class="arch-edge-label-bg" x="360" y="162" width="64" height="16" rx="3"/><text class="arch-edge-label" x="392" y="173" text-anchor="middle">embed+upsert</text></g>
+                <g><rect class="arch-edge-label-bg" x="352" y="302" width="80" height="16" rx="3"/><text class="arch-edge-label" x="392" y="313" text-anchor="middle">audit log</text></g>
+                <g><rect class="arch-edge-label-bg" x="290" y="356" width="72" height="16" rx="3"/><text class="arch-edge-label" x="326" y="367" text-anchor="middle">gate-fire log</text></g>
+              </svg>
+              <div class="arch-node" data-kind="ingest" data-tooltip="FastAPI endpoint accepts natural-language compliance queries. Returns structured JSON: answer text, source clause IDs, document titles, effective dates, similarity score, and gate pass/fail signal. Streamlit UI wraps the API for interactive use." data-tip-pos="below" style="top:76px;left:30px;"><div class="arch-node-title">FastAPI endpoint</div><div class="arch-node-meta">query interface</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="APScheduler runs delta re-indexing nightly at 02:00 IST. Uses a content hash as the freshness signal — only documents whose hash doesn't match the stored embedding metadata are re-embedded. Cost near-zero on quiet nights." style="top:216px;left:30px;"><div class="arch-node-title">APScheduler</div><div class="arch-node-meta">nightly delta re-index</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Append-only audit table. Every request — including gate-fired declines — is written with retrieved chunk IDs, similarity scores, and final response. The audit log is the compliance ground truth; the LLM output is derived from it." style="top:356px;left:30px;"><div class="arch-node-title">PostgreSQL · audit</div><div class="arch-node-meta">append-only audit log</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Python scraper fetches RBI circulars from rbi.org.in. PyMuPDF extracts text from PDFs. RecursiveCharacterTextSplitter chunks at clause boundaries (500 tokens, 50-token overlap). text-embedding-3-small produces the vectors for Pinecone upsert." data-tip-pos="below" style="top:76px;left:320px;"><div class="arch-node-title">Scraper + Embedder</div><div class="arch-node-meta">PyMuPDF · text-embedding-3-small</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Chroma for local development, Pinecone for production. Each chunk carries metadata: circular ID, title, effective date, section number. MMR retrieval (k=6, λ=0.3) fetches diverse top-k chunks — penalises redundant results so context spans multiple circulars." style="top:216px;left:320px;"><div class="arch-node-title">Chroma / Pinecone</div><div class="arch-node-meta">MMR retrieval · k=6 λ=0.3</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="139 RBI circulars indexed (2024 corpus). Scraped from rbi.org.in. Clause-level chunking preserves provision-exception-cross-reference coherence that document-level embedding loses." style="top:356px;left:320px;"><div class="arch-node-title">RBI Corpus · 139</div><div class="arch-node-meta">2024 circulars indexed</div></div>
+              <div class="arch-node" data-tooltip="Confidence gate evaluates cosine similarity of the top retrieved chunk against 0.65 threshold. On-topic RBI queries score 0.65–0.73. Out-of-scope queries cluster near 0.45–0.52. Hard threshold works cleanly — no fuzzy band needed." data-tip-pos="below" style="top:76px;left:640px;"><div class="arch-node-title">Confidence Gate · 0.65</div><div class="arch-node-meta">cosine similarity threshold</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="GPT-4o-mini receives validated retrieved context and generates a grounded compliance answer. Citations are injected from chunk metadata — circular ID, title, effective date. The model cannot invent citations; it only reasons over what retrieval returned." style="top:216px;left:640px;"><div class="arch-node-title">GPT-4o-mini</div><div class="arch-node-meta">grounded narrative only</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="Streamlit UI wraps FastAPI for interactive compliance queries. Prometheus + Grafana surface query latency, gate-fire rate, and retrieval precision over time. Oncall alert fires when gate-fire rate spikes — signals corpus drift." style="top:356px;left:640px;"><div class="arch-node-title">Streamlit UI</div><div class="arch-node-meta">Prometheus · Grafana</div></div>
+            </div>
+          </div>
+          <div class="arch-legend">
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:var(--accent);"></span>ingest</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.65 0.14 195);"></span>store</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.62 0.16 145);"></span>serve</div>
+            <div class="arch-legend-item" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-muted);">— hot path animated · cold path dashed</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Live Demo ──────────────────────────────────────────────────────────── -->
+    <section class="pipeline-section" id="demo">
+      <div class="ps-page">
+        <div class="ps-section-label">LIVE DEMO · RAG PIPELINE</div>
+        <h2 class="ps-section-title">Submit a query.<br><em>Watch the gate.</em></h2>
+        <div class="pipe-frame">
+          <div class="pipe-header">
+            <div class="pipe-title-block">
+              <h3>regulatory-intelligence-agent / query → answer</h3>
+              <p>Each query hits Pinecone for MMR retrieval, the confidence gate evaluates similarity, and the LLM is called only if retrieval quality passes. Out-of-scope queries are declined cleanly.</p>
+            </div>
+            <div class="pipe-actions">
+              <button class="pipe-btn primary" id="ragBtnRBI">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                Submit RBI query
+              </button>
+              <button class="pipe-btn danger" id="ragBtnOOS">⚠ Out-of-scope query</button>
+              <button class="pipe-btn" id="ragBtnReset">Reset</button>
+            </div>
+          </div>
+          <div class="pipe-body">
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">01</span> RETRIEVAL · pinecone MMR</div>
+              <div class="pipe-events" id="ragRetrieval"></div>
+            </div>
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">02</span> RESPONSE · gpt-4o-mini</div>
+              <div class="pipe-events" id="ragAnswer"></div>
+            </div>
+            <div class="pipe-side">
+              <div class="pipe-stat"><span class="pipe-stat-label">queries submitted</span><span class="pipe-stat-val accent" id="ragStatQueries">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">gate passed</span><span class="pipe-stat-val good" id="ragStatPassed">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">gate declined</span><span class="pipe-stat-val bad" id="ragStatDeclined">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">last similarity</span><span class="pipe-stat-val" id="ragStatSim">—</span></div>
+              <div class="pipe-explain">
+                <strong>How it works:</strong> Query → Pinecone MMR retrieval (k=6, λ=0.3) → cosine similarity ≥0.65 gate → GPT-4o-mini grounds answer in retrieved chunks. Citations sourced from chunk metadata — not generated by the model. Gate-fire logged to PostgreSQL audit table.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Footer nav ─────────────────────────────────────────────────────────── -->
+    <footer class="proj-footer">
+      <a href="./real-time-data-streaming.html" class="proj-footer-back">← Real-Time Data Streaming</a>
+      <a href="./ai-os-finance.html" class="proj-footer-next">Next project →</a>
+    </footer>
+
+  </main>
+
+  <script defer src="../js/sections.js"></script>
+  <script>
+  (function initRAGPipeline() {
+    var retrievalEl   = document.getElementById('ragRetrieval');
+    var answerEl      = document.getElementById('ragAnswer');
+    var statQueries   = document.getElementById('ragStatQueries');
+    var statPassed    = document.getElementById('ragStatPassed');
+    var statDeclined  = document.getElementById('ragStatDeclined');
+    var statSim       = document.getElementById('ragStatSim');
+    if (!retrievalEl) return;
+
+    var queries = 0, passed = 0, declined = 0;
+    var MAX_EVENTS = 8;
+
+    var RBI_QUERIES = [
+      'Master Direction on KYC — beneficial ownership threshold',
+      'FEMA guidelines for export of goods and services',
+      'Prudential norms for classification of NPAs',
+      'Guidelines on digital lending — LSP obligations',
+      'Capital adequacy requirements under Basel III',
+    ];
+    var OOS_QUERIES = [
+      'SEBI insider trading penalties Q3 2024',
+      'Income tax treatment of ESOP perquisites',
+      'GST implications of cross-border SaaS invoices',
+      'IRDA regulations for term life insurance',
+    ];
+    var CIRCULARS = [
+      'RBI/2023-24/069 · Master Direction KYC',
+      'RBI/2023-24/114 · Digital Lending Guidelines',
+      'RBI/2022-23/183 · Basel III Capital Adequacy',
+      'RBI/2024-25/031 · Export Regulations FEMA',
+    ];
+
+    function chunkId() { return 'CHK_' + Math.random().toString(36).slice(2, 6).toUpperCase(); }
+
+    function pushEvent(container, html, cls) {
+      var div = document.createElement('div');
+      div.className = 'pipe-event ' + (cls || '');
+      div.innerHTML = html;
+      container.prepend(div);
+      while (container.children.length > MAX_EVENTS) container.lastChild.remove();
+    }
+
+    function updateStats() {
+      statQueries.textContent  = queries;
+      statPassed.textContent   = passed;
+      statDeclined.textContent = declined;
+    }
+
+    function submitRBIQuery() {
+      queries++;
+      var sim = (0.65 + Math.random() * 0.1).toFixed(3);
+      var query = RBI_QUERIES[Math.floor(Math.random() * RBI_QUERIES.length)];
+      var circular = CIRCULARS[Math.floor(Math.random() * CIRCULARS.length)];
+      var c1 = chunkId(), c2 = chunkId(), c3 = chunkId();
+
+      statSim.textContent = sim;
+      statSim.className = 'pipe-stat-val good';
+
+      pushEvent(retrievalEl,
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-id">' + query.slice(0, 38) + '…</span>' +
+          '<span class="pipe-event-amount">sim ' + sim + '</span>' +
+        '</div>' +
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-status ok">GATE PASSED · 3 chunks · MMR λ=0.3</span>' +
+          '<span class="pipe-event-id">' + c1 + ' ' + c2 + ' ' + c3 + '</span>' +
+        '</div>',
+        'committed'
+      );
+
+      setTimeout(function () {
+        passed++;
+        pushEvent(answerEl,
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-id">GPT-4o-mini · grounded answer</span>' +
+            '<span class="pipe-event-amount">' + Math.floor(180 + Math.random() * 120) + 'ms</span>' +
+          '</div>' +
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-status ok">CITED · ' + circular + '</span>' +
+            '<span class="pipe-event-id">chunks: ' + c1 + ' ' + c2 + '</span>' +
+          '</div>',
+          'committed'
+        );
+        updateStats();
+      }, 900);
+      updateStats();
+    }
+
+    function submitOOSQuery() {
+      queries++;
+      var sim = (0.42 + Math.random() * 0.12).toFixed(3);
+      var query = OOS_QUERIES[Math.floor(Math.random() * OOS_QUERIES.length)];
+
+      statSim.textContent = sim;
+      statSim.className = 'pipe-stat-val bad';
+
+      pushEvent(retrievalEl,
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-id">' + query.slice(0, 38) + '…</span>' +
+          '<span class="pipe-event-amount">sim ' + sim + '</span>' +
+        '</div>' +
+        '<div class="pipe-event-row">' +
+          '<span class="pipe-event-status dup">GATE FIRED · below 0.65 · no LLM call</span>' +
+          '<span class="pipe-event-id">logged to audit</span>' +
+        '</div>',
+        'duplicate'
+      );
+
+      setTimeout(function () {
+        declined++;
+        pushEvent(answerEl,
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-id">DECLINED · ' + sim + ' &lt; 0.65</span>' +
+            '<span class="pipe-event-amount">$0.00</span>' +
+          '</div>' +
+          '<div class="pipe-event-row">' +
+            '<span class="pipe-event-status dup">No RBI circular found. Rephrase or check corpus scope.</span>' +
+            '<span class="pipe-event-id">0 LLM tokens used</span>' +
+          '</div>',
+          'duplicate'
+        );
+        updateStats();
+      }, 350);
+      updateStats();
+    }
+
+    document.getElementById('ragBtnRBI').addEventListener('click', submitRBIQuery);
+    document.getElementById('ragBtnOOS').addEventListener('click', submitOOSQuery);
+    document.getElementById('ragBtnReset').addEventListener('click', function () {
+      queries = passed = declined = 0;
+      retrievalEl.innerHTML = '';
+      answerEl.innerHTML = '';
+      statSim.textContent = '—';
+      statSim.className = 'pipe-stat-val';
+      updateStats();
+    });
+
+    setTimeout(function () { submitRBIQuery(); }, 400);
+  })();
+  </script>
+
+</body>
+</html>

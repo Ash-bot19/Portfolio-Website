@@ -134,10 +134,8 @@
   color: rgba(var(--color-lens-text-rgb), 0.8);
 }
 
-/* Lens is pointer-only — hide on touch and when honest mode is already active */
-@media (pointer: coarse) {
-  .hero-lens { display: none; }
-}
+/* On touch, clip-path: circle(0px) keeps the lens invisible at rest.
+   JS spreads it on hold. Only suppress on reduced-motion or honest mode. */
 
 @media (prefers-reduced-motion: reduce) {
   .hero-lens { display: none; }
