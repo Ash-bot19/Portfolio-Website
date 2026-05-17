@@ -26,6 +26,18 @@ function ready(fn) {
 }
 
 ready(function () {
+  if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+
+  // Skip preloader when returning from a project page in the same session.
+  // Check BEFORE setting the flag so the first-ever visit (even with a hash) still
+  // shows the preloader. The flag is written below, after the check.
+  var returnHash = window.location.hash;
+  if (returnHash && sessionStorage.getItem('site-entered')) {
+    skipToContent(returnHash);
+    return;
+  }
+  try { sessionStorage.setItem('site-entered', '1'); } catch (e) {}
+
   // === GSAP availability check (REVIEWS priority 2) ===
   // If the GSAP CDN script failed (bad SRI, network error, CSP block), window.gsap
   // is undefined. Run the fallback path so the page is at least usable.
@@ -56,6 +68,7 @@ function runFallbackBoot() {
   var mainEl = document.getElementById('page-main');
   if (preloaderEl) preloaderEl.style.display = 'none';
   if (mainEl) mainEl.removeAttribute('inert');      // REVIEWS priority 6
+  window.scrollTo(0, 0);
   document.body.style.overflow = '';
   document.body.classList.add('site-ready');
   // Call init stubs in try/catch — one failure must not block the others.
@@ -65,6 +78,49 @@ function runFallbackBoot() {
   try { initMagneticLogo();      } catch (e) { console.error('[boot] initMagneticLogo failed:', e); }
   try { initHeroAnimation();     } catch (e) { console.error('[boot] initHeroAnimation failed:', e); }
   try { initContactAnimation();  } catch (e) { console.error('[boot] initContactAnimation failed:', e); }
+}
+
+// Skips the preloader when returning from a project page (same session + hash).
+// Mirrors handoff() but replaces window.scrollTo(0,0) with a scroll to the hash.
+function skipToContent(hash) {
+  var preloaderEl = document.querySelector('.preloader');
+  var mainEl = document.getElementById('page-main');
+  if (preloaderEl) preloaderEl.style.display = 'none';
+  document.body.style.overflow = '';
+  document.body.classList.add('site-ready');
+  if (mainEl) mainEl.removeAttribute('inert');
+
+  var target;
+  try { target = document.querySelector(hash); } catch (e) {}
+  history.replaceState(null, '', window.location.pathname);
+
+  function runInits() {
+    try { initNavScrollBehavior(); } catch (e) {}
+    try { initNavLinks();          } catch (e) {}
+    try { initGlobalCursor();      } catch (e) {}
+    try { initMagneticLogo();      } catch (e) {}
+    try { initHeroLens();          } catch (e) {}
+    try { initAboutLens();         } catch (e) {}
+    try { initTimelineLens();      } catch (e) {}
+    try { initHeroAnimation();     } catch (e) {}
+    try { duplicateSkillCards();   } catch (e) {}
+    try { initAboutAnimation();    } catch (e) {}
+    try { initSkillsAnimation();   } catch (e) {}
+    try { initWhatIBuildAnimation(); } catch (e) {}
+    try { initWorkImageParallax();   } catch (e) {}
+    try { initTimelineAnimation();   } catch (e) {}
+    try { initProjectsAnimation();   } catch (e) {}
+    try { initContactAnimation();    } catch (e) {}
+    try { initNewSectionTitles();    } catch (e) {}
+    // Delay scroll until ScrollTrigger has set up pin offsets
+    setTimeout(function () {
+      if (target) target.scrollIntoView({ behavior: 'instant' });
+    }, 200);
+  }
+
+  if (!window.gsap) { runInits(); return; }
+  var fontsReady = (document.fonts && document.fonts.ready) ? document.fonts.ready : Promise.resolve();
+  Promise.race([fontsReady, new Promise(function (r) { setTimeout(r, 400); })]).then(runInits);
 }
 
 // =============================================================================
@@ -103,7 +159,7 @@ function startPreloader() {
   var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   // ── Pupil tracking ──
-  // Maps mouse screen position into the overlay SVG's 736×920 viewBox,
+  // Maps mouse screen position into the overlay SVG's 922×1152 viewBox,
   // then nudges each pupil up to MAX_PUPIL units toward the cursor.
   function movePupil(el, baseCx, baseCy, svgX, svgY) {
     var dx   = svgX - baseCx;
@@ -119,10 +175,10 @@ function startPreloader() {
     if (!avatarEyesSvg) return;
     var rect = avatarEyesSvg.getBoundingClientRect();
     if (!rect.width) return;
-    var svgX = (e.clientX - rect.left) / rect.width  * 736;
-    var svgY = (e.clientY - rect.top)  / rect.height * 920;
-    if (eyeL) movePupil(eyeL, 360, 340, svgX, svgY);
-    if (eyeR) movePupil(eyeR, 472, 342, svgX, svgY);
+    var svgX = (e.clientX - rect.left) / rect.width  * 922;
+    var svgY = (e.clientY - rect.top)  / rect.height * 1152;
+    if (eyeL) movePupil(eyeL, 451, 426, svgX, svgY);
+    if (eyeR) movePupil(eyeR, 591, 428, svgX, svgY);
   }
 
   if (!reducedMotion) {
@@ -158,12 +214,22 @@ function startPreloader() {
   }
 
   // ── Handoff — single exit point shared by normal and reduced-motion paths ──
-  function handoff() {
+  // opts.skipHide: don't hide preloader — slide-up tween is still in progress.
+  // opts.skipScrollInits: skip scroll-based animations — they fire in the slide's onComplete
+  //   so ScrollTrigger's internal page-scrolling (for pin measurement) can't trigger
+  //   the toolbelt IntersectionObserver while the preloader is still covering the page.
+  // Called with no args (reducedMotion path) → both flags false → full sync handoff.
+  function handoff(opts) {
+    var skipHide        = opts && opts.skipHide;
+    var skipScrollInits = opts && opts.skipScrollInits;
     document.removeEventListener('mousemove', onMouseMove);
+    window.scrollTo(0, 0);
     document.body.style.overflow = '';
     document.body.classList.add('site-ready');
     if (mainEl) mainEl.removeAttribute('inert');
-    preloaderEl.style.display = 'none';
+    if (!skipHide) preloaderEl.style.display = 'none';
+    // Phase A — always: nav, cursor, hero entrance (must be before slide so hero
+    // elements are already in their from-state when the preloader lifts)
     try { initNavScrollBehavior(); } catch (e) { console.error('[handoff] initNavScrollBehavior failed:', e); }
     try { initNavLinks();          } catch (e) { console.error('[handoff] initNavLinks failed:', e); }
     try { initGlobalCursor();      } catch (e) { console.error('[handoff] initGlobalCursor failed:', e); }
@@ -172,14 +238,18 @@ function startPreloader() {
     try { initAboutLens();         } catch (e) { console.error('[handoff] initAboutLens failed:', e); }
     try { initTimelineLens();      } catch (e) { console.error('[handoff] initTimelineLens failed:', e); }
     try { initHeroAnimation();     } catch (e) { console.error('[handoff] initHeroAnimation failed:', e); }
-    try { duplicateSkillCards();   } catch (e) { console.error('[handoff] duplicateSkillCards failed:', e); }
-    try { initAboutAnimation();    } catch (e) { console.error('[handoff] initAboutAnimation failed:', e); }
-    try { initSkillsAnimation();   } catch (e) { console.error('[handoff] initSkillsAnimation failed:', e); }
-    try { initWhatIBuildAnimation(); } catch (e) { console.error('[handoff] initWhatIBuildAnimation failed:', e); }
-    try { initWorkImageParallax();   } catch (e) { console.error('[handoff] initWorkImageParallax failed:', e); }
-    try { initTimelineAnimation();   } catch (e) { console.error('[handoff] initTimelineAnimation failed:', e); }
-    try { initProjectsAnimation();   } catch (e) { console.error('[handoff] initProjectsAnimation failed:', e); }
-    try { initContactAnimation();    } catch (e) { console.error('[handoff] initContactAnimation failed:', e); }
+    // Phase B — scroll-based: deferred when skipScrollInits (fired in slide onComplete instead)
+    if (!skipScrollInits) {
+      try { duplicateSkillCards();   } catch (e) { console.error('[handoff] duplicateSkillCards failed:', e); }
+      try { initAboutAnimation();    } catch (e) { console.error('[handoff] initAboutAnimation failed:', e); }
+      try { initSkillsAnimation();   } catch (e) { console.error('[handoff] initSkillsAnimation failed:', e); }
+      try { initWhatIBuildAnimation(); } catch (e) { console.error('[handoff] initWhatIBuildAnimation failed:', e); }
+      try { initWorkImageParallax();   } catch (e) { console.error('[handoff] initWorkImageParallax failed:', e); }
+      try { initTimelineAnimation();   } catch (e) { console.error('[handoff] initTimelineAnimation failed:', e); }
+      try { initProjectsAnimation();   } catch (e) { console.error('[handoff] initProjectsAnimation failed:', e); }
+      try { initContactAnimation();    } catch (e) { console.error('[handoff] initContactAnimation failed:', e); }
+      try { initNewSectionTitles();    } catch (e) { console.error('[handoff] initNewSectionTitles failed:', e); }
+    }
   }
 
   // ── START click ──
@@ -203,7 +273,7 @@ function startPreloader() {
     gsap.to(ringSvgEl, { opacity: 1, duration: 0.35, delay: 0.15, ease: 'power1.out' });
 
     var ringState = { head: 0, tail: 0 };
-    gsap.timeline({ delay: 0.3, onComplete: handoff })
+    gsap.timeline({ delay: 0.3 })
       .to(ringState, {
         head: 100,
         duration: 1.85,
@@ -216,12 +286,27 @@ function startPreloader() {
         ease: 'power2.in',
         onUpdate: function () { updateRing(ringState.head, ringState.tail); }
       })
+      // Phase A: nav + cursor + hero — runs before slide so hero is in its from-state
+      .call(function () { handoff({ skipHide: true, skipScrollInits: true }); })
       .to(preloaderEl, {
         y: '-100%',
         duration: 0.9,
-        ease: 'power4.inOut'
-      }, '+=0.12')
-      .call(function () { /* timeline end marker */ });
+        ease: 'power4.inOut',
+        onComplete: function () {
+          preloaderEl.style.display = 'none';
+          // Phase B: scroll-based animations — after slide so ScrollTrigger pin
+          // measurement scrolling can't pre-trigger the toolbelt IntersectionObserver
+          try { duplicateSkillCards();     } catch (e) { console.error('[scroll-init] duplicateSkillCards failed:', e); }
+          try { initAboutAnimation();      } catch (e) { console.error('[scroll-init] initAboutAnimation failed:', e); }
+          try { initSkillsAnimation();     } catch (e) { console.error('[scroll-init] initSkillsAnimation failed:', e); }
+          try { initWhatIBuildAnimation(); } catch (e) { console.error('[scroll-init] initWhatIBuildAnimation failed:', e); }
+          try { initWorkImageParallax();   } catch (e) { console.error('[scroll-init] initWorkImageParallax failed:', e); }
+          try { initTimelineAnimation();   } catch (e) { console.error('[scroll-init] initTimelineAnimation failed:', e); }
+          try { initProjectsAnimation();   } catch (e) { console.error('[scroll-init] initProjectsAnimation failed:', e); }
+          try { initContactAnimation();    } catch (e) { console.error('[scroll-init] initContactAnimation failed:', e); }
+          try { initNewSectionTitles();    } catch (e) { console.error('[scroll-init] initNewSectionTitles failed:', e); }
+        }
+      }, '+=0.12');
 
   }, { once: true });
 
@@ -341,6 +426,7 @@ function initNavLinks() {
   // Scrollspy: keep the link for the section in view in the light state.
   var aboutLink = document.querySelector('.nav-link[href="#about"]');
   var workLink = document.querySelector('.nav-link[href="#what-i-build"]');
+  var certsLink = document.querySelector('.nav-link[href="#certifications"]');
   var contactLink = document.querySelector('.nav-link[href="#contact"]');
 
   var sectionToLink = [
@@ -349,6 +435,7 @@ function initNavLinks() {
     { section: document.getElementById('work'), link: workLink },
     { section: document.getElementById('experience'), link: workLink },
     { section: document.getElementById('projects'), link: workLink },
+    { section: document.getElementById('certifications'), link: certsLink },
     { section: document.getElementById('contact'), link: contactLink }
   ].filter(function (item) { return item.section && item.link; });
 
@@ -409,46 +496,100 @@ function initGlobalCursor() {
     gsap.set(cursor, { xPercent: -50, yPercent: -50 });
   }
 
-  function moveCursor(e) {
-    if (window.gsap) {
-      gsap.to(cursor, {
-        x: e.clientX,
-        y: e.clientY,
-        opacity: 1,
-        duration: 0.18,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-    } else {
-      cursor.style.opacity = '1';
-      cursor.style.transform = 'translate3d(' + e.clientX + 'px, ' + e.clientY + 'px, 0) translate(-50%, -50%)';
-    }
+  // Minhpham architecture: cursor size driven via --cursor-size CSS var tweened by GSAP.
+  // Position lerps every frame (EASE 0.07). Opacity lerps (O_EASE 0.12) for lens hide/show.
+  // Size is NOT lerped — GSAP tweens drive it directly so contract/extend have exact timing.
+  var DEFAULT_SIZE = 40;
+  var EASE   = 0.07;
+  var O_EASE = 0.12;
+  var targetX = 0, targetY = 0;
+  var currentX = 0, currentY = 0;
+  var targetOpacity = 0, currentOpacity = 0;
+  var lensHidden = false;
+  var hasPos = false;
+
+  // GSAP tweens this proxy; onUpdate writes --cursor-size to the element.
+  var sizeProxy = { v: DEFAULT_SIZE };
+
+  function setSize(px) {
+    cursor.style.setProperty('--cursor-size', px.toFixed(1) + 'px');
   }
 
-  function scaleCursor(scale) {
-    if (!window.gsap) return;
-    gsap.to(cursor, {
-      scale: scale,
-      duration: 0.25,
-      ease: 'power2.out',
-      overwrite: 'auto'
+  function tweenSize(px, duration, ease) {
+    if (!window.gsap) { setSize(px); return; }
+    gsap.killTweensOf(sizeProxy);
+    sizeProxy.v = parseFloat(cursor.style.getPropertyValue('--cursor-size')) || DEFAULT_SIZE;
+    gsap.to(sizeProxy, {
+      v: px,
+      duration: duration,
+      ease: ease || 'power3.out',
+      onUpdate: function() { setSize(sizeProxy.v); }
     });
   }
 
+  function moveCursor(e) {
+    targetX = e.clientX;
+    targetY = e.clientY;
+    if (!hasPos) {
+      currentX = targetX;
+      currentY = targetY;
+      hasPos = true;
+    }
+    targetOpacity = lensHidden ? 0 : 1;
+  }
+
+  function tickCursor() {
+    if (!hasPos) return;
+    currentX += (targetX - currentX) * EASE;
+    currentY += (targetY - currentY) * EASE;
+    currentOpacity += (targetOpacity - currentOpacity) * O_EASE;
+    if (window.gsap) {
+      gsap.set(cursor, { x: currentX, y: currentY, opacity: currentOpacity });
+    } else {
+      cursor.style.transform = 'translate3d(' + currentX + 'px, ' + currentY + 'px, 0) translate(-50%, -50%)';
+      cursor.style.opacity = currentOpacity;
+    }
+  }
+
+  if (window.gsap && gsap.ticker) {
+    gsap.ticker.add(tickCursor);
+  } else {
+    (function raf() { tickCursor(); requestAnimationFrame(raf); })();
+  }
+
+  // Public hook for lens code (initHeroLens / initAboutLens / initTimelineLens /
+  // cursor-invert.js). Scale param kept for API compat — ignored, size is GSAP-driven.
+  cursor.__setTarget = function(scale, opacity, immediate) {
+    if (opacity != null) {
+      lensHidden = opacity === 0;
+      targetOpacity = opacity;
+    }
+    if (immediate) {
+      if (opacity != null) currentOpacity = opacity;
+      tickCursor();
+    }
+  };
+
+  // Expose size tweener for any external caller that needs direct size control.
+  cursor.__tweenSize = tweenSize;
+
   document.addEventListener('pointermove', moveCursor, { passive: true });
   document.addEventListener('pointerleave', function () {
-    if (window.gsap) {
-      gsap.to(cursor, { opacity: 0, duration: 0.2, overwrite: 'auto' });
-    } else {
-      cursor.style.opacity = '0';
-    }
+    targetOpacity = 0;
   });
 
-  document.querySelectorAll('a, button, .wib-line, .skill-card, .project-card').forEach(function (el) {
-    el.addEventListener('mouseenter', function () { scaleCursor(1.8); });
-    el.addEventListener('mouseleave', function () { scaleCursor(1); });
+  // Contract — cursor shrinks to nothing (minhpham js-cursor-contract: 0px, 0.3s power3.out).
+  // Applies to text links, buttons, and WIB lines.
+  document.querySelectorAll('a:not(.nav-logo):not(.side-social-link):not(.project-card-link), button:not(.cs-tab):not(.pipe-btn), .wib-line-dark').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { tweenSize(0, 0.3, 'power3.out'); });
+    el.addEventListener('mouseleave', function() { tweenSize(DEFAULT_SIZE, 0.6, 'power3.out'); });
   });
 
+  // Extend — cursor balloons to large circle (minhpham js-cursor-extend: 450px, 0.6s power3.out).
+  document.querySelectorAll('.skill-card').forEach(function(el) {
+    el.addEventListener('mouseenter', function() { tweenSize(450, 0.6, 'power3.out'); });
+    el.addEventListener('mouseleave', function() { tweenSize(DEFAULT_SIZE, 0.6, 'power3.out'); });
+  });
 }
 
 function initMagneticLogo() {
@@ -463,7 +604,6 @@ function initMagneticLogo() {
     zoneRadius: 82,
     maxPull: 20,
     pullRatio: 0.62,
-    cursorScale: 1,
     moveDuration: 0.18,
     resetDuration: 0.42
   });
@@ -495,7 +635,6 @@ function createMagneticTarget(el, opts) {
   var zoneRadius = opts && opts.zoneRadius ? opts.zoneRadius : 56;
   var maxPull = opts && opts.maxPull ? opts.maxPull : 12;
   var pullRatio = opts && opts.pullRatio ? opts.pullRatio : 0.6;
-  var cursorScale = opts && opts.cursorScale ? opts.cursorScale : 1.8;
   var moveDuration = opts && opts.moveDuration ? opts.moveDuration : 0.28;
   var resetDuration = opts && opts.resetDuration ? opts.resetDuration : 0.55;
   var latched = false;
@@ -514,18 +653,6 @@ function createMagneticTarget(el, opts) {
     if (!latched) return;
     latched = false;
     if (activeClass) el.classList.remove(activeClass);
-    var cursor = document.querySelector('.site-cursor');
-    if (cursor) {
-      cursor.classList.remove('is-logo-invert');
-      gsap.to(cursor, {
-        backgroundColor: '#f05030',
-        opacity: 1,
-        scale: 1.8,
-        duration: 0.2,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
-    }
     gsap.to(el, {
       x: 0,
       y: 0,
@@ -536,19 +663,9 @@ function createMagneticTarget(el, opts) {
   }
 
   function activateTarget(dx, dy, distance) {
-    latched = true;
-    if (activeClass) el.classList.add(activeClass);
-    var cursor = document.querySelector('.site-cursor');
-    if (cursor) {
-      cursor.classList.add('is-logo-invert');
-      gsap.to(cursor, {
-        backgroundColor: '#f05030',
-        opacity: 1,
-        scale: cursorScale,
-        duration: 0.18,
-        ease: 'power2.out',
-        overwrite: 'auto'
-      });
+    if (!latched) {
+      latched = true;
+      if (activeClass) el.classList.add(activeClass);
     }
 
     var pull = Math.min(distance, maxPull);
@@ -644,8 +761,13 @@ function initHeroAnimation() {
   // remove it in onComplete so GPU layers are released after the ~1.5s entry.
   heroInner.classList.add('is-animating');
 
-  // Build a timeline so subsequent steps reference relative positions
-  // and the whole sequence can be paused/seeked as a unit.
+  // gsap.set() is synchronous — applies from-states immediately in the same call
+  // stack, with no RAF-frame gap. gsap.from() would wait one tick before snapping
+  // elements invisible, leaving a brief flash at natural opacity.
+  gsap.set(nameLabel, { y: 20, opacity: 0 });
+  gsap.set(words,     { y: 40, opacity: 0 });
+  gsap.set(subtitle,  { y: 20, opacity: 0 });
+
   var tl = gsap.timeline({
     onComplete: function () {
       // REVIEWS priority 7: cleanup — release GPU layers
@@ -653,37 +775,14 @@ function initHeroAnimation() {
     }
   });
 
-  // 1. Name label fade-up (UI-SPEC: y 20px → 0, opacity 0 → 1, 0.6s, power2.out)
-  tl.from(nameLabel, {
-    y: 20,
-    opacity: 0,
-    duration: 0.6,
-    ease: 'power2.out'
-  });
+  // 1. Name label fade-up
+  tl.to(nameLabel, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' });
 
-  // 2. Headline word stagger (UI-SPEC: y 40px → 0, opacity 0 → 1, 0.7s per word,
-  //    0.06s stagger, power2.out). Selector is scoped to the ACTIVE variant
-  //    (REVIEWS priority 3 — animating the hidden display:none variant would either
-  //    no-op or leave it stuck if the user later toggles mode).
-  //    Position '-=0.3' overlaps with the tail of the name label fade for a tighter feel,
-  //    matching UI-SPEC's "0.06s between words, starting near name label end".
-  tl.from(words, {
-    y: 40,
-    opacity: 0,
-    duration: 0.7,
-    ease: 'power2.out',
-    stagger: 0.06
-  }, '-=0.3');
+  // 2. Headline word stagger — '-=0.3' overlaps with tail of name label
+  tl.to(words, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out', stagger: 0.06 }, '-=0.3');
 
-  // 3. Subtitle fade-up (UI-SPEC: y 20px → 0, opacity 0 → 1, 0.6s, power2.out,
-  //    starts ~0.1s after last word). Position '-=0.2' lands the subtitle entrance
-  //    approximately 0.1s after the last word begins its tween.
-  tl.from(subtitle, {
-    y: 20,
-    opacity: 0,
-    duration: 0.6,
-    ease: 'power2.out'
-  }, '-=0.2');
+  // 3. Subtitle fade-up — starts ~0.1s after last word begins
+  tl.to(subtitle, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.2');
 }
 
 // ── Phase 2: duplicate skill cards for infinite-feel strip ──
@@ -842,11 +941,11 @@ function initWhatIBuildAnimation() {
       clipPath: 'inset(0 0% 0 0)',
       duration: 1.2,
       ease: 'none',
-      stagger: 0.16,
+      stagger: 0.06,
       scrollTrigger: {
         trigger: section,
-        start: 'top bottom',
-        end: 'bottom 15%',
+        start: 'top 50%',
+        end: 'top -20%',
         scrub: 1,
         invalidateOnRefresh: true
       }
@@ -880,6 +979,7 @@ function initWhatIBuildAnimation() {
         }
       });
     }
+
 
   });
 
@@ -1100,51 +1200,74 @@ function initHeroLens() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.gsap) return;
 
+  // Lerped position so the lens trails the cursor identically. EASE matches
+  // initGlobalCursor (0.07) — heavy minhpham-style lag.
+  var CURSOR_RADIUS = 19;
+  var LENS_RADIUS = 160;
   var lensData = { r: 0 };
-  var lastX = 0;
-  var lastY = 0;
+  var EASE = 0.07;
+  var targetX = 0, targetY = 0;
+  var lensX = 0, lensY = 0;
+  var active = false;
 
   function updateLensClip() {
     lens.style.clipPath = 'circle(' + lensData.r.toFixed(1) + 'px at ' +
-      lastX.toFixed(1) + 'px ' + lastY.toFixed(1) + 'px)';
+      lensX.toFixed(1) + 'px ' + lensY.toFixed(1) + 'px)';
   }
+
+  function tickLens() {
+    // Always run while gsap may still be animating r toward 0 — early returns
+    // here leave the clip-path stuck at a tiny non-zero radius, producing the
+    // "small orange dot left behind" bug.
+    lensX += (targetX - lensX) * EASE;
+    lensY += (targetY - lensY) * EASE;
+    updateLensClip();
+  }
+  gsap.ticker.add(tickLens);
 
   // Position tracks against the lens box so the circle stays whole through
   // the lens bleed outside the section boundary.
   hero.addEventListener('mousemove', function (e) {
     var rect = lens.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
-    updateLensClip();
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
   });
 
   // Lens activates only when over the inner text content — not the section padding
   triggerEl.addEventListener('mouseenter', function (e) {
     var rect = lens.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    // Snap lens position to mouse on entry — first frame starts at cursor.
+    lensX = targetX;
+    lensY = targetY;
+    active = true;
     var cursor = document.querySelector('.site-cursor');
-    if (cursor) gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2, overwrite: 'auto' });
-    gsap.to(lensData, {
-      r: 160,
-      duration: 0.5,
-      ease: 'power2.out',
-      overwrite: true,
-      onUpdate: updateLensClip
-    });
+    if (cursor && cursor.__tweenSize) cursor.__tweenSize(40, 0);
+    if (cursor && cursor.__setTarget) cursor.__setTarget(1, 0, true);
+    gsap.fromTo(lensData, { r: CURSOR_RADIUS }, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
   });
 
   triggerEl.addEventListener('mouseleave', function () {
-    var cursor = document.querySelector('.site-cursor');
-    if (cursor) gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.35, overwrite: 'auto' });
+    active = false;
     gsap.to(lensData, {
-      r: 0,
-      duration: 0.4,
-      ease: 'power2.in',
-      overwrite: true,
-      onUpdate: updateLensClip
+      r: CURSOR_RADIUS, duration: 0.45, ease: 'power2.out', overwrite: true,
+      onComplete: function () {
+        lensData.r = 0;
+        updateLensClip();
+        var c = document.querySelector('.site-cursor');
+        if (c && c.__setTarget) c.__setTarget(null, 1, true);
+      }
     });
   });
+  // Late-entry guard: cursor already inside triggerEl when listener registered — mouseenter never fires.
+  if (triggerEl.matches(':hover')) {
+    active = true;
+    var sc = document.querySelector('.site-cursor');
+    if (sc && sc.__tweenSize) sc.__tweenSize(40, 0);
+    if (sc && sc.__setTarget) sc.__setTarget(1, 0, true);
+    gsap.to(lensData, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
+  }
 }
 
 // ── About section: cursor lens — honest text revealed by orange circle ──
@@ -1159,75 +1282,179 @@ function initAboutLens() {
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.gsap) return;
 
+  var CURSOR_RADIUS = 19;
+  var LENS_RADIUS = 160;
   var lensData = { r: 0 };
-  var lastX = 0, lastY = 0;
+  var EASE = 0.07;
+  var targetX = 0, targetY = 0;
+  var lensX = 0, lensY = 0;
+  var active = false;
 
   function updateLensClip() {
     lens.style.clipPath = 'circle(' + lensData.r.toFixed(1) + 'px at ' +
-      lastX.toFixed(1) + 'px ' + lastY.toFixed(1) + 'px)';
+      lensX.toFixed(1) + 'px ' + lensY.toFixed(1) + 'px)';
   }
+
+  function tickLens() {
+    // Always run while gsap may still be animating r toward 0 — early returns
+    // here leave the clip-path stuck at a tiny non-zero radius, producing the
+    // "small orange dot left behind" bug.
+    lensX += (targetX - lensX) * EASE;
+    lensY += (targetY - lensY) * EASE;
+    updateLensClip();
+  }
+  gsap.ticker.add(tickLens);
 
   section.addEventListener('mousemove', function (e) {
     var rect = lens.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
-    updateLensClip();
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
   });
 
   triggerEl.addEventListener('mouseenter', function (e) {
     var rect = lens.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    lensX = targetX;
+    lensY = targetY;
+    active = true;
     var cursor = document.querySelector('.site-cursor');
-    if (cursor) gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2, overwrite: 'auto' });
-    gsap.to(lensData, { r: 160, duration: 0.5, ease: 'power2.out', overwrite: true, onUpdate: updateLensClip });
+    if (cursor && cursor.__tweenSize) cursor.__tweenSize(40, 0);
+    if (cursor && cursor.__setTarget) cursor.__setTarget(1, 0, true);
+    gsap.fromTo(lensData, { r: CURSOR_RADIUS }, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
   });
 
   triggerEl.addEventListener('mouseleave', function () {
-    var cursor = document.querySelector('.site-cursor');
-    if (cursor) gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.35, overwrite: 'auto' });
-    gsap.to(lensData, { r: 0, duration: 0.4, ease: 'power2.in', overwrite: true, onUpdate: updateLensClip });
+    active = false;
+    gsap.to(lensData, {
+      r: CURSOR_RADIUS, duration: 0.45, ease: 'power2.out', overwrite: true,
+      onComplete: function () {
+        lensData.r = 0;
+        updateLensClip();
+        var c = document.querySelector('.site-cursor');
+        if (c && c.__setTarget) c.__setTarget(null, 1, true);
+      }
+    });
   });
+  // Late-entry guard: cursor already inside triggerEl when listener registered — mouseenter never fires.
+  if (triggerEl.matches(':hover')) {
+    active = true;
+    var sc = document.querySelector('.site-cursor');
+    if (sc && sc.__tweenSize) sc.__tweenSize(40, 0);
+    if (sc && sc.__setTarget) sc.__setTarget(1, 0, true);
+    gsap.to(lensData, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
+  }
 }
 
 // ── Timeline section: cursor lens — honest intro revealed by orange circle ──
 function initTimelineLens() {
   var section = document.querySelector('.timeline');
-  var triggerEl = document.querySelector('.timeline-inner');
+  var triggerEl = document.querySelector('.timeline-intro-wrap');
   var lens = document.querySelector('.timeline-lens');
   if (!section || !triggerEl || !lens) return;
   if (window.matchMedia('(pointer: coarse)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.gsap) return;
 
+  var CURSOR_RADIUS = 19;
+  var LENS_RADIUS = 160;
   var lensData = { r: 0 };
-  var lastX = 0, lastY = 0;
+  var EASE = 0.07;
+  var targetX = 0, targetY = 0;
+  var lensX = 0, lensY = 0;
+  var active = false;
 
   function updateLensClip() {
     lens.style.clipPath = 'circle(' + lensData.r.toFixed(1) + 'px at ' +
-      lastX.toFixed(1) + 'px ' + lastY.toFixed(1) + 'px)';
+      lensX.toFixed(1) + 'px ' + lensY.toFixed(1) + 'px)';
   }
+
+  function tickLens() {
+    // Always run while gsap may still be animating r toward 0 — early returns
+    // here leave the clip-path stuck at a tiny non-zero radius, producing the
+    // "small orange dot left behind" bug.
+    lensX += (targetX - lensX) * EASE;
+    lensY += (targetY - lensY) * EASE;
+    updateLensClip();
+  }
+  gsap.ticker.add(tickLens);
 
   section.addEventListener('mousemove', function (e) {
     var rect = lens.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
-    updateLensClip();
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
   });
 
   triggerEl.addEventListener('mouseenter', function (e) {
     var rect = lens.getBoundingClientRect();
-    lastX = e.clientX - rect.left;
-    lastY = e.clientY - rect.top;
+    targetX = e.clientX - rect.left;
+    targetY = e.clientY - rect.top;
+    lensX = targetX;
+    lensY = targetY;
+    active = true;
     var cursor = document.querySelector('.site-cursor');
-    if (cursor) gsap.to(cursor, { scale: 0, opacity: 0, duration: 0.2, overwrite: 'auto' });
-    gsap.to(lensData, { r: 160, duration: 0.5, ease: 'power2.out', overwrite: true, onUpdate: updateLensClip });
+    if (cursor && cursor.__tweenSize) cursor.__tweenSize(40, 0);
+    if (cursor && cursor.__setTarget) cursor.__setTarget(1, 0, true);
+    gsap.fromTo(lensData, { r: CURSOR_RADIUS }, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
   });
 
   triggerEl.addEventListener('mouseleave', function () {
-    var cursor = document.querySelector('.site-cursor');
-    if (cursor) gsap.to(cursor, { scale: 1, opacity: 1, duration: 0.35, overwrite: 'auto' });
-    gsap.to(lensData, { r: 0, duration: 0.4, ease: 'power2.in', overwrite: true, onUpdate: updateLensClip });
+    active = false;
+    gsap.to(lensData, {
+      r: CURSOR_RADIUS, duration: 0.45, ease: 'power2.out', overwrite: true,
+      onComplete: function () {
+        lensData.r = 0;
+        updateLensClip();
+        var c = document.querySelector('.site-cursor');
+        if (c && c.__setTarget) c.__setTarget(null, 1, true);
+      }
+    });
+  });
+  // Late-entry guard: cursor already inside triggerEl when listener registered — mouseenter never fires.
+  if (triggerEl.matches(':hover')) {
+    active = true;
+    var sc = document.querySelector('.site-cursor');
+    if (sc && sc.__tweenSize) sc.__tweenSize(40, 0);
+    if (sc && sc.__setTarget) sc.__setTarget(1, 0, true);
+    gsap.to(lensData, { r: LENS_RADIUS, duration: 0.7, ease: 'power3.out', overwrite: true });
+  }
+}
+
+// ── New section titles — left-to-right line-by-line reveal, scrubbed, bidirectional ──
+// One ScrollTrigger + sequential timeline per title — identical pattern to initLineMaskReveal.
+function initNewSectionTitles() {
+  var titles = Array.from(document.querySelectorAll('.ps-section-title'));
+  if (!titles.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  var mm = gsap.matchMedia();
+  mm.add('(min-width: 769px)', function () {
+    titles.forEach(function (title) {
+      var lineInners = Array.from(title.querySelectorAll('.reveal-line-inner')).filter(function (el) {
+        return el.getClientRects().length > 0;
+      });
+      if (!lineInners.length) return;
+
+      var tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: title,
+          start: 'top 90%',
+          end: 'top 35%',
+          scrub: 0.45,
+          invalidateOnRefresh: true
+        }
+      });
+
+      lineInners.forEach(function (line) {
+        tl.fromTo(line,
+          { clipPath: 'inset(0 100% 0 0)' },
+          { clipPath: 'inset(0 0% 0 0)', ease: 'none', duration: 1 }
+        );
+      });
+    });
   });
 }
 

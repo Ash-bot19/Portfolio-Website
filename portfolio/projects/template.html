@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[Project Name] — Ayush Samantaray</title>
+
+  <!-- Apply saved theme before first paint to avoid flash -->
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('portfolio-theme') === 'light') {
+          document.documentElement.classList.add('theme-light');
+        }
+        // Ensure the back-link to index.html#projects skips the preloader
+        // regardless of how this page was opened (direct URL or nav from portfolio).
+        sessionStorage.setItem('site-entered', '1');
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- Same design system as main portfolio -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/nav.css">
+  <link rel="stylesheet" href="project.css">
+</head>
+<body>
+
+  <!-- Minimal nav: logo back-link + theme toggle only -->
+  <nav aria-label="Project navigation">
+    <a href="../index.html" class="nav-logo" aria-label="Back to portfolio">
+      <img class="nav-logo-face" src="../assets/New_face_logo.svg" alt="" draggable="false">
+    </a>
+    <a href="../index.html#projects" class="proj-back-link">
+      <span class="proj-back-arrow">←</span> All work
+    </a>
+    <button class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false">
+      <span class="theme-toggle__thumb">
+        <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+        </svg>
+        <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"/>
+          <circle cx="12" cy="3" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="12" cy="21" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="21" cy="12" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="5.64" cy="5.64" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="18.36" cy="18.36" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="18.36" cy="5.64" r="1" fill="currentColor" stroke="none"/>
+          <circle cx="5.64" cy="18.36" r="1" fill="currentColor" stroke="none"/>
+        </svg>
+      </span>
+    </button>
+  </nav>
+
+  <main class="proj-main">
+
+    <!-- ── Hero ─────────────────────────────────────────────────────── -->
+    <section class="proj-hero" id="top">
+      <span class="proj-eyebrow">Case Study</span>
+      <h1 class="proj-title">[Project Name]</h1>
+      <p class="proj-tagline">[One sentence: what it does and why it matters]</p>
+
+      <div class="proj-meta-row">
+        <div class="proj-tags">
+          <!-- Replace with your actual tech stack -->
+          <span class="proj-tag">Kafka</span>
+          <span class="proj-tag">Spark</span>
+          <span class="proj-tag">Postgres</span>
+          <span class="proj-tag">Python</span>
+        </div>
+        <div class="proj-links">
+          <a href="https://github.com/Ash-bot19/REPO" target="_blank" rel="noopener" class="proj-link">GitHub ↗</a>
+          <a href="#demo" class="proj-link">Live demo ↓</a>
+        </div>
+      </div>
+
+      <!-- Hero image / screenshot (replace src) -->
+      <div class="proj-hero-media">
+        <img src="../assets/[project]-hero.png" alt="[Project Name] screenshot" loading="lazy">
+      </div>
+    </section>
+
+    <!-- ── Case Study ────────────────────────────────────────────────── -->
+    <section class="proj-section" id="case-study">
+      <div class="proj-section-inner">
+
+        <div class="proj-section-label">01 — Case Study</div>
+
+        <div class="proj-two-col">
+          <div class="proj-col-wide">
+            <h2 class="proj-h2">The problem</h2>
+            <p class="proj-p">[What was the business or engineering problem you were solving? Give enough context that a non-technical reader understands why it mattered.]</p>
+
+            <h2 class="proj-h2">The approach</h2>
+            <p class="proj-p">[How did you approach it? What tradeoffs did you weigh? What did you rule out and why?]</p>
+          </div>
+
+          <aside class="proj-col-narrow">
+            <div class="proj-stat-card">
+              <span class="proj-stat-num">[42k]</span>
+              <span class="proj-stat-label">events/sec throughput</span>
+            </div>
+            <div class="proj-stat-card">
+              <span class="proj-stat-num">[p95 1.8s]</span>
+              <span class="proj-stat-label">end-to-end latency</span>
+            </div>
+            <div class="proj-stat-card">
+              <span class="proj-stat-num">[99.97%]</span>
+              <span class="proj-stat-label">uptime over 30-day run</span>
+            </div>
+          </aside>
+        </div>
+
+        <h2 class="proj-h2">Key decisions</h2>
+        <ul class="proj-decisions">
+          <li>
+            <span class="proj-decision-title">[Decision 1 — e.g. Kafka over RabbitMQ]</span>
+            <span class="proj-decision-why">[One sentence on why — the constraint or requirement that drove it]</span>
+          </li>
+          <li>
+            <span class="proj-decision-title">[Decision 2]</span>
+            <span class="proj-decision-why">[Why]</span>
+          </li>
+          <li>
+            <span class="proj-decision-title">[Decision 3]</span>
+            <span class="proj-decision-why">[Why]</span>
+          </li>
+        </ul>
+
+      </div>
+    </section>
+
+    <!-- ── Architecture ──────────────────────────────────────────────── -->
+    <section class="proj-section proj-section--dark" id="architecture">
+      <div class="proj-section-inner">
+
+        <div class="proj-section-label">02 — Architecture</div>
+        <h2 class="proj-h2">System design</h2>
+        <p class="proj-p proj-p--muted">[One paragraph overview of the system — data flow from source to sink.]</p>
+
+        <!-- Replace with your actual architecture diagram (SVG or PNG) -->
+        <div class="proj-arch-diagram">
+          <img src="../assets/[project]-arch.svg" alt="[Project Name] architecture diagram" loading="lazy">
+        </div>
+
+        <div class="proj-arch-components">
+          <div class="proj-arch-component">
+            <span class="proj-arch-label">Ingestion</span>
+            <p>[What produces events / data and how they enter the system]</p>
+          </div>
+          <div class="proj-arch-component">
+            <span class="proj-arch-label">Processing</span>
+            <p>[Transformation, enrichment, aggregation layer]</p>
+          </div>
+          <div class="proj-arch-component">
+            <span class="proj-arch-label">Storage</span>
+            <p>[Where processed data lands and the schema decisions]</p>
+          </div>
+          <div class="proj-arch-component">
+            <span class="proj-arch-label">Serving</span>
+            <p>[How downstream consumers query or receive results]</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Live Demo ─────────────────────────────────────────────────── -->
+    <section class="proj-section" id="demo">
+      <div class="proj-section-inner">
+
+        <div class="proj-section-label">03 — Live Demo</div>
+        <h2 class="proj-h2">See it run</h2>
+        <p class="proj-p">[Brief description of what the demo shows — what to look for.]</p>
+
+        <!-- Option A: embedded video -->
+        <div class="proj-demo-media">
+          <video autoplay muted loop playsinline>
+            <source src="../assets/[project]-demo.mp4" type="video/mp4">
+          </video>
+        </div>
+
+        <!-- Option B: link to deployed app (comment out the video above, use this) -->
+        <!--
+        <a href="https://[your-deployed-url]" target="_blank" rel="noopener" class="proj-demo-link">
+          Open live app ↗
+        </a>
+        -->
+
+        <div class="proj-demo-callouts">
+          <div class="proj-callout">
+            <span class="proj-callout-num">①</span>
+            <p>[What to notice in this part of the demo]</p>
+          </div>
+          <div class="proj-callout">
+            <span class="proj-callout-num">②</span>
+            <p>[Second callout]</p>
+          </div>
+          <div class="proj-callout">
+            <span class="proj-callout-num">③</span>
+            <p>[Third callout]</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ── Footer nav ────────────────────────────────────────────────── -->
+    <footer class="proj-footer">
+      <a href="../index.html" class="proj-footer-back">← Back to portfolio</a>
+      <!-- Optional: link to next project -->
+      <a href="./[next-project].html" class="proj-footer-next">Next project →</a>
+    </footer>
+
+  </main>
+
+  <!-- Reuse the same theme toggle script -->
+  <script defer src="../js/theme.js"></script>
+
+</body>
+</html>

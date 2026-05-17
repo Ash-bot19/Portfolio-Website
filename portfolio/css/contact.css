@@ -147,7 +147,7 @@
   color: var(--color-muted);
   margin-top: var(--space-4xl);
   padding-top: var(--space-xl);
-  border-top: 1px solid rgba(208, 200, 181, 0.06);
+  border-top: 1px solid rgba(var(--color-text-rgb), 0.06);
 }
 
 /* === Mobile — stack columns vertically, hide accent panels === */

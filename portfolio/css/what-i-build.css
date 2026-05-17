@@ -60,13 +60,13 @@
   letter-spacing: -0.02em;                /* slight negative tracking for display weights */
   text-transform: uppercase;
   white-space: nowrap;                    /* lines must not wrap mid-word */
-  border-top: 1px solid rgba(208, 200, 181, 0.1);
+  border-top: 1px solid rgba(var(--color-text-rgb), 0.1);
   overflow: hidden;
   isolation: isolate;
 }
 
 .wib-line:last-child {
-  border-bottom: 1px solid rgba(208, 200, 181, 0.1);
+  border-bottom: 1px solid rgba(var(--color-text-rgb), 0.1);
 }
 
 /* === Dark layer — always visible, blends into bg ===
@@ -74,7 +74,8 @@
    perceptible at rest. The light layer above does the visual work. */
 .wib-line-dark {
   display: block;
-  color: #2e2b28;                         /* INTENTIONAL hardcode: warm dark, clearly visible against --color-bg #0d0d0d */
+  width: fit-content;
+  color: var(--color-reveal-base);
   position: relative;
   z-index: 1;
 }
@@ -127,18 +128,38 @@
 
 .wib-prop {
   position: absolute;
-  width: 18vw;
+  width: min(26vw, 420px);
   height: 60vh;
   z-index: 0;
   pointer-events: none;
   overflow: hidden;
-  will-change: transform;                  /* permanent: continuously scrubbed by Plan-04 parallax */
-  background: var(--color-surface);         /* placeholder — replace with real prop image (object photo) */
-  opacity: 0.6;
+  will-change: transform;
+  background: transparent;
+  opacity: 0.72;
 }
 
-.wib-prop-left  { left: 0;  top: 10vh; background-position: left center;  }
-.wib-prop-right { right: 0; top: 25vh; background-position: right center; }
+.wib-prop-left {
+  left: -3vw;
+  top: 9vh;
+}
+
+.wib-prop-right {
+  right: -4vw;
+  top: 46vh;
+}
+
+/* Three.js canvas must fill the wib-prop container */
+[data-controller-model] canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+:root.theme-light .wib-prop::before {
+  background:
+    radial-gradient(circle at 50% 45%, rgba(10, 31, 122, 0.18), transparent 48%),
+    radial-gradient(circle at 50% 58%, rgba(210, 193, 168, 0.28), transparent 58%);
+}
 
 /* === Dual-mode scoping — scoped to .what-i-build (NEVER bare [data-*]) ===
    Mirrors the .about and .skills patterns from Phase 2. */

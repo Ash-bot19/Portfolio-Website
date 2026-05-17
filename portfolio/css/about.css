@@ -51,7 +51,7 @@
 
 /* Dark base layer — always visible, dim. Gives shape before reveal. */
 .about-text-dark {
-  color: #2e2b28;
+  color: var(--color-reveal-base);
 }
 
 /* Bright layer — full color, revealed by JS line wrappers on desktop */
@@ -71,7 +71,7 @@
 
 .about-text .reveal-line-base,
 .about-text .reveal-line-base .about-accent {
-  color: #2e2b28;
+  color: var(--color-reveal-base);
 }
 
 .about-text .reveal-line-inner {
@@ -162,7 +162,7 @@ body.mode-honest .about [data-honest]       { display: block; }
 }
 
 .about-lens .about-label {
-  color: rgba(13, 13, 13, 0.6);
+  color: rgba(var(--color-lens-text-rgb), 0.6);
 }
 
 .about-lens .about-text {
@@ -177,9 +177,10 @@ body.mode-honest .about [data-honest]       { display: block; }
 }
 
 .about-lens .about-accent {
-  color: rgba(13, 13, 13, 0.6);
+  color: rgba(var(--color-lens-text-rgb), 0.6);
 }
 
 @media (pointer: coarse)              { .about-lens { display: none; } }
 @media (prefers-reduced-motion: reduce) { .about-lens { display: none; } }
 body.mode-honest .about-lens { display: none; }
+:root.theme-light .about-lens { background: var(--color-loader-accent); }

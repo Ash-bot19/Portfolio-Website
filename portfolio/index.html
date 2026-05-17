@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="theme-light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ayush Samantaray</title>
 
-  <!-- Font preloads — preload before stylesheet to reduce FOUT -->
-  <link rel="preload" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap" as="style">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap" as="style">
-  <link rel="preload" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" as="style">
-
-  <!-- Fonts -->
-  <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
+  <!-- Font CSS — async load via preload + onload swap (non-render-blocking);
+       <noscript> fallback covers JS-disabled users so they still get fonts -->
+  <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://api.fontshare.com/v2/css?f[]=clash-display@600&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400&display=swap">
+  </noscript>
 
   <!-- CSS component stylesheets -->
   <link rel="stylesheet" href="css/main.css">
@@ -27,6 +28,8 @@
   <link rel="stylesheet" href="css/timeline.css">
   <link rel="stylesheet" href="css/projects.css">
   <link rel="stylesheet" href="css/contact.css">
+  <link rel="stylesheet" href="css/sections.css">
+  <link rel="stylesheet" href="css/certificates.css">
 
   <!-- GSAP CDN — deferred; SRI hash verified 2026-05-03 against gsap@3.15.0/dist/gsap.min.js -->
   <!-- Note: SRI + crossorigin satisfies T-01-01 (tampering mitigation) -->
@@ -44,6 +47,44 @@
 
   <!-- Main JS — deferred; browser preserves order of deferred scripts so GSAP loads first -->
   <script defer src="js/main.js"></script>
+
+  <!-- DARK THEME DISABLED: theme.js commented out
+  <script defer src="js/theme.js"></script>
+  -->
+
+  <!-- New sections JS — case study tabs, stack reveal, pipeline viz, ⌘K palette -->
+  <script defer src="js/sections.js"></script>
+
+  <!-- Certificates stacked deck -->
+  <script defer src="js/certificates.js"></script>
+
+  <!-- Cursor invert lens — nav logo + social icons -->
+  <script defer src="js/cursor-invert.js"></script>
+
+  <!-- Import map: resolves bare 'three' specifier used internally by GLTFLoader -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://cdn.jsdelivr.net/npm/three@0.165.0/build/three.module.js",
+      "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.165.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- 3D controller model — Three.js ES module, self-deferred -->
+  <script type="module" src="js/controller-model.js"></script>
+
+  <!-- DARK THEME DISABLED: early theme init commented out — theme-light is hardcoded on <html>
+  <script>
+    (function () {
+      try {
+        if (localStorage.getItem('portfolio-theme') === 'light') {
+          document.documentElement.classList.add('theme-light');
+        }
+      } catch (e) {}
+    })();
+  </script>
+  -->
 </head>
 <body>
 
@@ -69,13 +110,13 @@
         <div class="logo-ring-wrap">
           <div class="logo-disc">
             <div class="avatar-wrap">
-              <img class="avatar-img" src="assets/face_logo.svg" alt="" draggable="false">
-              <svg class="avatar-eyes-svg" viewBox="0 0 736 920"
+              <img class="avatar-img" src="assets/New_face_logo.svg" alt="" draggable="false">
+              <svg class="avatar-eyes-svg" viewBox="0 0 922 1152"
                    xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <ellipse class="eye-mask eye-mask-l" cx="360" cy="340" rx="23" ry="13"/>
-                <ellipse class="eye-mask eye-mask-r" cx="472" cy="342" rx="23" ry="13"/>
-                <circle class="eye-l" cx="360" cy="340" r="12"/>
-                <circle class="eye-r" cx="472" cy="342" r="12"/>
+                <ellipse class="eye-mask eye-mask-l" cx="451" cy="426" rx="29" ry="16"/>
+                <ellipse class="eye-mask eye-mask-r" cx="591" cy="428" rx="29" ry="16"/>
+                <circle class="eye-l" cx="451" cy="426" r="15"/>
+                <circle class="eye-r" cx="591" cy="428" r="15"/>
               </svg>
             </div>
           </div>
@@ -97,7 +138,11 @@
     <!-- Nav stub — Plan 02 fills behavior and styles -->
     <nav aria-label="Main navigation">
       <a href="#" class="nav-logo" aria-label="Home">
-        <img class="nav-logo-face" src="assets/face_logo.svg" alt="" draggable="false">
+        <img class="nav-logo-face" src="assets/New_face_logo.svg" alt="" draggable="false">
+        <span class="cursor-mirror" aria-hidden="true"></span>
+        <span class="cursor-mirror-invert" aria-hidden="true">
+          <img class="nav-logo-face--invert" src="assets/New_face_logo.svg" alt="" draggable="false">
+        </span>
       </a>
       <ul class="nav-links" id="nav-links-list">
         <li><a href="#about" class="nav-link">
@@ -108,11 +153,35 @@
           <span class="link-default" aria-hidden="true">Work</span>
           <span class="link-hover">Work</span>
         </a></li>
+        <li><a href="#certifications" class="nav-link">
+          <span class="link-default" aria-hidden="true">Certs</span>
+          <span class="link-hover">Certs</span>
+        </a></li>
         <li><a href="#contact" class="nav-link">
           <span class="link-default" aria-hidden="true">Contact</span>
           <span class="link-hover">Contact</span>
         </a></li>
       </ul>
+      <!-- DARK THEME DISABLED: theme toggle button commented out
+      <button class="theme-toggle" id="theme-toggle" aria-label="Switch to light theme" aria-pressed="false">
+        <span class="theme-toggle__thumb">
+          <svg class="theme-icon theme-icon--moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+          </svg>
+          <svg class="theme-icon theme-icon--sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4"/>
+            <circle cx="12" cy="3" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="12" cy="21" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="3" cy="12" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="21" cy="12" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="5.64" cy="5.64" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="18.36" cy="18.36" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="18.36" cy="5.64" r="1" fill="currentColor" stroke="none"/>
+            <circle cx="5.64" cy="18.36" r="1" fill="currentColor" stroke="none"/>
+          </svg>
+        </span>
+      </button>
+      -->
       <button class="hamburger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="nav-links-list">
         <span class="hamburger-line"></span>
         <span class="hamburger-line"></span>
@@ -125,9 +194,19 @@
         <svg class="side-social-github-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 4.3 2.8 7.9 6.6 9.2.5.1.7-.2.7-.5v-1.9c-2.7.6-3.3-1.1-3.3-1.1-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.8 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5.1 0c1.9-1.3 2.8-1 2.8-1 .5 1.5.2 2.5.1 2.8.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7 1 .7 2v2.9c0 .3.2.6.7.5 3.8-1.3 6.6-4.9 6.6-9.2 0-5.4-4.4-9.8-9.8-9.8Z" fill="currentColor"/>
         </svg>
+        <span class="cursor-mirror" aria-hidden="true"></span>
+        <span class="cursor-mirror-invert" aria-hidden="true">
+          <svg class="side-social-github-icon--invert" viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 4.3 2.8 7.9 6.6 9.2.5.1.7-.2.7-.5v-1.9c-2.7.6-3.3-1.1-3.3-1.1-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.8 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5.1 0c1.9-1.3 2.8-1 2.8-1 .5 1.5.2 2.5.1 2.8.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7 1 .7 2v2.9c0 .3.2.6.7.5 3.8-1.3 6.6-4.9 6.6-9.2 0-5.4-4.4-9.8-9.8-9.8Z" fill="currentColor"/>
+          </svg>
+        </span>
       </a>
       <a class="side-social-link side-social-link--linkedin" href="https://linkedin.com/in/ayush-samantaray" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
-        <span aria-hidden="true">in</span>
+        <span class="linkedin-letter" aria-hidden="true">in</span>
+        <span class="cursor-mirror" aria-hidden="true"></span>
+        <span class="cursor-mirror-invert" aria-hidden="true">
+          <span class="linkedin-letter--invert">in</span>
+        </span>
       </a>
     </aside>
 
@@ -246,19 +325,10 @@
     <section class="what-i-build" id="what-i-build">
       <span class="wib-label">WHAT I BUILD</span>
 
-      <div class="wib-prop wib-prop-left" aria-hidden="true"></div>
-      <div class="wib-prop wib-prop-right" aria-hidden="true"></div>
+      <div class="wib-prop wib-prop-left" data-controller-model data-model-src="assets/ps_controller.glb" data-rot-x="-0.27" data-rot-y="-1.05" aria-hidden="true"><canvas></canvas></div>
+      <div class="wib-prop wib-prop-right" data-controller-model data-model-src="assets/Mouse.glb" data-rot-x="-0.45" data-rot-y="1.10" aria-hidden="true"><canvas></canvas></div>
 
       <div class="wib-stack">
-
-        <div class="wib-line">
-          <span class="wib-line-dark" data-professional>DATA ENGINEERING</span>
-          <span class="wib-line-dark" data-honest>DATA ENGINEERING (mostly fixing pipelines)</span>
-          <span class="wib-line-light" data-professional aria-hidden="true">DATA ENGINEERING</span>
-          <span class="wib-line-light" data-honest aria-hidden="true">DATA ENGINEERING (mostly fixing pipelines)</span>
-          <span class="wib-line-accent" data-professional aria-hidden="true">DATA ENGINEERING</span>
-          <span class="wib-line-accent" data-honest aria-hidden="true">DATA ENGINEERING (mostly fixing pipelines)</span>
-        </div>
 
         <div class="wib-line">
           <span class="wib-line-dark" data-professional>FINTECH</span>
@@ -267,6 +337,15 @@
           <span class="wib-line-light" data-honest aria-hidden="true">FINTECH (idempotency keys, mostly)</span>
           <span class="wib-line-accent" data-professional aria-hidden="true">FINTECH</span>
           <span class="wib-line-accent" data-honest aria-hidden="true">FINTECH (idempotency keys, mostly)</span>
+        </div>
+
+        <div class="wib-line">
+          <span class="wib-line-dark" data-professional>PIPELINES</span>
+          <span class="wib-line-dark" data-honest>PIPELINES (mostly fixing broken ones)</span>
+          <span class="wib-line-light" data-professional aria-hidden="true">PIPELINES</span>
+          <span class="wib-line-light" data-honest aria-hidden="true">PIPELINES (mostly fixing broken ones)</span>
+          <span class="wib-line-accent" data-professional aria-hidden="true">PIPELINES</span>
+          <span class="wib-line-accent" data-honest aria-hidden="true">PIPELINES (mostly fixing broken ones)</span>
         </div>
 
         <div class="wib-line">
@@ -279,23 +358,76 @@
         </div>
 
         <div class="wib-line">
-          <span class="wib-line-dark" data-professional>AI / ML</span>
-          <span class="wib-line-dark" data-honest>AI / ML (RAG and prompt tweaking)</span>
-          <span class="wib-line-light" data-professional aria-hidden="true">AI / ML</span>
-          <span class="wib-line-light" data-honest aria-hidden="true">AI / ML (RAG and prompt tweaking)</span>
-          <span class="wib-line-accent" data-professional aria-hidden="true">AI / ML</span>
-          <span class="wib-line-accent" data-honest aria-hidden="true">AI / ML (RAG and prompt tweaking)</span>
+          <span class="wib-line-dark" data-professional>AI SYSTEMS</span>
+          <span class="wib-line-dark" data-honest>AI SYSTEMS (RAG and prompt tweaking)</span>
+          <span class="wib-line-light" data-professional aria-hidden="true">AI SYSTEMS</span>
+          <span class="wib-line-light" data-honest aria-hidden="true">AI SYSTEMS (RAG and prompt tweaking)</span>
+          <span class="wib-line-accent" data-professional aria-hidden="true">AI SYSTEMS</span>
+          <span class="wib-line-accent" data-honest aria-hidden="true">AI SYSTEMS (RAG and prompt tweaking)</span>
         </div>
 
-        <div class="wib-line">
-          <span class="wib-line-dark" data-professional>PRODUCT</span>
-          <span class="wib-line-dark" data-honest>PRODUCT (writing docs before code)</span>
-          <span class="wib-line-light" data-professional aria-hidden="true">PRODUCT</span>
-          <span class="wib-line-light" data-honest aria-hidden="true">PRODUCT (writing docs before code)</span>
-          <span class="wib-line-accent" data-professional aria-hidden="true">PRODUCT</span>
-          <span class="wib-line-accent" data-honest aria-hidden="true">PRODUCT (writing docs before code)</span>
-        </div>
+      </div>
+    </section>
 
+    <!-- ── TOOLBELT / TECH STACK ───────────────────────────────────────────── -->
+    <section class="stack-section" id="stack">
+      <div class="ps-page">
+        <div class="ps-section-label">TOOLBELT</div>
+        <h2 class="ps-section-title">
+          <span class="reveal-line"><span class="reveal-line-base">The stack I </span><span class="reveal-line-inner" aria-hidden="true">The stack I </span></span>
+          <span class="reveal-line"><span class="reveal-line-base"><em>actually reach for</em>.</span><span class="reveal-line-inner" aria-hidden="true"><em>actually reach for</em>.</span></span>
+        </h2>
+        <span class="stack-prefix">&lt;-- My tech stack --&gt;</span>
+        <div class="stack-grid" id="stackGrid">
+          <div class="stack-cell" data-tip="Orchestrating nightly ETL DAGs for ledger reconciliation">
+            <span class="stack-name">Airflow</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/apacheairflow" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="12-partition payments topic — 2.4M events/day in production">
+            <span class="stack-name">Kafka</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/apachekafka/d0c8b5" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Batch jobs over 90d ledger snapshots for fraud features">
+            <span class="stack-name">Spark</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/apachespark/E25A1C" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Every service shipped as multi-stage images, prod + local">
+            <span class="stack-name">Docker</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/docker/2496ED" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Primary language — FastAPI services, Airflow DAGs, scripts">
+            <span class="stack-name">Python</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/python" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="API gateway in front of the payments topic + auth layer">
+            <span class="stack-name">FastAPI</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/fastapi/009688" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Custom metrics on consumer lag, dedup-hits, p99 enqueue">
+            <span class="stack-name">Prometheus</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/prometheus" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Dashboards for the on-call rotation — uptime, SLO burn">
+            <span class="stack-name">Grafana</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/grafana" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Redis bloom filter for dedup + rate-limit counters per tenant">
+            <span class="stack-name">Redis</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/redis/DC382D" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="Ledger, outbox table, migrations — core data store">
+            <span class="stack-name">PostgreSQL</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/postgresql/4169E1" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="PRs, Actions CI/CD, issue templates for the on-call playbook">
+            <span class="stack-name">GitHub</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/github/181717" alt="" loading="lazy"></div>
+          </div>
+          <div class="stack-cell" data-tip="RFCs, post-mortems, case-study source-of-truth">
+            <span class="stack-name">Notion</span>
+            <div class="stack-icon"><img src="https://cdn.simpleicons.org/notion/000000" alt="" loading="lazy"></div>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -330,43 +462,13 @@
         <div class="timeline-rows">
 
           <div class="timeline-row">
-            <span class="timeline-year">[Year]</span>
+            <span class="timeline-year">2026</span>
             <span class="timeline-role-wrap">
-              <span class="timeline-role" data-professional>[Role Title]</span>
-              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
-              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
+              <span class="timeline-role" data-professional>AI Application Developer</span>
+              <span class="timeline-role" data-honest>first real job, shipped fast</span>
+              <span class="timeline-role-accent" aria-hidden="true">first real job, shipped fast</span>
             </span>
-            <span class="timeline-company">[Company]</span>
-          </div>
-
-          <div class="timeline-row">
-            <span class="timeline-year">[Year]</span>
-            <span class="timeline-role-wrap">
-              <span class="timeline-role" data-professional>[Role Title]</span>
-              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
-              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
-            </span>
-            <span class="timeline-company">[Company]</span>
-          </div>
-
-          <div class="timeline-row">
-            <span class="timeline-year">[Year]</span>
-            <span class="timeline-role-wrap">
-              <span class="timeline-role" data-professional>[Role Title]</span>
-              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
-              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
-            </span>
-            <span class="timeline-company">[Company]</span>
-          </div>
-
-          <div class="timeline-row">
-            <span class="timeline-year">[Year]</span>
-            <span class="timeline-role-wrap">
-              <span class="timeline-role" data-professional>[Role Title]</span>
-              <span class="timeline-role" data-honest>[Role Title — honest version]</span>
-              <span class="timeline-role-accent" aria-hidden="true">[Role — honest]</span>
-            </span>
-            <span class="timeline-company">[Company]</span>
+            <span class="timeline-company">DeepGrid Pvt Ltd</span>
           </div>
 
         </div>
@@ -394,63 +496,425 @@
         <div class="projects-grid">
 
           <article class="project-card">
-            <h3 class="project-card-name">[Project One]</h3>
-            <p class="project-card-desc" data-professional>[One-line professional description]</p>
-            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <h3 class="project-card-name">Payment System</h3>
+            <p class="project-card-desc">Distributed payment processing and transaction management system built for scalable financial operations and secure real-time workflows.</p>
             <ul class="project-card-tags">
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
+              <li class="project-tag">Kafka</li>
+              <li class="project-tag">Spark</li>
+              <li class="project-tag">Airflow</li>
+              <li class="project-tag">dbt</li>
+              <li class="project-tag">BigQuery</li>
+              <li class="project-tag">PostgreSQL</li>
+              <li class="project-tag">Redis</li>
+              <li class="project-tag">GCP</li>
+              <li class="project-tag">XGBoost</li>
+              <li class="project-tag">Docker</li>
             </ul>
-            <a class="project-card-link" href="#" aria-label="View [Project One] on GitHub">GitHub &rarr;</a>
+            <a class="project-card-link" href="https://github.com/Ash-bot19/Payment-System" target="_blank" rel="noopener noreferrer" aria-label="View Payment System on GitHub">GitHub &rarr;</a>
           </article>
 
           <article class="project-card">
-            <h3 class="project-card-name">[Project Two]</h3>
-            <p class="project-card-desc" data-professional>[One-line professional description]</p>
-            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <h3 class="project-card-name">Autonomous AML Investigation Agent</h3>
+            <p class="project-card-desc">AI-powered AML compliance system for RBI/SEBI-style regulatory workflows using RAG, clause-aware retrieval, and autonomous reasoning agents.</p>
             <ul class="project-card-tags">
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
+              <li class="project-tag">LangGraph</li>
+              <li class="project-tag">LangChain</li>
+              <li class="project-tag">Kafka</li>
+              <li class="project-tag">PostgreSQL</li>
+              <li class="project-tag">Redis</li>
+              <li class="project-tag">FastAPI</li>
+              <li class="project-tag">Prometheus</li>
             </ul>
-            <a class="project-card-link" href="#" aria-label="View [Project Two] on GitHub">GitHub &rarr;</a>
+            <a class="project-card-link" href="https://github.com/Ash-bot19/Autonomous-AML-Investigation-Agent" target="_blank" rel="noopener noreferrer" aria-label="View Autonomous AML Investigation Agent on GitHub">GitHub &rarr;</a>
           </article>
 
           <article class="project-card">
-            <h3 class="project-card-name">[Project Three]</h3>
-            <p class="project-card-desc" data-professional>[One-line professional description]</p>
-            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <h3 class="project-card-name">Real-Time Data Streaming</h3>
+            <p class="project-card-desc">End-to-end streaming data engineering pipeline for ingesting, processing, monitoring, and visualising high-throughput event streams.</p>
             <ul class="project-card-tags">
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
+              <li class="project-tag">Apache Kafka</li>
+              <li class="project-tag">Apache Spark</li>
+              <li class="project-tag">Cassandra</li>
+              <li class="project-tag">Airflow</li>
+              <li class="project-tag">Docker</li>
+              <li class="project-tag">Grafana</li>
             </ul>
-            <a class="project-card-link" href="#" aria-label="View [Project Three] on GitHub">GitHub &rarr;</a>
+            <a class="project-card-link" href="https://github.com/Ash-bot19/Real-Time-Data-Streaming" target="_blank" rel="noopener noreferrer" aria-label="View Real-Time Data Streaming on GitHub">GitHub &rarr;</a>
           </article>
 
           <article class="project-card">
-            <h3 class="project-card-name">[Project Four]</h3>
-            <p class="project-card-desc" data-professional>[One-line professional description]</p>
-            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <h3 class="project-card-name">Regulatory Intelligence Agent</h3>
+            <p class="project-card-desc">Agentic AI system for regulatory query analysis and compliance intelligence across RBI, SEBI, and financial governance documents.</p>
             <ul class="project-card-tags">
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
+              <li class="project-tag">LangChain</li>
+              <li class="project-tag">OpenAI Embeddings</li>
+              <li class="project-tag">Chroma</li>
+              <li class="project-tag">Pinecone</li>
+              <li class="project-tag">FastAPI</li>
+              <li class="project-tag">PostgreSQL</li>
             </ul>
-            <a class="project-card-link" href="#" aria-label="View [Project Four] on GitHub">GitHub &rarr;</a>
+            <a class="project-card-link" href="https://github.com/Ash-bot19/Regulatory-Intelligence-Agent" target="_blank" rel="noopener noreferrer" aria-label="View Regulatory Intelligence Agent on GitHub">GitHub &rarr;</a>
           </article>
 
           <article class="project-card">
-            <h3 class="project-card-name">[Project Five]</h3>
-            <p class="project-card-desc" data-professional>[One-line professional description]</p>
-            <p class="project-card-desc" data-honest>[One-line honest description]</p>
+            <h3 class="project-card-name">AI OS Finance</h3>
+            <p class="project-card-desc">Agentic financial analysis platform for deterministic valuation modeling, scenario analysis, and AI-assisted investment research workflows.</p>
             <ul class="project-card-tags">
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
-              <li class="project-tag">[tech]</li>
+              <li class="project-tag">FastAPI</li>
+              <li class="project-tag">LangChain</li>
+              <li class="project-tag">n8n</li>
+              <li class="project-tag">Pydantic</li>
+              <li class="project-tag">Docker</li>
             </ul>
-            <a class="project-card-link" href="#" aria-label="View [Project Five] on GitHub">GitHub &rarr;</a>
+            <a class="project-card-link" href="https://github.com/Ash-bot19/AI-OS-finance" target="_blank" rel="noopener noreferrer" aria-label="View AI OS Finance on GitHub">GitHub &rarr;</a>
           </article>
 
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CASE STUDY ──────────────────────────────────────────────────────── -->
+    <section class="case-study-section" id="case-study">
+      <div class="ps-page">
+        <div class="ps-section-label">FLAGSHIP / CASE STUDY</div>
+        <h2 class="ps-section-title">
+          <span class="reveal-line"><span class="reveal-line-base">A real system, </span><span class="reveal-line-inner" aria-hidden="true">A real system, </span></span>
+          <span class="reveal-line"><span class="reveal-line-base"><em>told properly</em>.</span><span class="reveal-line-inner" aria-hidden="true"><em>told properly</em>.</span></span>
+        </h2>
+        <article class="case-study">
+          <div class="case-study-hero">
+            <div>
+              <div class="cs-hero-meta">
+                <span>2026</span>
+                <span>FINTECH · COMPLIANCE</span>
+                <span>LANGGRAPH · POSTGRES · FASTAPI</span>
+              </div>
+              <h3 class="cs-hero-title">Autonomous AML investigation agent — multi-hop reasoning over 6 deterministic tools</h3>
+              <p class="cs-hero-tagline">A LangGraph state machine that investigates flagged transactions, chains tool evidence, and escalates uncertain cases — cost-capped and zero-hallucination by design.</p>
+            </div>
+            <div class="cs-hero-stats">
+              <div><div class="cs-stat-num">5.7s</div><div class="cs-stat-label">p50 latency</div></div>
+              <div><div class="cs-stat-num">$0.0003</div><div class="cs-stat-label">avg cost / investigation</div></div>
+              <div><div class="cs-stat-num">≤4</div><div class="cs-stat-label">max tool hops</div></div>
+              <div><div class="cs-stat-num">0.70</div><div class="cs-stat-label">min confidence</div></div>
+            </div>
+          </div>
+          <div class="cs-body">
+            <div class="cs-tabs" role="tablist">
+              <button class="cs-tab" role="tab" aria-selected="true" data-tab="problem"><span class="cs-tab-num">01</span>Problem</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="approach"><span class="cs-tab-num">02</span>Approach</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="decisions"><span class="cs-tab-num">03</span>Decisions</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="results"><span class="cs-tab-num">04</span>Results</button>
+              <button class="cs-tab" role="tab" aria-selected="false" data-tab="lessons"><span class="cs-tab-num">05</span>Lessons</button>
+            </div>
+            <div class="cs-panel" data-panel="problem" data-active>
+              <h4>AML alert queues pile up because every flag demands a manual multi-system investigation.</h4>
+              <p>Rule engines surface velocity breaches, round-trip patterns, and watchlist hits. ML models score transaction risk. Each flag lands in an analyst queue — requiring lookups across transaction history, counterparty registers, velocity metrics, and global watchlists. A 2,000-alert queue at 15 minutes per case is 500 hours of backlog before the week starts.</p>
+              <p>The challenge: automate multi-hop investigations without losing the audit trail — and build a hard escape hatch for cases the agent shouldn't guess on.</p>
+            </div>
+            <div class="cs-panel" data-panel="approach">
+              <h4>A LangGraph state machine with 6 deterministic tools — LLM reasons, tools execute.</h4>
+              <ul>
+                <li>Six deterministic tools: <em>txn_history_query</em> and <em>counterparty_risk_lookup</em> (Postgres), <em>round_trip_detector</em> (recursive CTE following transaction hops up to 168h), <em>velocity_check</em> (Redis ZRANGEBYSCORE pipeline across 1h/6h/24h windows), <em>watchlist_lookup</em> (OFAC-style CSV loaded at module import), and <em>kafka_lag_check</em> (false-positive filter — rules out pipeline delay as the cause of apparent bursts).</li>
+                <li>The LangGraph state machine drives the loop: IDLE → INVESTIGATING → TOOL_CALLING → EVALUATING → RESOLVED or ESCALATED. Each node is a pure function, each transition is an explicit conditional edge — testable in isolation without a live LLM.</li>
+                <li>Hard limits enforced by the state machine before any LLM call: max 4 hops, confidence ≥ 0.70, 30s wall-clock timeout, $0.05 cost cap. Guard order in <em>node_evaluating</em>: empty evidence → max hops → timeout → cost cap → LLM call → post-call cost re-check → confidence gate. The LLM cannot route around any of them.</li>
+                <li>Every tool call is written to <em>tool_execution_log</em> in a <em>finally</em> block — covering success and failure. Evidence chain reads exclusively from this table, not from <em>state.evidence_chain</em> which the LLM populates. Built in 3 milestones: M1 (state machine + Docker stack, mock tools), M2 (6 real tools + gpt-4o-mini), M3 (FastAPI, Kafka consumer, Redis mutex, Streamlit dashboard, Prometheus).</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="decisions">
+              <h4>Why these tradeoffs — each came from a real failure during the build.</h4>
+              <ul>
+                <li><strong>Hard limits in <em>node_evaluating</em>, not the routing edge.</strong> Edge functions return a route but cannot write state. Putting the limit check in the edge leaves <em>escalation_reason</em> as None — the compliance report INSERT has a required-field constraint that fires. One enforcement site only: the node writes the reason, the edge only reads it.</li>
+                <li><strong>Evidence chain from <em>tool_execution_log</em>, not <em>state.evidence_chain</em>.</strong> The LLM populates <em>state.evidence_chain</em> during inference. If it hallucinates a tool call, the compliance report contains fabricated evidence. <em>tool_execution_log</em> is written in the <em>finally</em> block of <em>dispatch_tool</em> before the result reaches the LLM — it is ground-truth regardless of LLM behavior.</li>
+                <li><strong><em>tool_input_json: str</em> not <em>dict[str, Any]</em>.</strong> OpenAI structured output rejects open-ended dict types. The LLM serializes tool input as a JSON string; the dispatcher deserializes with <em>json.loads</em>. Strict schema enforcement is a feature — it prevents the LLM from inventing fields that don't map to any real tool parameter.</li>
+                <li><strong>LLM fallback is escalation, never a default tool call.</strong> The original fallback on LLM parse failure called <em>velocity_check</em> with <em>account_id = payload.txn_id</em> — a wrong type that returns 0 transactions, making the investigation look clean. In AML, a false-clean verdict is categorically worse than a false escalation. Safe failure = immediate ESCALATED.</li>
+              </ul>
+            </div>
+            <div class="cs-panel" data-panel="results">
+              <h4>10 runs · 3 scenarios · gpt-4o-mini · real OpenAI API — 2026-04-18, WSL2 (10GB RAM, 8 cores).</h4>
+              <div class="cs-result-grid">
+                <div class="cs-result-card"><div class="cs-stat-num">5.7s</div><div class="cs-stat-label">p50 investigation latency</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">13.1s</div><div class="cs-stat-label">p95 investigation latency</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">$0.0003</div><div class="cs-stat-label">avg cost / investigation</div></div>
+                <div class="cs-result-card"><div class="cs-stat-num">1.0</div><div class="cs-stat-label">avg hops — seeded data resolves fast; adversarial inputs push toward the 4-hop ceiling</div></div>
+              </div>
+            </div>
+            <div class="cs-panel" data-panel="lessons">
+              <h4>What actually broke — and what I learned from fixing it.</h4>
+              <ul>
+                <li><strong>Float precision kills compliance thresholds.</strong> A confidence of 0.70 in IEEE 754 can be stored as 0.6999999999999999 — triggering a false low_confidence escalation. Fixed with <em>round(confidence, 4)</em> before every threshold comparison. Never compare raw floats to exact decimal values in compliance logic.</li>
+                <li><strong>Seeded data resolves in 1 hop every time.</strong> The 3 demo scenarios aren't adversarial enough to force multi-hop LLM reasoning — the agent calls one tool, finds sufficient evidence, resolves. Avg 1.0 hops is correct but not a meaningful measure of multi-hop capability. Real demonstration of the 4-hop ceiling needs fresh, live transaction payloads via the API.</li>
+                <li><strong>Module-level DB pool init poisons the test session.</strong> Pool init at import time runs during pytest collection — if the DB isn't running, the pool is set to None permanently for that session. Switched to lazy init so the pool is only attempted when a tool is actually invoked. Applies to any module-level singleton that requires infrastructure.</li>
+                <li><strong>The first bottleneck at 10x load isn't Postgres — it's the OpenAI rate limit.</strong> gpt-4o-mini has a requests-per-minute cap; each investigation makes 2–4 LLM calls. Fix: async LangGraph nodes with a token-bucket rate limiter and Kafka consumer back-pressure rather than queuing investigations in memory.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <!-- ── ARCHITECTURE DIAGRAM ─────────────────────────────────────────────── -->
+    <section class="arch-section" id="architecture">
+      <div class="ps-page">
+        <div class="ps-section-label">SYSTEM ARCHITECTURE</div>
+        <h2 class="ps-section-title">
+          <span class="reveal-line"><span class="reveal-line-base">How the data </span><span class="reveal-line-inner" aria-hidden="true">How the data </span></span>
+          <span class="reveal-line"><span class="reveal-line-base"><em>actually flows</em>.</span><span class="reveal-line-inner" aria-hidden="true"><em>actually flows</em>.</span></span>
+        </h2>
+        <div class="arch-frame">
+          <div class="arch-toolbar">
+            <span class="arch-tag">aml-agent · v1.0</span>
+            <span style="font-family:'JetBrains Mono',monospace;font-size:11px;">hover any node →</span>
+          </div>
+          <div class="arch-canvas">
+            <div class="arch-canvas-inner">
+              <svg class="arch-svg" viewBox="0 0 900 480">
+                <defs>
+                  <marker id="arrowDim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--s-border-str)"/>
+                  </marker>
+                  <marker id="arrowLive" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                    <path d="M0,0 L10,5 L0,10 z" fill="var(--accent)"/>
+                  </marker>
+                </defs>
+                <path class="arch-edge live"   d="M 175 100 H 320" marker-end="url(#arrowLive)"/>
+                <path class="arch-edge dashed" d="M 175 240 H 247 V 100 H 320" marker-end="url(#arrowDim)"/>
+                <path class="arch-edge dashed" d="M 175 380 H 247 V 240 H 320" marker-end="url(#arrowDim)"/>
+                <path class="arch-edge live"   d="M 392 132 V 213" marker-end="url(#arrowLive)"/>
+                <path class="arch-edge dashed" d="M 372 272 V 353" marker-end="url(#arrowDim)"/>
+                <path class="arch-edge dashed" d="M 412 353 V 320 H 432 V 272" marker-end="url(#arrowDim)"/>
+                <path class="arch-edge live"   d="M 465 240 H 640" marker-end="url(#arrowLive)"/>
+                <path class="arch-edge live"   d="M 712 213 V 132" marker-end="url(#arrowLive)"/>
+                <path class="arch-edge dashed" d="M 785 100 H 855 V 380 H 785" marker-end="url(#arrowDim)"/>
+                <g><rect class="arch-edge-label-bg" x="222" y="92"  width="50" height="16" rx="3"/><text class="arch-edge-label" x="247" y="103"  text-anchor="middle">flag</text></g>
+                <g><rect class="arch-edge-label-bg" x="362" y="162" width="60" height="16" rx="3"/><text class="arch-edge-label" x="392" y="173"  text-anchor="middle">consume</text></g>
+                <g><rect class="arch-edge-label-bg" x="330" y="302" width="80" height="16" rx="3"/><text class="arch-edge-label" x="370" y="313"  text-anchor="middle">mutex check</text></g>
+                <g><rect class="arch-edge-label-bg" x="525" y="232" width="54" height="16" rx="3"/><text class="arch-edge-label" x="552" y="243"  text-anchor="middle">dispatch</text></g>
+                <g><rect class="arch-edge-label-bg" x="684" y="162" width="56" height="16" rx="3"/><text class="arch-edge-label" x="712" y="173"  text-anchor="middle">toolcall</text></g>
+                <g><rect class="arch-edge-label-bg" x="827" y="232" width="56" height="16" rx="3"/><text class="arch-edge-label" x="855" y="243"  text-anchor="middle">write</text></g>
+              </svg>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Fires velocity + watchlist rules to surface suspicious txns and push them onto the Kafka topic." data-tip-pos="below" style="top:76px;left:30px;"><div class="arch-node-title">Rule Engine</div><div class="arch-node-meta">velocity · watchlist</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="XGBoost model scores each txn in real time; anything above 0.75 risk is flagged automatically." style="top:216px;left:30px;"><div class="arch-node-title">ML Scoring</div><div class="arch-node-meta">XGBoost · score &gt; 0.75</div></div>
+              <div class="arch-node" data-kind="ingest" data-tooltip="Analyst-triggered entry point — POST /investigate bypasses the Kafka queue for immediate investigation." style="top:356px;left:30px;"><div class="arch-node-title">Direct API</div><div class="arch-node-meta">POST /investigate</div></div>
+              <div class="arch-node" data-tooltip="Reads from flagged-txns topic. Acquires a Redis mutex per txn_id before handing off — blocks duplicates at the gate." data-tip-pos="below" style="top:76px;left:320px;"><div class="arch-node-title">Kafka Consumer</div><div class="arch-node-meta">flagged-txns topic</div></div>
+              <div class="arch-node" data-tooltip="Holds the Redis mutex for the full investigation lifetime. A second flag for the same txn returns 409 instantly." style="top:216px;left:320px;"><div class="arch-node-title">Agent Runner</div><div class="arch-node-meta">Redis mutex per txn</div></div>
+              <div class="arch-node" data-tooltip="State machine: IDLE → INVESTIGATING → TOOL_CALLING → EVALUATING → RESOLVED or ESCALATED. Each node is a pure function." style="top:356px;left:320px;"><div class="arch-node-title">LangGraph</div><div class="arch-node-meta">IDLE → RESOLVED</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Append-only hop audit. Every tool call written in a finally block — ground truth regardless of LLM behavior." data-tip-pos="below" style="top:76px;left:640px;"><div class="arch-node-title">tool_execution_log</div><div class="arch-node-meta">every hop · ms</div></div>
+              <div class="arch-node" data-kind="store" data-tooltip="Final verdict, confidence score, and full evidence chain per investigation. Source of truth for compliance review." style="top:216px;left:640px;"><div class="arch-node-title">compliance_reports</div><div class="arch-node-meta">verdict · evidence chain</div></div>
+              <div class="arch-node" data-kind="serve" data-tooltip="Cases below 0.70 confidence, hitting the 4-hop ceiling, or timing out land here for human analyst review." style="top:356px;left:640px;"><div class="arch-node-title">escalation_queue</div><div class="arch-node-meta">human analyst queue</div></div>
+            </div>
+          </div>
+          <div class="arch-legend">
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:var(--accent);"></span>ingest</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:var(--s-border-str);"></span>route / dedupe</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.65 0.14 195);"></span>store</div>
+            <div class="arch-legend-item"><span class="arch-legend-dot" style="background:oklch(0.62 0.16 145);"></span>serve</div>
+            <div class="arch-legend-item" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--fg-muted);">— hot path animated · cold path dashed</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── PIPELINE VIZ ─────────────────────────────────────────────────────── -->
+    <section class="pipeline-section" id="pipeline">
+      <div class="ps-page">
+        <div class="ps-section-label">LIVE DEMO · AML INVESTIGATION</div>
+        <h2 class="ps-section-title">
+          <span class="reveal-line"><span class="reveal-line-base">Flag a transaction. </span><span class="reveal-line-inner" aria-hidden="true">Flag a transaction. </span></span>
+          <span class="reveal-line"><span class="reveal-line-base"><em>Watch it investigate.</em></span><span class="reveal-line-inner" aria-hidden="true"><em>Watch it investigate.</em></span></span>
+        </h2>
+        <div class="pipe-frame">
+          <div class="pipe-header">
+            <div class="pipe-title-block">
+              <h3>aml-agent / investigation</h3>
+              <p>Each "flag" triggers an investigation with a unique transaction ID. The agent runs multi-hop tool calls and produces a verdict. Duplicate flags for the same transaction are blocked by a Redis mutex.</p>
+            </div>
+            <div class="pipe-actions">
+              <button class="pipe-btn primary" id="pipeSend">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                Flag transaction
+              </button>
+              <button class="pipe-btn danger" id="pipeDup">⟳ Flag duplicate</button>
+              <button class="pipe-btn" id="pipeReset">Reset</button>
+            </div>
+          </div>
+          <div class="pipe-body">
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">01</span> KAFKA · flagged-txns</div>
+              <div class="pipe-events" id="kafkaEvents"></div>
+            </div>
+            <div class="pipe-stage">
+              <div class="pipe-stage-label"><span class="stage-num">02</span> REPORTS · postgres</div>
+              <div class="pipe-events" id="ledgerEvents"></div>
+            </div>
+            <div class="pipe-side">
+              <div class="pipe-stat"><span class="pipe-stat-label">investigations triggered</span><span class="pipe-stat-val" id="statRecv">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">mutex blocks</span><span class="pipe-stat-val bad" id="statDups">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">reports written</span><span class="pipe-stat-val good" id="statWrites">0</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">total cost</span><span class="pipe-stat-val accent" id="statVol">$0.0000</span></div>
+              <div class="pipe-stat"><span class="pipe-stat-label">avg investigation latency</span><span class="pipe-stat-val" id="statP99">— ms</span></div>
+              <div class="pipe-explain">
+                <strong>How it works:</strong> Each flagged transaction carries a unique ID. The agent runner checks a Redis mutex — duplicate investigations are blocked instantly. Resolved cases write a compliance report with verdict, confidence score, and full evidence chain.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── NOW BLOCK ─────────────────────────────────────────────────────────── -->
+    <section class="now-section" id="now">
+      <div class="ps-page">
+        <div class="ps-section-label">/NOW · LIVE</div>
+        <h2 class="ps-section-title">
+          <span class="reveal-line"><span class="reveal-line-base">What I'm </span><span class="reveal-line-inner" aria-hidden="true">What I'm </span></span>
+          <span class="reveal-line"><span class="reveal-line-base"><em>actually</em> on.</span><span class="reveal-line-inner" aria-hidden="true"><em>actually</em> on.</span></span>
+        </h2>
+        <div class="now-grid">
+          <div class="now-card">
+            <h3>This month</h3>
+            <div class="now-meta"><span class="live-dot"></span>UPDATED <span id="nowDate">— —</span></div>
+            <ul class="now-list">
+              <li class="now-item">
+                <span class="now-item-status shipping">SHIPPING</span>
+                <div>
+                  <div class="now-item-title">Payment ledger v3.2 — exactly-once consumer</div>
+                  <div class="now-item-desc">Cutover happens this week, behind a flag at 5%.</div>
+                </div>
+                <span class="now-item-when">wk 19</span>
+              </li>
+              <li class="now-item">
+                <span class="now-item-status building">BUILDING</span>
+                <div>
+                  <div class="now-item-title">RAG eval harness for support transcripts</div>
+                  <div class="now-item-desc">Tracking groundedness vs. retrieval-recall on a 4k-row golden set.</div>
+                </div>
+                <span class="now-item-when">wk 17–20</span>
+              </li>
+              <li class="now-item">
+                <span class="now-item-status building">BUILDING</span>
+                <div>
+                  <div class="now-item-title">Open-source: kafka-replay-cli</div>
+                  <div class="now-item-desc">Tiny tool to re-emit a partition window into a dead-letter topic.</div>
+                </div>
+                <span class="now-item-when">side</span>
+              </li>
+              <li class="now-item">
+                <span class="now-item-status exploring">READING</span>
+                <div>
+                  <div class="now-item-title">Designing Data-Intensive Applications, ch. 11</div>
+                  <div class="now-item-desc">Stream processing — re-reading because v3.2 review went sideways.</div>
+                </div>
+                <span class="now-item-when">ongoing</span>
+              </li>
+            </ul>
+          </div>
+          <div class="now-side">
+            <div class="metric-card">
+              <div class="metric-label">site uptime · 90d</div>
+              <div class="metric-value">99.97<span style="font-size:18px;color:var(--fg-muted);">%</span></div>
+              <div class="metric-trend">▲ 0.02% vs prev</div>
+              <svg class="metric-spark" viewBox="0 0 100 28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--accent)" stroke-width="1.5" points="0,18 12,16 24,17 36,12 48,14 60,10 72,11 84,8 100,9"/></svg>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">commits / week</div>
+              <div class="metric-value">47</div>
+              <div class="metric-trend">▲ 12 vs avg</div>
+              <svg class="metric-spark" viewBox="0 0 100 28" preserveAspectRatio="none"><polyline fill="none" stroke="var(--accent)" stroke-width="1.5" points="0,22 14,18 28,20 42,12 56,14 70,8 84,10 100,6"/></svg>
+            </div>
+            <div class="metric-card">
+              <div class="metric-label">coffees today</div>
+              <div class="metric-value">3</div>
+              <div class="metric-trend" style="color:var(--warn);">▲ 1 above limit</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── CERTIFICATIONS — stacked deck ─────────────────────────────────────── -->
+    <section class="certs-section" id="certifications">
+      <div class="ps-page">
+        <div class="ps-section-label">CERTIFICATIONS</div>
+        <h2 class="ps-section-title">
+          <span class="reveal-line"><span class="reveal-line-base">Credentials that </span><span class="reveal-line-inner" aria-hidden="true">Credentials that </span></span>
+          <span class="reveal-line"><span class="reveal-line-base"><em>shaped how I build</em>.</span><span class="reveal-line-inner" aria-hidden="true"><em>shaped how I build</em>.</span></span>
+        </h2>
+        <p class="certs-deck-sub">Scroll to flip through the stack — or click any peeking card to bring it forward.</p>
+      </div>
+
+      <div class="certs-deck-scroll" id="certDeckScroll">
+        <div class="certs-deck-stage">
+          <div class="cert-ambient" id="certAmbient"></div>
+
+          <div class="certs-deck-wrap" id="certDeck">
+
+            <article class="deck-card" data-color="red" data-i="0" data-label="Google" data-pos="0" tabindex="0">
+              <div>
+                <span class="deck-eyebrow">01 · Google · Coursera</span>
+                <h3 class="deck-card-h3">Data Analytics Professional</h3>
+                <p class="deck-card-p">SQL, spreadsheets, R, Tableau, and data cleaning at scale. The analyst's foundation behind every pipeline I ship.</p>
+                <div class="deck-meta"><span>Completed</span><span>8 courses</span><span>Capstone</span></div>
+              </div>
+              <div class="deck-art" aria-hidden="true">G</div>
+            </article>
+
+            <article class="deck-card" data-color="blue" data-i="1" data-label="ML" data-pos="1" tabindex="0">
+              <div>
+                <span class="deck-eyebrow">02 · Udemy</span>
+                <h3 class="deck-card-h3">Machine Learning A-Z</h3>
+                <p class="deck-card-p">Supervised and unsupervised learning, Python and R. 43 hours of hands-on ML — from regression to neural nets.</p>
+                <div class="deck-meta"><span>Feb 2026</span><span>43 hrs</span><span>Completed</span></div>
+              </div>
+              <div class="deck-art" aria-hidden="true">M</div>
+            </article>
+
+            <article class="deck-card" data-color="teal" data-i="2" data-label="Yale" data-pos="2" tabindex="0">
+              <div>
+                <span class="deck-eyebrow">03 · Yale University · Coursera</span>
+                <h3 class="deck-card-h3">Financial Markets</h3>
+                <p class="deck-card-p">Risk, behavioral finance, bonds, and options — taught by Robert Shiller. The theory behind the fintech systems I build.</p>
+                <div class="deck-meta"><span>Completed</span><span>Non-credit</span><span>Yale</span></div>
+              </div>
+              <div class="deck-art" aria-hidden="true">Y</div>
+            </article>
+
+            <article class="deck-card" data-color="amber" data-i="3" data-label="NYIF" data-pos="3" tabindex="0">
+              <div>
+                <span class="deck-eyebrow">04 · NY Institute of Finance · Coursera</span>
+                <h3 class="deck-card-h3">Risk Management</h3>
+                <p class="deck-card-p">Best-practice frameworks to measure, assess, and manage organizational risk. Applied directly to how I think about fault-tolerant system design.</p>
+                <div class="deck-meta"><span>Completed</span><span>Specialization</span><span>NYIF</span></div>
+              </div>
+              <div class="deck-art" aria-hidden="true">R</div>
+            </article>
+
+            <article class="deck-card" data-color="plum" data-i="4" data-label="Next" data-pos="4" tabindex="0">
+              <div>
+                <span class="deck-eyebrow">05 · Coming Soon</span>
+                <h3 class="deck-card-h3">[Next Certificate]</h3>
+                <p class="deck-card-p">Placeholder — drop in the next credential here.</p>
+                <div class="deck-meta"><span>—</span><span>—</span><span>—</span></div>
+              </div>
+              <div class="deck-art" aria-hidden="true">?</div>
+            </article>
+
+          </div>
+
+          <!-- Rail, progress, and hint live inside the sticky stage so they
+               appear/disappear automatically with the deck — no JS show/hide needed -->
+          <nav class="cert-rail" id="certRail" aria-label="Certificate navigation"></nav>
+
+          <div class="cert-progress">
+            <span id="certProgNum">01 / 05</span>
+            <div class="cert-progress-bar" id="certProgBar"></div>
+          </div>
+
+          <div class="cert-hint" aria-hidden="true">
+            <span>Scroll</span>
+            <span class="cert-hint-arrow"></span>
+            <span>or click a card</span>
+          </div>
         </div>
       </div>
     </section>
@@ -551,6 +1015,7 @@
     </section>
 
   </main>
+
 
 </body>
 </html>

@@ -1,0 +1,393 @@
+/* ==========================================================================
+   certificates.css — Stacked deck certifications section
+   Motion model (orbital):
+     - In-stack regime: --pos drives the peek position via CSS formula.
+     - Wrap regime: JS overrides transform/opacity/z-index inline as the
+       card takes a parabolic arc down-and-up to land behind the stack.
+   Cards have a subtle alternating tilt (--tilt, written by JS based on
+   stack pos). On hover, --hover-lift animates from 0 to -16px via a
+   registered @property transition (the only transitioning property in
+   the transform — base values still update snappy from scroll scrub).
+   ========================================================================== */
+
+/* Registered properties: enable smooth transitions on these custom props
+   without transitioning the whole transform (which would fight scrub). */
+@property --hover-lift {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: 0px;
+}
+
+/* ---- Scoped tokens (dark default) ---- */
+.certs-section {
+  --cert-card-edge:   rgba(255, 255, 255, 0.08);
+  --cert-card-shadow: 0 30px 80px rgba(0,0,0,0.55), 0 8px 24px rgba(0,0,0,0.4);
+  --cert-fg-soft:     rgba(208, 200, 181, 0.72);
+  --cert-hint-col:    rgba(208, 200, 181, 0.35);
+  --cert-rail-col:    rgba(208, 200, 181, 0.18);
+  --cert-accent-glow: rgba(240, 80, 48, 0.45);
+}
+:root.theme-light .certs-section {
+  --cert-card-edge:   rgba(255, 255, 255, 0.55);
+  --cert-card-shadow: 0 30px 80px rgba(10,14,46,0.18), 0 8px 24px rgba(10,14,46,0.08);
+  --cert-fg-soft:     rgba(30, 94, 255, 0.72);
+  --cert-hint-col:    rgba(10, 14, 46, 0.45);
+  --cert-rail-col:    rgba(10, 14, 46, 0.18);
+  --cert-accent-glow: rgba(10, 31, 122, 0.45);
+}
+
+/* ---- Deck scroll container ---- */
+.certs-deck-scroll {
+  position: relative;
+}
+
+.certs-deck-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: grid;
+  place-items: center;
+  /* No overflow:hidden — the wrap card needs to be visible going BELOW the
+     stage during its arc so the user reads the orbital motion. */
+}
+
+.cert-ambient {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(60% 50% at 50% 55%, var(--card-glow, transparent), transparent 70%);
+  opacity: 0.55;
+  transition: background 700ms ease, opacity 700ms ease;
+  z-index: 0;
+}
+
+.certs-deck-wrap {
+  position: relative;
+  width: min(780px, 90vw);
+  height: clamp(420px, 56vh, 500px);
+  margin-top: 120px;
+  z-index: 5;
+}
+
+/* ---- Card base ----
+   In-stack regime: CSS computes transform from --pos (0 = front, 1+ = peek).
+   Wrap regime: JS sets transform/opacity/z-index inline; CSS values are
+   ignored until JS clears the inline styles. The two regimes meet at
+   --pos=0 (entering wrap) and --pos=N-1 (leaving wrap) with identical
+   visuals, so handoff is seamless. */
+.deck-card {
+  --pos: 0;
+  --tilt: 0deg;
+  --hover-lift: 0px;
+
+  position: absolute;
+  inset: 0;
+  border-radius: 24px;
+  padding: clamp(28px, 4vw, 52px);
+  display: grid;
+  grid-template-columns: 1.1fr 1fr;
+  align-items: center;
+  gap: 28px;
+  border: 1px solid var(--cert-card-edge);
+  box-shadow: var(--cert-card-shadow);
+  cursor: pointer;
+  transform-origin: 50% 50%;
+
+  transform:
+    translateY(calc(-36px * var(--pos) + var(--hover-lift)))
+    scale(calc(1 - 0.045 * var(--pos)))
+    rotate(var(--tilt));
+  z-index: calc(50 - var(--pos) * 10);
+  opacity: 1;
+
+  /* Only --hover-lift is transitioned — keeps scroll-driven --pos/--tilt
+     snappy while giving the hover lift a smooth ease. */
+  transition:
+    --hover-lift 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow   280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  will-change: transform, opacity;
+}
+
+/* Hover: vertical lift only — z-index and --pos unchanged, so stack order
+   is preserved. Cards in front continue to occlude the hovered card. */
+.deck-card:hover {
+  --hover-lift: -16px;
+  box-shadow:
+    0 40px 100px rgba(0,0,0,0.65),
+    0 12px 32px rgba(0,0,0,0.5);
+}
+
+/* ---- Click-promote (Reading B) ----
+   When a card is clicked/selected, JS adds .is-promoted. The card overrides
+   its scroll-driven inline transform via !important and animates to the
+   front position (above scroll-driven cards via z:200). Hover lift still
+   applies on top via --hover-lift. Cleared on the next scroll input. */
+.deck-card.is-promoted {
+  transform:
+    translateY(var(--hover-lift, 0px))
+    scale(1)
+    rotate(0deg) !important;
+  z-index: 200 !important;
+  opacity: 1 !important;
+  box-shadow:
+    0 60px 140px rgba(0,0,0,0.7),
+    0 20px 48px rgba(0,0,0,0.55) !important;
+  transition:
+    transform    460ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    --hover-lift 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow   320ms cubic-bezier(0.2, 0.8, 0.2, 1) !important;
+}
+
+/* Transient class applied during the brief 220ms window when a promoted
+   card is releasing back to scroll-driven control. Lets transform
+   transition smoothly back into the stack; removed after the window so
+   subsequent scroll scrubs don't drag through this lag. */
+.deck-card.is-releasing {
+  transition:
+    transform    220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    --hover-lift 280ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow   280ms cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Card colour variants */
+.deck-card[data-color="red"]   { background: linear-gradient(155deg, #d94b35 0%, #a93423 100%); --glow: rgba(217,75,53,0.35); }
+.deck-card[data-color="blue"]  { background: linear-gradient(155deg, #2c5dff 0%, #1733a8 100%); --glow: rgba(44,93,255,0.35); }
+.deck-card[data-color="teal"]  { background: linear-gradient(155deg, #1d8b7c 0%, #0d4f48 100%); --glow: rgba(29,139,124,0.35); }
+.deck-card[data-color="amber"] { background: linear-gradient(155deg, #d99036 0%, #8a5615 100%); --glow: rgba(217,144,54,0.35); }
+.deck-card[data-color="plum"]  { background: linear-gradient(155deg, #6e3a8e 0%, #3d1d52 100%); --glow: rgba(110,58,142,0.35); }
+
+/* Glassy top sheen */
+.deck-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 60%;
+  border-radius: 24px 24px 0 0;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0) 60%);
+  pointer-events: none;
+}
+
+/* ---- Card content: opacity tied to --pos so peeks fade as cards recede.
+   During wrap, JS keeps --pos linearly tracking through the cycle so
+   content opacity continues to make sense; the parent's inline opacity
+   adds the dip-to-zero at the midpoint. */
+.deck-card .deck-eyebrow,
+.deck-card .deck-card-h3,
+.deck-card .deck-card-p,
+.deck-card .deck-meta,
+.deck-card .deck-art {
+  opacity: clamp(0, calc(1 - var(--pos)), 1);
+  transform: translateY(calc(6px * clamp(0, var(--pos), 1)));
+}
+
+.deck-eyebrow {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: rgba(253, 247, 236, 0.82);
+  margin-bottom: 22px;
+  display: block;
+}
+
+.deck-card-h3 {
+  font-family: var(--font-display, 'Clash Display', sans-serif);
+  font-weight: 600;
+  font-size: clamp(26px, 3vw, 38px);
+  letter-spacing: -0.015em;
+  line-height: 1.04;
+  margin-bottom: 16px;
+  color: #fdf7ec;
+}
+
+.deck-card-p {
+  font-size: 15px;
+  line-height: 1.55;
+  color: rgba(253, 247, 236, 0.82);
+  max-width: 40ch;
+}
+
+.deck-meta {
+  margin-top: 22px;
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(253, 247, 236, 0.6);
+}
+.deck-meta span::before { content: "▸ "; color: rgba(253,247,236,0.9); }
+
+.deck-art {
+  justify-self: end;
+  width: clamp(140px, 18vw, 220px);
+  aspect-ratio: 1 / 1.1;
+  border-radius: 16px;
+  background: rgba(0,0,0,0.22);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: grid;
+  place-items: center;
+  font-family: var(--font-display, 'Clash Display', sans-serif);
+  font-size: clamp(72px, 8vw, 120px);
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: rgba(255,255,255,0.85);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.12);
+}
+
+/* ---- Side rail (absolute inside sticky stage) ---- */
+.cert-rail {
+  position: absolute;
+  right: 32px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  z-index: 80;
+}
+
+.cert-rail-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  padding: 0;
+  background: var(--cert-rail-col);
+  border: none;
+  cursor: pointer;
+  position: relative;
+  transition:
+    background 220ms ease,
+    transform  260ms cubic-bezier(0.2,0.8,0.2,1);
+}
+
+.cert-rail-dot.active {
+  background: var(--accent, #f05030);
+  transform: scale(1.5);
+  box-shadow: 0 0 14px 2px var(--cert-accent-glow);
+}
+
+.cert-rail-dot::after {
+  content: attr(data-label);
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--cert-fg-soft);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms ease;
+}
+.cert-rail-dot:hover::after,
+.cert-rail-dot.active::after { opacity: 1; }
+
+/* ---- Progress chip (absolute inside sticky stage) ---- */
+.cert-progress {
+  position: absolute;
+  left: 32px;
+  bottom: 28px;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.18em;
+  color: var(--cert-fg-soft);
+}
+
+.cert-progress-bar {
+  width: 90px;
+  height: 1px;
+  background: var(--cert-rail-col);
+  position: relative;
+  overflow: hidden;
+}
+.cert-progress-bar::after {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: var(--p, 20%);
+  background: var(--accent, #f05030);
+  transition: width 320ms cubic-bezier(0.2,0.8,0.2,1);
+}
+
+/* ---- Scroll hint (absolute inside sticky stage) ---- */
+.cert-hint {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 10.5px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--cert-hint-col);
+  pointer-events: none;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  white-space: nowrap;
+  transition: opacity 300ms ease;
+}
+
+.cert-hint-arrow {
+  display: inline-block;
+  width: 18px;
+  height: 1px;
+  background: var(--cert-hint-col);
+  position: relative;
+}
+.cert-hint-arrow::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 50%;
+  width: 6px;
+  height: 6px;
+  border-right: 1px solid var(--cert-hint-col);
+  border-bottom: 1px solid var(--cert-hint-col);
+  transform: translateY(-50%) rotate(-45deg);
+}
+
+/* ---- Deck subtitle ---- */
+.certs-deck-sub {
+  font-family: var(--font-mono, 'JetBrains Mono', monospace);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--fg-muted, #7a7464);
+  margin-top: 12px;
+  opacity: 0;
+  transition: opacity 0.5s ease 0.3s;
+}
+.certs-deck-sub.in-view {
+  opacity: 1;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 720px) {
+  .deck-card {
+    grid-template-columns: 1fr;
+    padding: 28px;
+  }
+  .deck-art { justify-self: center; }
+  .cert-rail { right: 16px; }
+  .cert-progress { display: none; }
+  .certs-deck-wrap {
+    margin-top: 80px;
+    height: clamp(380px, 60vh, 460px);
+  }
+}
+
+/* ---- Reduced motion: skip scroll-linked animation; static stack. ---- */
+@media (prefers-reduced-motion: reduce) {
+  .deck-card { will-change: auto; }
+}

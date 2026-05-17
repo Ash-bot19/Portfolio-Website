@@ -31,7 +31,7 @@ nav.nav-scrolled {
   color: var(--color-bg);
   pointer-events: auto;
   box-shadow: 0 12px 28px rgba(var(--color-loader-accent-rgb), 0.16);
-  overflow: visible;
+  overflow: hidden;
   transition: background-color 0.25s ease, box-shadow 0.25s ease;
   will-change: transform;
 }
@@ -39,18 +39,26 @@ nav.nav-scrolled {
 .nav-logo:hover,
 .nav-logo:focus-visible,
 .nav-logo.is-magnetic {
-  background: var(--color-accent);
+  /* bg stays cream (--color-loader-accent). The orange "latch" is provided by
+     the .cursor-mirror overlay (full-cover, z-index 1, behind face). The
+     cursor-tracked invert lens (.cursor-mirror-invert, z-index 3) sits above
+     the face and swaps colors inside the cursor circle: orange→black bg,
+     dark face→orange features. */
   box-shadow: 0 16px 34px rgba(var(--color-loader-accent-rgb), 0.22);
 }
 
 .nav-logo-face {
-  width: 72%;
-  height: 72%;
-  object-fit: contain;
-  filter: brightness(0);
-  transform: translateY(4%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: none;
+  transform: none;
   position: relative;
-  z-index: 1;
+  /* z-index: 2 puts the face above the .cursor-mirror overlay (z-index: 1),
+     so the dark face is always visible on both the orange overlay area
+     and the cream hole-reveal area. */
+  z-index: 2;
   pointer-events: none;
   user-select: none;
 }
@@ -153,6 +161,8 @@ nav.nav-scrolled {
   background: transparent;
   color: var(--color-loader-accent);
   opacity: 0.9;
+  /* overflow:hidden clips the cursor-mirror invert lens to the circular shape. */
+  overflow: hidden;
   transition: opacity 0.22s ease, transform 0.22s ease, background-color 0.22s ease, color 0.22s ease;
   will-change: transform;
 }
@@ -161,11 +171,128 @@ nav.nav-scrolled {
 .side-social-link:focus-visible {
   opacity: 1;
   transform: translateY(-2px);
+  /* No bg/color change here — the orange latch is provided by .cursor-mirror,
+     and the cream glyph reads on both the orange-overlay area and the
+     transparent hole-reveal area. */
 }
 
 .side-social-link.is-magnetic-side {
   background: var(--color-accent);
   color: var(--color-bg);
+}
+
+/* ── Cursor-tracked invert lens (minhpham-style) ───────────────────────────
+   Architecture (replicates minhpham's .js-masker swap, scoped per-target):
+     - z-index 1  .cursor-mirror        — full-cover overlay, --color-accent
+                                          (orange). On hover, fades to opacity 1.
+                                          Provides the LATCH: cream bg → orange.
+     - z-index 2  glyph (face/svg/text) — sits above the latch. Visible as
+                                          dark-on-orange when latched, dark-on-cream
+                                          when not.
+     - z-index 3  .cursor-mirror-invert — full-cover overlay, --color-bg (black).
+                                          Clipped to a circle at cursor via
+                                          clip-path: circle(14px at --cx --cy).
+                                          Contains a recolored DUPLICATE of the
+                                          glyph (orange features) so inside the
+                                          cursor circle the user sees black bg +
+                                          orange glyph — the inversion.
+     - Parent has overflow:hidden + border-radius:50% so both overlays clip to
+       the target's circular shape. JS writes --cx/--cy on the target on
+       mousemove; CSS vars inherit into the lens for the clip-path.
+   Outside cursor circle → latched (orange bg + dark glyph).
+   Inside  cursor circle → inverted (black bg + orange glyph). */
+.cursor-mirror {
+  position: absolute;
+  inset: 0;
+  background: var(--color-accent);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 250ms ease;
+  z-index: 1;
+  will-change: opacity;
+}
+
+.cursor-mirror-invert {
+  position: absolute;
+  inset: 0;
+  background: var(--color-bg);
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  overflow: hidden;
+  clip-path: circle(14px at var(--cx, -200px) var(--cy, -200px));
+  -webkit-clip-path: circle(14px at var(--cx, -200px) var(--cy, -200px));
+  transition: opacity 200ms ease;
+  z-index: 3;
+  will-change: opacity, clip-path;
+}
+
+.nav-logo:hover .cursor-mirror,
+.nav-logo:focus-visible .cursor-mirror,
+.side-social-link:hover .cursor-mirror,
+.side-social-link:focus-visible .cursor-mirror,
+.nav-logo:hover .cursor-mirror-invert,
+.nav-logo:focus-visible .cursor-mirror-invert,
+.side-social-link:hover .cursor-mirror-invert,
+.side-social-link:focus-visible .cursor-mirror-invert {
+  opacity: 1;
+}
+
+/* Original glyphs sit above the orange latch (z 1) but below the invert lens
+   (z 3) so the lens can cover them inside the cursor circle. */
+.side-social-github-icon,
+.side-social-link--linkedin > .linkedin-letter {
+  position: relative;
+  z-index: 2;
+}
+
+/* Inverted face inside the lens — pure tone swap, no recolor.
+   The SVG has dark fills (~#010101) for outfit/hair/specs and light fills
+   (~#FDFDFD) covering the rest of the canvas (headphones/face/strap region).
+   A plain invert(1) maps:
+     - dark features → near-white (outfit/hair/specs become white)
+     - light fills   → near-black (headphones/face/strap become black)
+   The nav-logo lens overrides .cursor-mirror-invert's --color-bg to
+   transparent so the SVG's own inverted canvas-fill provides the black
+   region — not the lens's bg color competing with it. */
+.nav-logo .cursor-mirror-invert {
+  background: transparent;
+}
+
+.nav-logo-face--invert {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 20%;
+  filter: invert(1);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Inverted social glyphs inside the lens — single-color, simple recolor.
+   Positioned to overlay the original glyph exactly. */
+.side-social-github-icon--invert {
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: 27px;
+  height: 27px;
+  color: var(--color-accent);
+}
+
+.linkedin-letter--invert {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.08em;
+  color: var(--color-accent);
 }
 
 .side-social-link--github {
@@ -224,7 +351,7 @@ body.menu-open {
     left: 0;
     right: 0;
     z-index: 99;
-    background: rgba(10, 10, 10, 0.95);
+    background: var(--color-backdrop);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
     flex-direction: column;
@@ -235,7 +362,7 @@ body.menu-open {
 
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .nav-links {
-      background: rgba(10, 10, 10, 0.98);
+      background: var(--color-backdrop-solid);
     }
   }
 
@@ -268,3 +395,76 @@ body.menu-open {
     transition: none !important;
   }
 }
+
+/* ── Theme toggle — DARK THEME DISABLED ────────────────────────────────────
+   Button removed from HTML. Uncomment this block + index.html + theme.js to re-enable.
+
+.theme-toggle {
+  position: fixed;
+  bottom: clamp(42px, 7.2vh, 72px);
+  right: clamp(28px, 4vw, 74px);
+  width: 54px;
+  height: 28px;
+  border-radius: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  pointer-events: auto;
+  z-index: 100;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.theme-toggle__thumb {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: #f2613f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transform: translateX(26px);
+  transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1), background 0.3s ease;
+}
+
+.theme-icon {
+  width: 11px;
+  height: 11px;
+  pointer-events: none;
+  flex-shrink: 0;
+  color: #fff;
+  stroke: #fff;
+}
+
+.theme-icon--sun  { display: none; }
+.theme-icon--moon { display: block; }
+
+:root.theme-light .theme-toggle {
+  background: rgba(0, 0, 0, 0.06);
+  border-color: rgba(0, 0, 0, 0.12);
+}
+
+:root.theme-light .theme-toggle__thumb {
+  background: #3557ff;
+  transform: translateX(0);
+}
+
+:root.theme-light .theme-icon--sun  { display: block; }
+:root.theme-light .theme-icon--moon { display: none; }
+
+@media (max-width: 768px) {
+  .theme-toggle {
+    bottom: auto;
+    top: 18px;
+    right: 76px;
+  }
+}
+   ── end DARK THEME DISABLED ── */
+
+:root.theme-light .side-social-link.is-magnetic-side {
+  background: var(--color-text);
+}
+

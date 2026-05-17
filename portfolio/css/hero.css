@@ -127,11 +127,11 @@
 }
 
 .hero-lens .hero-headline .accent {
-  color: rgba(13, 13, 13, 0.6);
+  color: rgba(var(--color-lens-text-rgb), 0.6);
 }
 
 .hero-lens .hero-subtitle {
-  color: rgba(13, 13, 13, 0.8);
+  color: rgba(var(--color-lens-text-rgb), 0.8);
 }
 
 /* Lens is pointer-only — hide on touch and when honest mode is already active */
@@ -145,6 +145,10 @@
 
 body.mode-honest .hero-lens {
   display: none;
+}
+
+:root.theme-light .hero-lens {
+  background: var(--color-loader-accent);
 }
 
 /* === Dual-Mode Wiring (HERO-04) — scoped through .hero (REVIEWS LOW concern) ===
@@ -185,6 +189,7 @@ body.mode-honest .hero [data-honest]       { display: block; }
   .hero-subtitle {
     font-size: 16px;
   }
+
 }
 
 @media (max-width: 480px) {
@@ -204,4 +209,5 @@ body.mode-honest .hero [data-honest]       { display: block; }
     opacity: 1 !important;
     transform: none !important;
   }
+
 }

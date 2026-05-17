@@ -14,6 +14,17 @@
   --color-loader-accent: #d2c1a8;
   --color-loader-accent-rgb: 210, 193, 168;
 
+  /* RGB companions for rgba() usage */
+  --color-bg-rgb: 13, 13, 13;
+  --color-text-rgb: 208, 200, 181;
+  --color-lens-text-rgb: 13, 13, 13;
+
+  /* Semantic tokens */
+  --color-reveal-base: #2e2b28;
+  --color-border: rgba(255, 255, 255, 0.06);
+  --color-backdrop: rgba(10, 10, 10, 0.95);
+  --color-backdrop-solid: rgba(10, 10, 10, 0.98);
+
   /* Spacing scale (multiples of 4px) */
   --space-xs: 4px;
   --space-sm: 8px;
@@ -64,19 +75,22 @@ body {
 }
 
 @media (pointer: fine) {
+  /* !important wins over per-component cursor: pointer/default rules
+     (12 sites across certificates/contact/nav/sections/etc.) so the
+     OS cursor never leaks through when the custom cursor is active. */
   body.site-ready,
-  body.site-ready a,
-  body.site-ready button {
-    cursor: none;
+  body.site-ready * {
+    cursor: none !important;
   }
 }
 
 .site-cursor {
+  --cursor-size: 40px;
   position: fixed;
   top: 0;
   left: 0;
-  width: 22px;
-  height: 22px;
+  width: var(--cursor-size);
+  height: var(--cursor-size);
   border-radius: 50%;
   background: var(--color-accent);
   opacity: 0;
@@ -85,8 +99,17 @@ body {
   will-change: transform, opacity;
 }
 
-.site-cursor.is-logo-invert {
-  mix-blend-mode: difference;
+:root.theme-light .site-cursor {
+  background: var(--color-loader-accent);
+}
+
+/* Hide the main cursor while it's over a cursor-invert target — the in-target
+   .cursor-mirror-invert lens (clip-path circle at cursor, containing the
+   recolored glyph) becomes the visible cursor. 200ms crossfade matches the
+   lens fade-in. */
+.site-cursor.is-on-cursor-invert-target {
+  opacity: 0 !important;
+  transition: opacity 200ms ease;
 }
 
 img, svg {
@@ -153,12 +176,12 @@ body.mode-honest [data-honest]       { display: block; }
 }
 
 .reveal-line-base {
-  color: #2e2b28;
+  color: var(--color-reveal-base);
 }
 
 .reveal-line-base .about-accent,
 .reveal-line-base .timeline-accent {
-  color: #2e2b28;
+  color: var(--color-reveal-base);
 }
 
 .reveal-line-inner {
@@ -183,4 +206,28 @@ body.mode-honest [data-honest]       { display: block; }
   .reveal-line-inner {
     position: static;
   }
+}
+
+/* ==========================================================================
+   Light (blue fintech) theme — toggled via :root.theme-light
+   Applied by js/theme.js; persisted in localStorage('portfolio-theme').
+   ========================================================================== */
+
+:root.theme-light {
+  --color-bg: #F8FAFC;
+  --color-surface: #EEF4FF;
+  --color-text: #1E5EFF;
+  --color-muted: #5B6B8C;
+  --color-accent: #0A1F7A;
+  --color-loader-accent: #1E5EFF;
+  --color-loader-accent-rgb: 30, 94, 255;
+
+  --color-bg-rgb: 248, 250, 252;
+  --color-text-rgb: 30, 94, 255;
+  --color-lens-text-rgb: 0, 207, 255;
+
+  --color-reveal-base: #C5D5F5;
+  --color-border: rgba(10, 31, 122, 0.1);
+  --color-backdrop: rgba(248, 250, 252, 0.95);
+  --color-backdrop-solid: rgba(248, 250, 252, 0.98);
 }
