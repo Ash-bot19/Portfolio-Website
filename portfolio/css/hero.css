@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: var(--space-4xl) 17vw var(--space-3xl);
+  padding: var(--space-4xl) 0 var(--space-3xl);
   position: relative;
   overflow: visible;
 }
@@ -31,9 +31,11 @@
 }
 
 .hero-inner {
+  position: relative;
   width: 100%;
-  max-width: 1240px;
+  max-width: var(--content-max);
   margin: 0 auto;
+  padding: 0 var(--content-gutter);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xl); /* 48px between name label, headline, subtitle */
@@ -94,24 +96,21 @@
 }
 
 /* === Hero lens overlay — orange circle that tracks the cursor, reveals honest text === */
+/* Co-located overlay: inset:0 makes this exactly the size + position of
+   .hero-inner at every screen size — no compensation math, no drift. */
 .hero-lens {
   position: absolute;
-  inset: -220px 0;
+  inset: 0;
   background: var(--color-accent);
   clip-path: circle(0px at 50% 50%);
   z-index: 3;
   pointer-events: none;
   will-change: clip-path;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: calc(var(--space-4xl) + 220px) 17vw calc(var(--space-3xl) + 220px);
 }
 
 .hero-lens-inner {
-  width: 100%;
-  max-width: 1240px;
-  margin: 0 auto;
+  height: 100%;
+  padding: 0 var(--content-gutter);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xl);
@@ -134,16 +133,17 @@
   color: rgba(var(--color-lens-text-rgb), 0.8);
 }
 
+/* Desktop hover lens: enlarge the orange field far beyond the text box so the
+   cursor-tracked circle is always a full circle. lens-inner is pushed back by
+   the same 1000px so the honest text stays pixel-aligned with the visible
+   text. Scoped to >1024px so the touch/hold path (≤1024) stays bounded. */
+@media (min-width: 1025px) {
+  .hero-lens { inset: -1000px; }
+  .hero-lens-inner { position: absolute; inset: 1000px; }
+}
+
 /* On touch, clip-path: circle(0px) keeps the lens invisible at rest.
    JS spreads it on hold. Only suppress on reduced-motion or honest mode. */
-
-/* Reset -220px inset on screens <=1024px so the expanding circle can't bleed into adjacent sections. */
-@media (max-width: 1024px) {
-  .hero-lens {
-    inset: 0;
-    padding: var(--space-3xl) var(--space-lg) var(--space-2xl);
-  }
-}
 
 @media (prefers-reduced-motion: reduce) {
   .hero-lens { display: none; }
@@ -182,11 +182,13 @@ body.mode-honest .hero [data-honest]       { display: block; }
 
 @media (max-width: 768px) {
   .hero {
-    padding: var(--space-3xl) var(--space-lg) var(--space-2xl); /* tighter on mobile */
+    padding: var(--space-3xl) 0 var(--space-2xl); /* tighter vertical on mobile */
     overflow: hidden; /* contain video and lens within section bounds */
   }
-  .hero-inner {
-    gap: var(--space-xl); /* 32px on mobile */
+  .hero-inner,
+  .hero-lens-inner {
+    gap: var(--space-xl); /* 32px on mobile — lens mirrors base so the
+                             revealed headline sits at the same Y */
   }
   .hero-headline {
     font-size: clamp(42px, 12vw, 72px);

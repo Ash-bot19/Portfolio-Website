@@ -49,10 +49,9 @@
 
 /* ── Section wrapper ───────────────────────────────────────────────────────── */
 .ps-page {
-  padding: var(--space-4xl) 17vw;
-}
-@media (max-width: 760px) {
-  .ps-page { padding: var(--space-3xl) var(--space-lg); }
+  max-width: var(--content-max);
+  margin: 0 auto;
+  padding: var(--space-4xl) var(--content-gutter);
 }
 
 .ps-section-label {
@@ -136,10 +135,8 @@
 .ps-divider {
   border: none;
   border-top: 1px solid var(--s-border);
-  margin: 0 17vw;
-}
-@media (max-width: 760px) {
-  .ps-divider { margin: 0 var(--space-lg); }
+  max-width: var(--content-max);
+  margin: 0 auto;
 }
 
 /* ============================================================

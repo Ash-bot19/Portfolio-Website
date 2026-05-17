@@ -301,3 +301,52 @@
     if (e.key === 'Enter')     { e.preventDefault(); if (filtered[activeIdx]) filtered[activeIdx].action(); }
   });
 })();
+
+/* ============================================================
+   ARCHITECTURE DIAGRAM — scale-to-fit (no horizontal scroll)
+   The diagram is a fixed 900x480 coordinate space (SVG edges +
+   absolutely-positioned nodes share those pixel coords, so it can't
+   reflow). Instead of letting .arch-canvas scroll, scale the whole
+   inner down to the available width and shrink the canvas height to
+   match — the entire map is always visible, geometry stays exact.
+   If this fails for any reason, CSS overflow:auto remains as a
+   fallback so the diagram is still reachable by scrolling.
+   ============================================================ */
+(function initArchFit() {
+  var NAT_W = 900, NAT_H = 480;
+  var canvas = document.querySelector('.arch-canvas');
+  var inner  = document.querySelector('.arch-canvas-inner');
+  if (!canvas || !inner) return;
+
+  inner.style.transformOrigin = 'top left';
+
+  function fit() {
+    var avail = canvas.clientWidth;
+    if (!avail) return;
+    var k = Math.min(1, avail / NAT_W);
+
+    if (k < 1) {
+      inner.style.transform = 'scale(' + k + ')';
+      inner.style.margin = '0';
+      canvas.style.height = (NAT_H * k) + 'px';
+    } else {
+      // Native size fits — no scaling, keep CSS centering + 480px height.
+      inner.style.transform = 'none';
+      inner.style.margin = '';
+      canvas.style.height = '';
+    }
+    // We always fit exactly now — no scrollbars needed.
+    canvas.style.overflow = 'hidden';
+  }
+
+  var raf = 0;
+  function onResize() {
+    if (raf) cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(fit);
+  }
+
+  fit();
+  window.addEventListener('resize', onResize, { passive: true });
+  // Layout/fonts can settle after first paint — refit once more.
+  window.addEventListener('load', fit);
+})();

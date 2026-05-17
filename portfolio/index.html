@@ -252,13 +252,13 @@
         <p class="hero-subtitle" data-honest>
           Still figuring it out. Making Kafka pipelines in the meantime.
         </p>
-      </div>
 
-      <!-- Honest lens overlay — circle-clipped, tracks cursor. Mirrors hero-inner layout.
-           aria-hidden: AT reads the real hero-inner, not this decorative duplicate. -->
-      <div class="hero-lens" aria-hidden="true">
-        <div class="hero-lens-inner">
-          <span class="hero-name-label">AYUSH SAMANTARAY</span>
+        <!-- Honest lens overlay — circle-clipped, tracks cursor. Co-located
+             inside .hero-inner so it shares the exact box of the visible text.
+             aria-hidden: AT reads the real hero-inner, not this duplicate. -->
+        <div class="hero-lens" aria-hidden="true">
+          <div class="hero-lens-inner">
+            <span class="hero-name-label">AYUSH SAMANTARAY</span>
           <div class="hero-h1">
             <span class="hero-headline">
               <span class="word">Trying</span>
@@ -272,6 +272,7 @@
           </div>
           <p class="hero-subtitle">Still figuring it out. Making Kafka pipelines in the meantime.</p>
         </div>
+      </div>
       </div>
 
     </section>
@@ -302,12 +303,13 @@
             <span class="reveal-line"><span class="reveal-line-base">functional data systems.</span><span class="reveal-line-inner" aria-hidden="true">functional data systems.</span></span>
           </p>
         </div>
-      </div>
 
-      <!-- Honest lens overlay — cursor circle reveals honest text on orange bg -->
-      <div class="about-lens" aria-hidden="true">
-        <div class="about-lens-inner">
-          <span class="about-label">ABOUT ME</span>
+        <!-- Honest lens overlay — cursor circle reveals honest text on orange bg.
+             Co-located inside .about-inner so it shares the exact box of the
+             visible text — guaranteed alignment at every screen size. -->
+        <div class="about-lens" aria-hidden="true">
+          <div class="about-lens-inner">
+            <span class="about-label">ABOUT ME</span>
           <p class="about-text about-lens-text">
             <span class="about-lens-line">Final-year engineering </span>
             <span class="about-lens-line">student converting </span>
@@ -316,6 +318,7 @@
             <span class="about-lens-line">functional data systems.</span>
           </p>
         </div>
+      </div>
       </div>
 
     </section>
@@ -513,12 +516,13 @@
           </div>
 
         </div>
-      </div>
 
-      <!-- Honest lens overlay — cursor circle reveals honest experience intro on orange bg -->
-      <div class="timeline-lens" aria-hidden="true">
-        <div class="timeline-lens-inner">
-          <span class="timeline-label">EXPERIENCE</span>
+        <!-- Honest lens overlay — cursor circle reveals honest experience intro
+             on orange bg. Co-located inside .timeline-inner so it shares the
+             exact box of the visible text. -->
+        <div class="timeline-lens" aria-hidden="true">
+          <div class="timeline-lens-inner">
+            <span class="timeline-label">EXPERIENCE</span>
           <p class="timeline-intro">
             <span class="timeline-lens-line">Mostly breaking systems, </span>
             <span class="timeline-lens-line">fixing them at 2&nbsp;AM, and </span>
@@ -526,6 +530,7 @@
             <span class="timeline-lens-line"><span class="timeline-accent">production experience</span>.</span>
           </p>
         </div>
+      </div>
       </div>
 
     </section>
@@ -979,6 +984,7 @@
     </section>
 
     <section class="contact" id="contact">
+      <div class="contact-inner">
       <span class="contact-label">CONNECT</span>
 
       <div class="contact-grid">
@@ -1071,6 +1077,7 @@
         <span>© 2026 Ayush Samantaray</span>
         <span>Data Engineer · Fintech Builder</span>
       </footer>
+      </div>
     </section>
 
   <!-- Single fixed hold-to-reveal button — touch only, viewport-anchored.

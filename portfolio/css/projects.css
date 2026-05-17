@@ -7,14 +7,15 @@
 
 .projects {
   min-height: 100vh;
-  padding: var(--space-4xl) 17vw;
+  padding: var(--space-4xl) 0;
   position: relative;
   overflow: hidden;
 }
 
 .projects-inner {
-  max-width: 1280px;
+  max-width: var(--content-max);
   margin: 0 auto;
+  padding: 0 var(--content-gutter);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xl);
@@ -191,7 +192,7 @@
 /* Mobile — collapse to single column, link drops below tags */
 @media (max-width: 768px) {
   .projects {
-    padding: var(--space-3xl) var(--space-md);
+    padding: var(--space-3xl) 0;
   }
 
   .project-card {

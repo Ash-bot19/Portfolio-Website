@@ -7,15 +7,17 @@
 /* === Section container === */
 .timeline {
   min-height: 100vh;
-  padding: var(--space-4xl) 17vw;
+  padding: var(--space-4xl) 0;
   position: relative;
   overflow: visible;
 }
 
 /* === Inner wrapper — constrains width like .about-inner === */
 .timeline-inner {
-  max-width: 1240px;
+  position: relative;
+  max-width: var(--content-max);
   margin: 0 auto;
+  padding: 0 var(--content-gutter);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xl);                  /* 48px between label, intro, rows block */
@@ -195,7 +197,7 @@ body.mode-honest .timeline [data-honest]       { display: block; }
 /* === Mobile single-column collapse (TIME-05) === */
 @media (max-width: 768px) {
   .timeline {
-    padding: var(--space-3xl) var(--space-md); /* 64px vertical, 16px horizontal */
+    padding: var(--space-3xl) 0;
     overflow: hidden;
   }
 
@@ -247,20 +249,21 @@ body.mode-honest .timeline [data-honest]       { display: block; }
 }
 
 /* === Cursor lens overlay — honest intro text revealed by orange circle === */
+/* Co-located overlay: inset:0 makes this exactly the size + position of
+   .timeline-inner at every screen size — no compensation math, no drift. */
 .timeline-lens {
   position: absolute;
-  inset: -220px 0;
+  inset: 0;
   background: var(--color-accent);
   clip-path: circle(0px at 50% 50%);
   z-index: 4;
   pointer-events: none;
   will-change: clip-path;
-  padding: calc(var(--space-4xl) + 220px) 17vw;
 }
 
 .timeline-lens-inner {
-  max-width: 1240px;
-  margin: 0 auto;
+  height: 100%;
+  padding: 0 var(--content-gutter);
   display: flex;
   flex-direction: column;
   gap: var(--space-2xl);
@@ -278,14 +281,27 @@ body.mode-honest .timeline [data-honest]       { display: block; }
   color: rgba(var(--color-lens-text-rgb), 0.6);
 }
 
-/* touch: clip-path: circle(0px) hides at rest; JS spreads on hold */
-/* Reset -220px inset on screens <=1024px so the expanding circle can't bleed into adjacent sections. */
-@media (max-width: 1024px) {
-  .timeline-lens {
-    inset: 0;
-    padding: var(--space-3xl) var(--space-md);
-  }
+/* Mobile parity with the base intro so the revealed text overlays exactly:
+   (1) wrap inline like .reveal-line does at ≤768 (main.css),
+   (2) match .timeline-inner's tightened gap at ≤480 so the paragraph
+       sits at the same Y as the visible one. */
+@media (max-width: 768px) {
+  .timeline-lens-line { display: inline; }
 }
+@media (max-width: 480px) {
+  .timeline-lens-inner { gap: var(--space-xl); }
+}
+
+/* Desktop hover lens: enlarge the orange field far beyond the text box so the
+   cursor-tracked circle is always a full circle. lens-inner is pushed back by
+   the same 1000px so the honest text stays pixel-aligned with the visible
+   text. Scoped to >1024px so the touch/hold path (≤1024) stays bounded. */
+@media (min-width: 1025px) {
+  .timeline-lens { inset: -1000px; }
+  .timeline-lens-inner { position: absolute; inset: 1000px; }
+}
+
+/* touch: clip-path: circle(0px) hides at rest; JS spreads on hold */
 @media (prefers-reduced-motion: reduce) { .timeline-lens { display: none; } }
 body.mode-honest .timeline-lens { display: none; }
 :root.theme-light .timeline-lens { background: var(--color-loader-accent); }

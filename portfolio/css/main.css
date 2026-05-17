@@ -37,6 +37,8 @@
 
   /* Layout */
   --nav-height: 72px;
+  --content-max: 1280px;
+  --content-gutter: max(24px, 10vw);
 
   /* Fonts */
   --font-display: 'Clash Display', sans-serif;
@@ -58,6 +60,15 @@
    Default is auto (instant) — gated as a baseline for REVIEWS.md priority 4. */
 html {
   scroll-behavior: auto;
+  /* Nothing should ever scroll the page sideways — large display type,
+     reveal-lens overflow, and parallax props stay inside the viewport.
+     clip (not hidden) avoids creating a scroll container so position:sticky
+     and scroll-driven animations keep working. */
+  overflow-x: clip;
+}
+
+body {
+  overflow-x: clip;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -127,7 +138,7 @@ body {
     position: fixed;
     bottom: 28px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateY(8px);
     background: rgba(255, 255, 255, 0.07);
     border: 1px solid rgba(255, 255, 255, 0.18);
     border-radius: 100px;
@@ -144,6 +155,19 @@ body {
     -webkit-tap-highlight-color: transparent;
     cursor: pointer;
     white-space: nowrap;
+    /* Contextual fade — hidden until JS adds .is-visible while a dual-text
+       section (hero/about/experience) is on or near screen. */
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.22s ease, visibility 0.22s ease, transform 0.22s ease;
+  }
+
+  .lens-reveal-btn.is-visible {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    transform: translateX(-50%) translateY(0);
   }
 
   :root.theme-light .lens-reveal-btn {
@@ -159,6 +183,10 @@ body {
     background: var(--color-accent);
     flex-shrink: 0;
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .lens-reveal-btn { transition: none; }
 }
 
 img, svg {

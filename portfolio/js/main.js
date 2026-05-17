@@ -1201,8 +1201,14 @@ function initHeroLens() {
   var lens = document.querySelector('.hero-lens');
   if (!hero || !triggerEl || !lens) return;
   if (window.matchMedia('(pointer: coarse)').matches) return;
+  // ≤1024px is the touch/hold-button breakpoint — the mobile hold owns the
+  // lens clip-path there. Without this guard this ticker would reset
+  // clip-path to radius 0 every frame and wipe whatever the hold draws.
+  if (window.matchMedia('(max-width: 1024px)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.gsap) return;
+
+  var mqHandheld = window.matchMedia('(max-width: 1024px)');
 
   // Lerped position so the lens trails the cursor identically. EASE matches
   // initGlobalCursor (0.07) — heavy minhpham-style lag.
@@ -1220,6 +1226,10 @@ function initHeroLens() {
   }
 
   function tickLens() {
+    // If the viewport is resized down to the handheld range after load, hand
+    // the lens to the mobile hold button: stop driving clip-path here (reset
+    // to hidden once) so the desktop ticker and the hold never fight.
+    if (mqHandheld.matches) { lens.style.clipPath = 'circle(0px at 50% 50%)'; return; }
     // Always run while gsap may still be animating r toward 0 — early returns
     // here leave the clip-path stuck at a tiny non-zero radius, producing the
     // "small orange dot left behind" bug.
@@ -1294,8 +1304,14 @@ function initAboutLens() {
   var lens = document.querySelector('.about-lens');
   if (!section || !triggerEl || !lens) return;
   if (window.matchMedia('(pointer: coarse)').matches) return;
+  // ≤1024px is the touch/hold-button breakpoint — the mobile hold owns the
+  // lens clip-path there. Without this guard this ticker would reset
+  // clip-path to radius 0 every frame and wipe whatever the hold draws.
+  if (window.matchMedia('(max-width: 1024px)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.gsap) return;
+
+  var mqHandheld = window.matchMedia('(max-width: 1024px)');
 
   var CURSOR_RADIUS = 19;
   var LENS_RADIUS = 160;
@@ -1311,6 +1327,10 @@ function initAboutLens() {
   }
 
   function tickLens() {
+    // If the viewport is resized down to the handheld range after load, hand
+    // the lens to the mobile hold button: stop driving clip-path here (reset
+    // to hidden once) so the desktop ticker and the hold never fight.
+    if (mqHandheld.matches) { lens.style.clipPath = 'circle(0px at 50% 50%)'; return; }
     // Always run while gsap may still be animating r toward 0 — early returns
     // here leave the clip-path stuck at a tiny non-zero radius, producing the
     // "small orange dot left behind" bug.
@@ -1377,8 +1397,14 @@ function initTimelineLens() {
   var lens = document.querySelector('.timeline-lens');
   if (!section || !triggerEl || !lens) return;
   if (window.matchMedia('(pointer: coarse)').matches) return;
+  // ≤1024px is the touch/hold-button breakpoint — the mobile hold owns the
+  // lens clip-path there. Without this guard this ticker would reset
+  // clip-path to radius 0 every frame and wipe whatever the hold draws.
+  if (window.matchMedia('(max-width: 1024px)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   if (!window.gsap) return;
+
+  var mqHandheld = window.matchMedia('(max-width: 1024px)');
 
   var CURSOR_RADIUS = 19;
   var LENS_RADIUS = 160;
@@ -1394,6 +1420,10 @@ function initTimelineLens() {
   }
 
   function tickLens() {
+    // If the viewport is resized down to the handheld range after load, hand
+    // the lens to the mobile hold button: stop driving clip-path here (reset
+    // to hidden once) so the desktop ticker and the hold never fight.
+    if (mqHandheld.matches) { lens.style.clipPath = 'circle(0px at 50% 50%)'; return; }
     // Always run while gsap may still be animating r toward 0 — early returns
     // here leave the clip-path stuck at a tiny non-zero radius, producing the
     // "small orange dot left behind" bug.
@@ -1458,7 +1488,6 @@ function initTimelineLens() {
 // that section's overlay from the button's position outward.
 // On sections without a lens nothing happens.
 function initMobileLens() {
-  if (!window.matchMedia('(max-width: 1024px)').matches) return;
   if (!window.gsap) return;
 
   var btn = document.querySelector('.lens-reveal-btn');
@@ -1469,10 +1498,42 @@ function initMobileLens() {
     { section: document.querySelector('.about'),    el: document.querySelector('.about-lens') },
     { section: document.querySelector('.timeline'), el: document.querySelector('.timeline-lens') }
   ].filter(function(p) { return p.section && p.el; });
+  if (!lenses.length) return;
 
   var data       = { r: 0 };
   var activeLens = null;
   var ox = 0, oy = 0;
+  var mq = window.matchMedia('(max-width: 1024px)');
+
+  // ── Contextual visibility ─────────────────────────────────────────────────
+  // The button fades in only while a dual-text section (hero/about/experience)
+  // is on or near screen, and only at ≤1024px. Generous rootMargin so it
+  // appears just before the section enters and lingers after it leaves — a
+  // fast scroll cannot slip past it. Adjacent dual-text sections keep it
+  // visible across the seam (no flicker).
+  var onScreen = (typeof Set === 'function') ? new Set() : null;
+  var fallbackVisible = false;
+  function refreshBtn() {
+    var anyVisible = onScreen ? onScreen.size > 0 : fallbackVisible;
+    if (mq.matches && anyVisible) btn.classList.add('is-visible');
+    else btn.classList.remove('is-visible');
+  }
+  if ('IntersectionObserver' in window && onScreen) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) onScreen.add(en.target);
+        else onScreen.delete(en.target);
+      });
+      refreshBtn();
+    }, { root: null, rootMargin: '25% 0px 25% 0px', threshold: 0 });
+    lenses.forEach(function (p) { io.observe(p.section); });
+  } else {
+    // No IntersectionObserver — fall back to "visible whenever ≤1024".
+    fallbackVisible = true;
+  }
+  if (mq.addEventListener) mq.addEventListener('change', refreshBtn);
+  else if (mq.addListener) mq.addListener(refreshBtn);
+  refreshBtn();
 
   // Return the lens pair whose section overlaps the viewport the most.
   function findActivePair() {
@@ -1504,8 +1565,9 @@ function initMobileLens() {
   }
 
   btn.addEventListener('pointerdown', function(e) {
+    if (!mq.matches) return;
     e.preventDefault();
-    btn.setPointerCapture(e.pointerId);
+    try { btn.setPointerCapture(e.pointerId); } catch (_) {}
 
     var pair = findActivePair();
     if (!pair) return;
@@ -1540,8 +1602,9 @@ function initMobileLens() {
     });
   }
 
-  btn.addEventListener('pointerup',     release);
-  btn.addEventListener('pointercancel', release);
+  btn.addEventListener('pointerup',         release);
+  btn.addEventListener('pointercancel',     release);
+  btn.addEventListener('lostpointercapture', release);
 }
 
 // ── New section titles — left-to-right line-by-line reveal, scrubbed, bidirectional ──

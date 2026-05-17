@@ -11,7 +11,7 @@
 .what-i-build {
   position: relative;
   min-height: 100vh;
-  padding: var(--space-4xl) 15vw; /* 96px vertical, 15vw horizontal — mirrors reference left margin */
+  padding: var(--space-4xl) 10vw;
   overflow: hidden;
   background: var(--color-bg);
 }
@@ -20,7 +20,7 @@
 .wib-label {
   position: absolute;
   top: var(--space-xl);                     /* 32px from top */
-  left: 15vw;                               /* align with section padding */
+  left: 10vw;                               /* align with section padding */
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 400;
@@ -43,8 +43,8 @@
   align-items: flex-start;
   min-height: calc(100vh - 2 * var(--space-4xl));
   gap: 0;
-  width: calc(100% + 30vw);
-  margin-left: -15vw;
+  width: calc(100% + 20vw);
+  margin-left: -10vw;
 }
 
 /* === Single line wrapper — holds dark + light layers stacked at same position === */
@@ -52,7 +52,6 @@
   position: relative;
   display: block;
   width: 100%;
-  padding-left: 15vw;
   font-family: var(--font-display);
   font-size: clamp(44px, 6.5vw, 110px);  /* reduced: was 12vw causing text to overflow viewport */
   font-weight: 600;
@@ -60,6 +59,7 @@
   letter-spacing: -0.02em;                /* slight negative tracking for display weights */
   text-transform: uppercase;
   white-space: nowrap;                    /* lines must not wrap mid-word */
+  padding-left: 10vw;
   border-top: 1px solid rgba(var(--color-text-rgb), 0.1);
   overflow: hidden;
   isolation: isolate;
@@ -121,10 +121,10 @@
 /* === Staircase offset per line — each successive line indents further right ===
    Creates the cascading stepped layout from the reference. Lines stay nowrap so
    long text clips at the right edge, which is intentional for display type. */
-.wib-stack .wib-line:nth-child(2) { padding-left: calc(15vw + 0.35vw); }
-.wib-stack .wib-line:nth-child(3) { padding-left: calc(15vw + 0.7vw); }
-.wib-stack .wib-line:nth-child(4) { padding-left: calc(15vw + 1.05vw); }
-.wib-stack .wib-line:nth-child(5) { padding-left: calc(15vw + 1.4vw); }
+.wib-stack .wib-line:nth-child(2) { padding-left: calc(10vw + 0.35vw); }
+.wib-stack .wib-line:nth-child(3) { padding-left: calc(10vw + 0.7vw); }
+.wib-stack .wib-line:nth-child(4) { padding-left: calc(10vw + 1.05vw); }
+.wib-stack .wib-line:nth-child(5) { padding-left: calc(10vw + 1.4vw); }
 
 .wib-prop {
   position: absolute;

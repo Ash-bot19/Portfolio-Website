@@ -330,11 +330,9 @@ body.menu-open {
 }
 
 @media (max-width: 768px) {
-  nav {
-    height: var(--nav-height);
-    pointer-events: auto;
-  }
-
+  /* minhpham-style: keep nav links as a small inline top-right stack —
+     no hamburger, no dropdown panel. Base .nav-link height:1.05em is kept
+     (NOT 1.4em) so only .link-default shows — no ghost/double text. */
   .nav-logo {
     top: 16px;
     left: 16px;
@@ -343,42 +341,17 @@ body.menu-open {
   }
 
   .nav-links {
-    display: none;
-    visibility: hidden;
-    pointer-events: none;
-    position: fixed;
-    top: var(--nav-height);
-    left: 0;
-    right: 0;
-    z-index: 99;
-    background: var(--color-backdrop);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    flex-direction: column;
-    align-items: flex-start;
-    padding: var(--space-xl);
-    gap: var(--space-lg);
-  }
-
-  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-    .nav-links {
-      background: var(--color-backdrop-solid);
-    }
-  }
-
-  .nav-links.nav-open {
-    display: flex;
-    visibility: visible;
-    pointer-events: auto;
-  }
-
-  .hamburger {
-    display: flex;
+    top: 18px;
+    right: 18px;
+    gap: 8px;
   }
 
   .nav-link {
-    font-size: 18px;
-    height: 1.4em;
+    font-size: 14px;
+  }
+
+  .hamburger {
+    display: none;
   }
 
   .side-social {
