@@ -1458,7 +1458,7 @@ function initTimelineLens() {
 // that section's overlay from the button's position outward.
 // On sections without a lens nothing happens.
 function initMobileLens() {
-  if (!window.matchMedia('(pointer: coarse)').matches) return;
+  if (!window.matchMedia('(max-width: 1024px)').matches) return;
   if (!window.gsap) return;
 
   var btn = document.querySelector('.lens-reveal-btn');

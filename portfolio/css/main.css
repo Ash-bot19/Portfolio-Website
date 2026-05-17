@@ -119,7 +119,7 @@ body {
   display: none; /* hidden on pointer-fine devices */
 }
 
-@media (pointer: coarse) {
+@media (max-width: 1024px) {
   .lens-reveal-btn {
     display: inline-flex;
     align-items: center;

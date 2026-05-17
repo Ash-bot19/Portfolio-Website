@@ -279,8 +279,8 @@ body.mode-honest .timeline [data-honest]       { display: block; }
 }
 
 /* touch: clip-path: circle(0px) hides at rest; JS spreads on hold */
-/* Reset -220px inset on touch so the expanding circle can't bleed into adjacent sections. */
-@media (pointer: coarse) {
+/* Reset -220px inset on screens <=1024px so the expanding circle can't bleed into adjacent sections. */
+@media (max-width: 1024px) {
   .timeline-lens {
     inset: 0;
     padding: var(--space-3xl) var(--space-md);

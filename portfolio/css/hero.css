@@ -137,8 +137,8 @@
 /* On touch, clip-path: circle(0px) keeps the lens invisible at rest.
    JS spreads it on hold. Only suppress on reduced-motion or honest mode. */
 
-/* Reset -220px inset on touch so the expanding circle can't bleed into adjacent sections. */
-@media (pointer: coarse) {
+/* Reset -220px inset on screens <=1024px so the expanding circle can't bleed into adjacent sections. */
+@media (max-width: 1024px) {
   .hero-lens {
     inset: 0;
     padding: var(--space-3xl) var(--space-lg) var(--space-2xl);
