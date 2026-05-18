@@ -10,7 +10,7 @@
   --color-surface: #161614;
   --color-text: #d0c8b5;
   --color-muted: #7a7464;
-  --color-accent: #f05030;
+  --color-accent: #f16027;
   --color-loader-accent: #d2c1a8;
   --color-loader-accent-rgb: 210, 193, 168;
 
@@ -38,7 +38,7 @@
   /* Layout */
   --nav-height: 72px;
   --content-max: 1280px;
-  --content-gutter: max(24px, 10vw);
+  --content-gutter: clamp(24px, 5vw, 80px);
 
   /* Fonts */
   --font-display: 'Clash Display', sans-serif;
@@ -97,6 +97,12 @@ body {
   }
 }
 
+/* minhpham-style cursor: ONE element, mix-blend-mode:difference. It is never
+   clipped — wherever it overlaps anything (logo, social icons, text, sections)
+   the overlap region inverts automatically via the blend. White over the dark
+   bg reads near-white; over light theme / cream logo / orange icons it inverts
+   the underlying pixels. No per-target lens, no enter/leave state swap.
+   Size still tweens (contract over links, expand over skill cards). */
 .site-cursor {
   --cursor-size: 40px;
   position: fixed;
@@ -106,23 +112,11 @@ body {
   height: var(--cursor-size);
   border-radius: 50%;
   background: var(--color-accent);
+  mix-blend-mode: difference;
   opacity: 0;
   pointer-events: none;
   z-index: 9999;
   will-change: transform, opacity;
-}
-
-:root.theme-light .site-cursor {
-  background: var(--color-loader-accent);
-}
-
-/* Hide the main cursor while it's over a cursor-invert target — the in-target
-   .cursor-mirror-invert lens (clip-path circle at cursor, containing the
-   recolored glyph) becomes the visible cursor. 200ms crossfade matches the
-   lens fade-in. */
-.site-cursor.is-on-cursor-invert-target {
-  opacity: 0 !important;
-  transition: opacity 200ms ease;
 }
 
 /* ── Hold-to-reveal button — touch devices only ──────────────────────────── */
@@ -240,6 +234,7 @@ body.mode-honest [data-honest]       { display: block; }
   font: inherit;
   line-height: inherit;
   letter-spacing: inherit;
+  white-space: nowrap;
 }
 
 .reveal-line-base,
@@ -272,6 +267,7 @@ body.mode-honest [data-honest]       { display: block; }
   .reveal-line-base,
   .reveal-line-inner {
     display: inline;
+    white-space: normal;
     transform: none !important;
     will-change: auto;
   }

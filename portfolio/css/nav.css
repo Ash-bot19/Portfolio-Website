@@ -27,37 +27,35 @@ nav.nav-scrolled {
   width: 54px;
   height: 54px;
   border-radius: 50%;
-  background: var(--color-loader-accent);
-  color: var(--color-bg);
-  pointer-events: auto;
-  box-shadow: 0 12px 28px rgba(var(--color-loader-accent-rgb), 0.16);
+  background: transparent;
+  color: var(--color-loader-accent);
   overflow: hidden;
-  transition: background-color 0.25s ease, box-shadow 0.25s ease;
+  pointer-events: auto;
+  transition: transform 0.22s ease, opacity 0.22s ease, background-color 0.22s ease, color 0.22s ease;
   will-change: transform;
 }
 
 .nav-logo:hover,
-.nav-logo:focus-visible,
-.nav-logo.is-magnetic {
-  /* bg stays cream (--color-loader-accent). The orange "latch" is provided by
-     the .cursor-mirror overlay (full-cover, z-index 1, behind face). The
-     cursor-tracked invert lens (.cursor-mirror-invert, z-index 3) sits above
-     the face and swaps colors inside the cursor circle: orange→black bg,
-     dark face→orange features. */
-  box-shadow: 0 16px 34px rgba(var(--color-loader-accent-rgb), 0.22);
+.nav-logo:focus-visible {
+  transform: translateY(-2px);
+}
+
+.nav-logo.is-magnetic,
+.nav-logo:focus-visible {
+  /* On magnetic latch the logo becomes an orange disc with a black "AS"
+     mark; the orange .site-cursor (main.css) inverts within its own
+     overlap. (The social icons use a different latch — colour-only, no
+     disc — see .side-social-link.is-magnetic-side below.) */
+  background: var(--color-accent);
+  color: var(--color-bg);
 }
 
 .nav-logo-face {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  object-position: center 20%;
-  filter: none;
-  transform: none;
+  fill: currentColor;
+  display: block;
   position: relative;
-  /* z-index: 2 puts the face above the .cursor-mirror overlay (z-index: 1),
-     so the dark face is always visible on both the orange overlay area
-     and the cream hole-reveal area. */
   z-index: 2;
   pointer-events: none;
   user-select: none;
@@ -161,7 +159,7 @@ nav.nav-scrolled {
   background: transparent;
   color: var(--color-loader-accent);
   opacity: 0.9;
-  /* overflow:hidden clips the cursor-mirror invert lens to the circular shape. */
+  /* keeps the glyph inside the circular shape */
   overflow: hidden;
   transition: opacity 0.22s ease, transform 0.22s ease, background-color 0.22s ease, color 0.22s ease;
   will-change: transform;
@@ -171,129 +169,20 @@ nav.nav-scrolled {
 .side-social-link:focus-visible {
   opacity: 1;
   transform: translateY(-2px);
-  /* No bg/color change here — the orange latch is provided by .cursor-mirror,
-     and the cream glyph reads on both the orange-overlay area and the
-     transparent hole-reveal area. */
+  /* No bg/colour change here — the inversion over the icon is the global
+     mix-blend-mode:difference .site-cursor (main.css). */
 }
 
 .side-social-link.is-magnetic-side {
-  background: var(--color-accent);
-  color: var(--color-bg);
-}
-
-/* ── Cursor-tracked invert lens (minhpham-style) ───────────────────────────
-   Architecture (replicates minhpham's .js-masker swap, scoped per-target):
-     - z-index 1  .cursor-mirror        — full-cover overlay, --color-accent
-                                          (orange). On hover, fades to opacity 1.
-                                          Provides the LATCH: cream bg → orange.
-     - z-index 2  glyph (face/svg/text) — sits above the latch. Visible as
-                                          dark-on-orange when latched, dark-on-cream
-                                          when not.
-     - z-index 3  .cursor-mirror-invert — full-cover overlay, --color-bg (black).
-                                          Clipped to a circle at cursor via
-                                          clip-path: circle(14px at --cx --cy).
-                                          Contains a recolored DUPLICATE of the
-                                          glyph (orange features) so inside the
-                                          cursor circle the user sees black bg +
-                                          orange glyph — the inversion.
-     - Parent has overflow:hidden + border-radius:50% so both overlays clip to
-       the target's circular shape. JS writes --cx/--cy on the target on
-       mousemove; CSS vars inherit into the lens for the clip-path.
-   Outside cursor circle → latched (orange bg + dark glyph).
-   Inside  cursor circle → inverted (black bg + orange glyph). */
-.cursor-mirror {
-  position: absolute;
-  inset: 0;
-  background: var(--color-accent);
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 250ms ease;
-  z-index: 1;
-  will-change: opacity;
-}
-
-.cursor-mirror-invert {
-  position: absolute;
-  inset: 0;
-  background: var(--color-bg);
-  border-radius: inherit;
-  pointer-events: none;
-  opacity: 0;
-  overflow: hidden;
-  clip-path: circle(14px at var(--cx, -200px) var(--cy, -200px));
-  -webkit-clip-path: circle(14px at var(--cx, -200px) var(--cy, -200px));
-  transition: opacity 200ms ease;
-  z-index: 3;
-  will-change: opacity, clip-path;
-}
-
-.nav-logo:hover .cursor-mirror,
-.nav-logo:focus-visible .cursor-mirror,
-.side-social-link:hover .cursor-mirror,
-.side-social-link:focus-visible .cursor-mirror,
-.nav-logo:hover .cursor-mirror-invert,
-.nav-logo:focus-visible .cursor-mirror-invert,
-.side-social-link:hover .cursor-mirror-invert,
-.side-social-link:focus-visible .cursor-mirror-invert {
-  opacity: 1;
-}
-
-/* Original glyphs sit above the orange latch (z 1) but below the invert lens
-   (z 3) so the lens can cover them inside the cursor circle. */
-.side-social-github-icon,
-.side-social-link--linkedin > .linkedin-letter {
-  position: relative;
-  z-index: 2;
-}
-
-/* Inverted face inside the lens — pure tone swap, no recolor.
-   The SVG has dark fills (~#010101) for outfit/hair/specs and light fills
-   (~#FDFDFD) covering the rest of the canvas (headphones/face/strap region).
-   A plain invert(1) maps:
-     - dark features → near-white (outfit/hair/specs become white)
-     - light fills   → near-black (headphones/face/strap become black)
-   The nav-logo lens overrides .cursor-mirror-invert's --color-bg to
-   transparent so the SVG's own inverted canvas-fill provides the black
-   region — not the lens's bg color competing with it. */
-.nav-logo .cursor-mirror-invert {
-  background: transparent;
-}
-
-.nav-logo-face--invert {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  object-position: center 20%;
-  filter: invert(1);
-  pointer-events: none;
-  user-select: none;
-}
-
-/* Inverted social glyphs inside the lens — single-color, simple recolor.
-   Positioned to overlay the original glyph exactly. */
-.side-social-github-icon--invert {
-  position: absolute;
-  inset: 0;
-  margin: auto;
-  width: 27px;
-  height: 27px;
+  /* Cream→orange on magnetic latch. No disc — the orange global
+     mix-blend-mode:difference .site-cursor (main.css) flips this orange
+     glyph to black and the dark page to orange within its own circle. */
   color: var(--color-accent);
 }
 
-.linkedin-letter--invert {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  align-items: baseline;
-  justify-content: center;
-  font-family: Arial, sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.08em;
-  color: var(--color-accent);
-}
+/* The cursor-invert effect is now the single global mix-blend-mode:difference
+   .site-cursor (see main.css). No per-target mirror/clip lens, no duplicate
+   glyphs — the one un-clipped cursor inverts whatever it overlaps. */
 
 .side-social-link--github {
   font-size: 0;

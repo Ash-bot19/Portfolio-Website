@@ -12,6 +12,8 @@
   position: relative;
   min-height: 100vh;
   padding: var(--space-4xl) 10vw;
+  --wib-copy-start: max(10vw, calc((100vw - var(--content-max)) / 2 + var(--space-sm)));
+  --wib-copy-adjust: 80px;
   overflow: hidden;
   background: var(--color-bg);
 }
@@ -20,7 +22,7 @@
 .wib-label {
   position: absolute;
   top: var(--space-xl);                     /* 32px from top */
-  left: 10vw;                               /* align with section padding */
+  left: calc(var(--wib-copy-start) + var(--wib-copy-adjust));
   font-family: var(--font-mono);
   font-size: 11px;
   font-weight: 400;
@@ -59,7 +61,7 @@
   letter-spacing: -0.02em;                /* slight negative tracking for display weights */
   text-transform: uppercase;
   white-space: nowrap;                    /* lines must not wrap mid-word */
-  padding-left: 10vw;
+  padding-left: calc(var(--wib-copy-start) + var(--wib-copy-adjust));
   border-top: 1px solid rgba(var(--color-text-rgb), 0.1);
   overflow: hidden;
   isolation: isolate;
@@ -121,10 +123,10 @@
 /* === Staircase offset per line — each successive line indents further right ===
    Creates the cascading stepped layout from the reference. Lines stay nowrap so
    long text clips at the right edge, which is intentional for display type. */
-.wib-stack .wib-line:nth-child(2) { padding-left: calc(10vw + 0.35vw); }
-.wib-stack .wib-line:nth-child(3) { padding-left: calc(10vw + 0.7vw); }
-.wib-stack .wib-line:nth-child(4) { padding-left: calc(10vw + 1.05vw); }
-.wib-stack .wib-line:nth-child(5) { padding-left: calc(10vw + 1.4vw); }
+.wib-stack .wib-line:nth-child(2) { padding-left: calc(var(--wib-copy-start) + var(--wib-copy-adjust) + 0.35vw); }
+.wib-stack .wib-line:nth-child(3) { padding-left: calc(var(--wib-copy-start) + var(--wib-copy-adjust) + 0.7vw); }
+.wib-stack .wib-line:nth-child(4) { padding-left: calc(var(--wib-copy-start) + var(--wib-copy-adjust) + 1.05vw); }
+.wib-stack .wib-line:nth-child(5) { padding-left: calc(var(--wib-copy-start) + var(--wib-copy-adjust) + 1.4vw); }
 
 .wib-prop {
   position: absolute;

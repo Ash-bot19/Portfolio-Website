@@ -561,8 +561,9 @@ function initGlobalCursor() {
     (function raf() { tickCursor(); requestAnimationFrame(raf); })();
   }
 
-  // Public hook for lens code (initHeroLens / initAboutLens / initTimelineLens /
-  // cursor-invert.js). Scale param kept for API compat — ignored, size is GSAP-driven.
+  // Public hook for the section lenses (initHeroLens / initAboutLens /
+  // initTimelineLens) to hide the dot while their reveal circle is active.
+  // Scale param kept for API compat — ignored, size is GSAP-driven.
   cursor.__setTarget = function(scale, opacity, immediate) {
     if (opacity != null) {
       lensHidden = opacity === 0;
@@ -744,10 +745,9 @@ function initHeroAnimation() {
   var variantAttr = isHonestMode ? 'data-honest' : 'data-professional';
 
   var words = document.querySelectorAll('[' + variantAttr + '] .word');
-  var subtitle = document.querySelector('.hero-subtitle[' + variantAttr + ']');
 
-  if (words.length === 0 || !subtitle) {
-    console.error('[hero] no word spans or subtitle for variant: ' + variantAttr);
+  if (words.length === 0) {
+    console.error('[hero] no word spans for variant: ' + variantAttr);
     return;
   }
 
@@ -770,7 +770,6 @@ function initHeroAnimation() {
   // elements invisible, leaving a brief flash at natural opacity.
   gsap.set(nameLabel, { y: 20, opacity: 0 });
   gsap.set(words,     { y: 40, opacity: 0 });
-  gsap.set(subtitle,  { y: 20, opacity: 0 });
 
   var tl = gsap.timeline({
     onComplete: function () {
@@ -784,9 +783,6 @@ function initHeroAnimation() {
 
   // 2. Headline word stagger — '-=0.3' overlaps with tail of name label
   tl.to(words, { y: 0, opacity: 1, duration: 0.7, ease: 'power2.out', stagger: 0.06 }, '-=0.3');
-
-  // 3. Subtitle fade-up — starts ~0.1s after last word begins
-  tl.to(subtitle, { y: 0, opacity: 1, duration: 0.6, ease: 'power2.out' }, '-=0.2');
 }
 
 // ── Phase 2: duplicate skill cards for infinite-feel strip ──

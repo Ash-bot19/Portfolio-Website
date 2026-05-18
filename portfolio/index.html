@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" class="theme-light">
+<!-- LIGHT THEME DISABLED (dark-only — minhpham cursor parity). To restore light: <html lang="en" class="theme-light"> -->
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -57,9 +58,6 @@
 
   <!-- Certificates stacked deck -->
   <script defer src="js/certificates.js"></script>
-
-  <!-- Cursor invert lens — nav logo + social icons -->
-  <script defer src="js/cursor-invert.js"></script>
 
   <!-- Import map: resolves bare 'three' specifier used internally by GLTFLoader -->
   <script type="importmap">
@@ -138,11 +136,9 @@
     <!-- Nav stub — Plan 02 fills behavior and styles -->
     <nav aria-label="Main navigation">
       <a href="#" class="nav-logo" aria-label="Home">
-        <img class="nav-logo-face" src="assets/New_face_logo.svg" alt="" draggable="false">
-        <span class="cursor-mirror" aria-hidden="true"></span>
-        <span class="cursor-mirror-invert" aria-hidden="true">
-          <img class="nav-logo-face--invert" src="assets/New_face_logo.svg" alt="" draggable="false">
-        </span>
+        <svg class="nav-logo-face" viewBox="0 0 100 100" fill="currentColor" fill-rule="evenodd" aria-hidden="true">
+          <path d="M6 83 L27 18 L48 83 Z M27 42 L17 68 L37 68 Z M54 18 H94 V31 H54 Z M54 31 H67 V44 H54 Z M54 44 H94 V57 H54 Z M81 57 H94 V70 H81 Z M54 70 H94 V83 H54 Z"/>
+        </svg>
       </a>
       <ul class="nav-links" id="nav-links-list">
         <li><a href="#about" class="nav-link">
@@ -194,19 +190,9 @@
         <svg class="side-social-github-icon" viewBox="0 0 24 24" aria-hidden="true">
           <path d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 4.3 2.8 7.9 6.6 9.2.5.1.7-.2.7-.5v-1.9c-2.7.6-3.3-1.1-3.3-1.1-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.8 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5.1 0c1.9-1.3 2.8-1 2.8-1 .5 1.5.2 2.5.1 2.8.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7 1 .7 2v2.9c0 .3.2.6.7.5 3.8-1.3 6.6-4.9 6.6-9.2 0-5.4-4.4-9.8-9.8-9.8Z" fill="currentColor"/>
         </svg>
-        <span class="cursor-mirror" aria-hidden="true"></span>
-        <span class="cursor-mirror-invert" aria-hidden="true">
-          <svg class="side-social-github-icon--invert" viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M12 2.2c-5.4 0-9.8 4.4-9.8 9.8 0 4.3 2.8 7.9 6.6 9.2.5.1.7-.2.7-.5v-1.9c-2.7.6-3.3-1.1-3.3-1.1-.4-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1 1.6 1 .9 1.5 2.3 1.1 2.9.8.1-.7.4-1.1.6-1.4-2.2-.3-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.8 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5.1 0c1.9-1.3 2.8-1 2.8-1 .5 1.5.2 2.5.1 2.8.6.7 1 1.6 1 2.7 0 3.8-2.3 4.6-4.6 4.9.4.3.7 1 .7 2v2.9c0 .3.2.6.7.5 3.8-1.3 6.6-4.9 6.6-9.2 0-5.4-4.4-9.8-9.8-9.8Z" fill="currentColor"/>
-          </svg>
-        </span>
       </a>
       <a class="side-social-link side-social-link--linkedin" href="https://linkedin.com/in/ayush-samantaray" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
         <span class="linkedin-letter" aria-hidden="true">in</span>
-        <span class="cursor-mirror" aria-hidden="true"></span>
-        <span class="cursor-mirror-invert" aria-hidden="true">
-          <span class="linkedin-letter--invert">in</span>
-        </span>
       </a>
     </aside>
 
@@ -226,32 +212,47 @@
         <h1 class="hero-h1">
           <!-- Professional variant -->
           <span class="hero-headline" data-professional>
-            <span class="word">Building</span>
-            <span class="word"><span class="accent">smart</span></span>
-            <span class="word"><span class="accent">systems</span></span>
-            <span class="word">that</span>
-            <span class="word">move</span>
-            <span class="word">money.</span>
+            <span class="hero-line">
+              <span class="word">Building</span>
+              <span class="word"><span class="accent">intelligent</span></span>
+              <span class="word"><span class="accent">systems</span></span>
+            </span>
+            <span class="hero-line">
+              <span class="word">for</span>
+              <span class="word">finance,</span>
+              <span class="word">analytics,</span>
+              <span class="word">and</span>
+            </span>
+            <span class="hero-line">
+              <span class="word">real-world</span>
+              <span class="word">decision</span>
+              <span class="word">making.</span>
+            </span>
           </span>
 
           <!-- Honest variant -->
           <span class="hero-headline" data-honest>
-            <span class="word">Trying</span>
-            <span class="word">to</span>
-            <span class="word">build</span>
-            <span class="word">things</span>
-            <span class="word">people</span>
-            <span class="word"><span class="accent">actually</span></span>
-            <span class="word"><span class="accent">use.</span></span>
+            <span class="hero-line">
+              <span class="word">Trying</span>
+              <span class="word">to</span>
+              <span class="word">build</span>
+              <span class="word"><span class="accent">useful</span></span>
+              <span class="word"><span class="accent">things</span></span>
+            </span>
+            <span class="hero-line">
+              <span class="word">that</span>
+              <span class="word">people</span>
+              <span class="word">actually</span>
+              <span class="word">need</span>
+            </span>
+            <span class="hero-line">
+              <span class="word">and</span>
+              <span class="word">hopefully</span>
+              <span class="word">keep</span>
+              <span class="word">using.</span>
+            </span>
           </span>
         </h1>
-
-        <p class="hero-subtitle" data-professional>
-          Final-year B.Tech &mdash; Cyber-Physical Systems. Data engineering, fintech infrastructure.
-        </p>
-        <p class="hero-subtitle" data-honest>
-          Still figuring it out. Making Kafka pipelines in the meantime.
-        </p>
 
         <!-- Honest lens overlay — circle-clipped, tracks cursor. Co-located
              inside .hero-inner so it shares the exact box of the visible text.
@@ -261,16 +262,27 @@
             <span class="hero-name-label">AYUSH SAMANTARAY</span>
           <div class="hero-h1">
             <span class="hero-headline">
-              <span class="word">Trying</span>
-              <span class="word">to</span>
-              <span class="word">build</span>
-              <span class="word">things</span>
-              <span class="word">people</span>
-              <span class="word"><span class="accent">actually</span></span>
-              <span class="word"><span class="accent">use.</span></span>
+              <span class="hero-line">
+                <span class="word">Trying</span>
+                <span class="word">to</span>
+                <span class="word">build</span>
+                <span class="word"><span class="accent">useful</span></span>
+                <span class="word"><span class="accent">things</span></span>
+              </span>
+              <span class="hero-line">
+                <span class="word">that</span>
+                <span class="word">people</span>
+                <span class="word">actually</span>
+                <span class="word">need</span>
+              </span>
+              <span class="hero-line">
+                <span class="word">and</span>
+                <span class="word">hopefully</span>
+                <span class="word">keep</span>
+                <span class="word">using.</span>
+              </span>
             </span>
           </div>
-          <p class="hero-subtitle">Still figuring it out. Making Kafka pipelines in the meantime.</p>
         </div>
       </div>
       </div>
@@ -285,22 +297,18 @@
         <!-- Professional layer: each line owns its dim base and bright reveal copy -->
         <div class="about-copy" data-professional>
           <p class="about-text about-text-reveal">
-            <span class="reveal-line"><span class="reveal-line-base">Engineering student </span><span class="reveal-line-inner" aria-hidden="true">Engineering student </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">building scalable </span><span class="reveal-line-inner" aria-hidden="true">building scalable </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">fintech and <span class="about-accent">AI-driven</span> </span><span class="reveal-line-inner" aria-hidden="true">fintech and <span class="about-accent">AI-driven</span> </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">data systems for </span><span class="reveal-line-inner" aria-hidden="true">data systems for </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">production environments.</span><span class="reveal-line-inner" aria-hidden="true">production environments.</span></span>
+            <span class="reveal-line"><span class="reveal-line-base">Engineering student building </span><span class="reveal-line-inner" aria-hidden="true">Engineering student building </span></span>
+            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">scalable fintech platforms</span> and </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">scalable fintech platforms</span> and </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">intelligent data systems.</span><span class="reveal-line-inner" aria-hidden="true">intelligent data systems.</span></span>
           </p>
         </div>
 
         <!-- Honest layer: same per-line reveal structure -->
         <div class="about-copy" data-honest>
           <p class="about-text about-text-reveal">
-            <span class="reveal-line"><span class="reveal-line-base">Final-year engineering </span><span class="reveal-line-inner" aria-hidden="true">Final-year engineering </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">student converting </span><span class="reveal-line-inner" aria-hidden="true">student converting </span></span>
-            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">caffeine</span> and </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">caffeine</span> and </span></span>
-            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">overthinking</span> into </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">overthinking</span> into </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">functional data systems.</span><span class="reveal-line-inner" aria-hidden="true">functional data systems.</span></span>
+            <span class="reveal-line"><span class="reveal-line-base">Engineering student turning </span><span class="reveal-line-inner" aria-hidden="true">Engineering student turning </span></span>
+            <span class="reveal-line"><span class="reveal-line-base"><span class="about-accent">caffeine, overthinking</span>, and </span><span class="reveal-line-inner" aria-hidden="true"><span class="about-accent">caffeine, overthinking</span>, and </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">deadlines into functional systems.</span><span class="reveal-line-inner" aria-hidden="true">deadlines into functional systems.</span></span>
           </p>
         </div>
 
@@ -311,11 +319,9 @@
           <div class="about-lens-inner">
             <span class="about-label">ABOUT ME</span>
           <p class="about-text about-lens-text">
-            <span class="about-lens-line">Final-year engineering </span>
-            <span class="about-lens-line">student converting </span>
-            <span class="about-lens-line"><span class="about-accent">caffeine</span> and </span>
-            <span class="about-lens-line"><span class="about-accent">overthinking</span> into </span>
-            <span class="about-lens-line">functional data systems.</span>
+            <span class="about-lens-line">Engineering student turning </span>
+            <span class="about-lens-line"><span class="about-accent">caffeine, overthinking</span>, and </span>
+            <span class="about-lens-line">deadlines into functional systems.</span>
           </p>
         </div>
       </div>
@@ -496,10 +502,9 @@
         <!-- Intro reveal: each line owns its dim base and bright reveal copy -->
         <div class="timeline-intro-wrap">
           <p class="timeline-intro timeline-intro-reveal">
-            <span class="reveal-line"><span class="reveal-line-base">Building data systems, </span><span class="reveal-line-inner" aria-hidden="true">Building data systems, </span></span>
-            <span class="reveal-line"><span class="reveal-line-base"><span class="timeline-accent">backend infrastructure</span>, </span><span class="reveal-line-inner" aria-hidden="true"><span class="timeline-accent">backend infrastructure</span>, </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">and scalable applications </span><span class="reveal-line-inner" aria-hidden="true">and scalable applications </span></span>
-            <span class="reveal-line"><span class="reveal-line-base">for production environments.</span><span class="reveal-line-inner" aria-hidden="true">for production environments.</span></span>
+            <span class="reveal-line"><span class="reveal-line-base">Working on <span class="timeline-accent">data systems</span>, backend </span><span class="reveal-line-inner" aria-hidden="true">Working on <span class="timeline-accent">data systems</span>, backend </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">infrastructure, and distributed </span><span class="reveal-line-inner" aria-hidden="true">infrastructure, and distributed </span></span>
+            <span class="reveal-line"><span class="reveal-line-base">applications across domains.</span><span class="reveal-line-inner" aria-hidden="true">applications across domains.</span></span>
           </p>
         </div>
 
@@ -524,10 +529,9 @@
           <div class="timeline-lens-inner">
             <span class="timeline-label">EXPERIENCE</span>
           <p class="timeline-intro">
-            <span class="timeline-lens-line">Mostly breaking systems, </span>
+            <span class="timeline-lens-line">Breaking distributed systems, </span>
             <span class="timeline-lens-line">fixing them at 2&nbsp;AM, and </span>
-            <span class="timeline-lens-line">occasionally calling it </span>
-            <span class="timeline-lens-line"><span class="timeline-accent">production experience</span>.</span>
+            <span class="timeline-lens-line">calling it <span class="timeline-accent">experience</span>.</span>
           </p>
         </div>
       </div>
